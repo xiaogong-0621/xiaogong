@@ -1,0 +1,784 @@
+/* ─── 当前房间页 ─── */
+
+.room-container {
+  min-height: 100vh;
+  background: #F5F7FA;
+  position: relative;
+  overflow: hidden;
+  padding-bottom: 260rpx;
+}
+
+/* ─── 未加入房间 ─── */
+.no-room-hero {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 160rpx 60rpx 80rpx;
+  text-align: center;
+}
+
+.no-room-icon {
+  width: 160rpx;
+  height: 160rpx;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.75);
+  backdrop-filter: blur(16rpx);
+  -webkit-backdrop-filter: blur(16rpx);
+  border: 1rpx solid rgba(255,255,255,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 40rpx;
+  box-shadow: 0 24rpx 80rpx rgba(14,165,233,0.1);
+}
+
+.no-room-emoji {
+  font-size: 72rpx;
+}
+
+.no-room-title {
+  font-size: 48rpx;
+  font-weight: 800;
+  color: #1d1d1f;
+  margin-bottom: 12rpx;
+}
+
+.no-room-sub {
+  font-size: 28rpx;
+  color: #86868b;
+  margin-bottom: 48rpx;
+}
+
+.no-room-join {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  width: 100%;
+  max-width: 520rpx;
+}
+
+.no-room-input {
+  flex: 1;
+  height: 80rpx;
+  background: rgba(255,255,255,0.5);
+  border: 1rpx solid rgba(255,255,255,0.6);
+  border-radius: 56rpx;
+  padding: 0 28rpx;
+  font-size: 30rpx;
+  text-align: center;
+  letter-spacing: 8rpx;
+  box-sizing: border-box;
+}
+
+.no-room-placeholder {
+  color: #86868b;
+  letter-spacing: 0;
+  font-size: 28rpx;
+}
+
+.no-room-btn {
+  width: 180rpx;
+  height: 80rpx;
+  background: #0EA5E9;
+  color: #fff;
+  border: none;
+  border-radius: 999rpx;
+  font-size: 28rpx;
+  font-weight: 600;
+  line-height: 80rpx;
+  padding: 0;
+  margin: 0;
+}
+
+.no-room-btn[disabled] {
+  opacity: 0.5;
+}
+
+.no-room-btn::after {
+  border: none;
+}
+
+.no-room-hint {
+  margin-top: 24rpx;
+  font-size: 26rpx;
+  color: #ef4444;
+}
+
+/* ─── 导航 ─── */
+.nav-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16rpx 40rpx;
+  position: relative;
+  z-index: 1;
+}
+
+.nav-icon-btn {
+  width: 72rpx;
+  height: 72rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 24rpx;
+}
+.nav-icon-btn image {
+  width: 40rpx;
+  height: 40rpx;
+}
+
+.nav-title {
+  font-size: 34rpx;
+  font-weight: 700;
+  color: #0369A1;
+}
+
+/* ─── 房间信息栏 ─── */
+.room-bar {
+  margin: 0 40rpx 20rpx;
+  padding: 20rpx 28rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+  z-index: 1;
+}
+
+.room-bar-left {
+  display: flex;
+  align-items: center;
+  gap: 32rpx;
+}
+
+.room-bar-right {
+  flex-shrink: 0;
+}
+
+.room-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 4rpx;
+}
+
+.room-stat-label {
+  font-size: 22rpx;
+  color: #86868b;
+}
+
+.room-stat-value {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #1d1d1f;
+}
+
+.room-code-mono {
+  font-family: 'SF Mono', 'Menlo', 'Consolas', monospace;
+  color: #0EA5E9;
+  font-size: 28rpx;
+}
+
+.room-stat-green {
+  color: #10b981;
+}
+
+.leave-btn {
+  padding: 10rpx 24rpx;
+  border-radius: 999rpx;
+  border: 1rpx solid rgba(245,166,35,0.4);
+  color: #f5a623;
+  font-size: 24rpx;
+  font-weight: 600;
+  background: transparent;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.leave-btn::after {
+  border: none;
+}
+
+/* ─── 播放器主卡 ─── */
+.now-playing {
+  margin: 0 40rpx 24rpx;
+  padding: 48rpx 40rpx 40rpx;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
+
+.np-cover-wrap {
+  margin-bottom: 32rpx;
+}
+
+.np-cover-img {
+  width: 320rpx;
+  height: 320rpx;
+  margin: 0 auto;
+  border-radius: 56rpx;
+  box-shadow: 0 24rpx 80rpx rgba(14,165,233,0.12);
+}
+
+.np-cover-placeholder {
+  width: 320rpx;
+  height: 320rpx;
+  margin: 0 auto;
+  border-radius: 56rpx;
+  background: linear-gradient(135deg, rgba(14,165,233,0.15), rgba(168,85,247,0.12));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 24rpx 80rpx rgba(14,165,233,0.12);
+}
+
+.np-cover-initial {
+  font-size: 96rpx;
+  font-weight: 700;
+  color: #0EA5E9;
+}
+
+.np-song {
+  font-size: 36rpx;
+  font-weight: 700;
+  color: #1d1d1f;
+  display: block;
+  margin-top: 8rpx;
+}
+
+.np-artist {
+  font-size: 26rpx;
+  color: #86868b;
+  display: block;
+  margin-top: 4rpx;
+}
+
+.np-requester {
+  font-size: 24rpx;
+  color: #a1a1aa;
+  display: block;
+  margin-top: 8rpx;
+}
+
+/* 进度条 */
+.progress-section {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  margin-top: 32rpx;
+}
+
+.progress-time {
+  font-size: 22rpx;
+  font-family: 'SF Mono', 'Menlo', 'Consolas', monospace;
+  color: #86868b;
+  min-width: 64rpx;
+  font-variant-numeric: tabular-nums;
+}
+
+.progress-track {
+  flex: 1;
+  height: 8rpx;
+  border-radius: 4rpx;
+  background: rgba(14,165,233,0.12);
+  position: relative;
+}
+
+.progress-fill {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  border-radius: 4rpx;
+  background: #0EA5E9;
+  transition: width 0.3s;
+}
+
+/* 控制按钮 */
+.np-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 56rpx;
+  margin-top: 32rpx;
+}
+
+.np-ctrl-btn {
+  width: 72rpx;
+  height: 72rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.1s;
+}
+.np-ctrl-btn image {
+  width: 48rpx;
+  height: 48rpx;
+}
+
+.np-ctrl-btn:active {
+  transform: scale(0.9);
+}
+
+.np-play-btn {
+  width: 104rpx;
+  height: 104rpx;
+  border-radius: 50%;
+  background: #0EA5E9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 12rpx 40rpx rgba(14,165,233,0.3);
+  transition: transform 0.15s;
+}
+.np-play-btn image {
+  width: 48rpx;
+  height: 48rpx;
+}
+
+.np-play-btn:active {
+  transform: scale(0.93);
+}
+
+/* ─── 播放队列 ─── */
+.queue-section {
+  padding: 0 40rpx;
+  position: relative;
+  z-index: 1;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  margin-bottom: 20rpx;
+}
+
+.section-title {
+  font-size: 28rpx;
+  font-weight: 700;
+  color: #1d1d1f;
+}
+
+.queue-count-badge {
+  padding: 2rpx 14rpx;
+  border-radius: 999rpx;
+  background: rgba(14,165,233,0.1);
+  font-size: 22rpx;
+  font-weight: 600;
+  color: #0EA5E9;
+}
+
+.empty {
+  padding: 80rpx 0;
+  text-align: center;
+  color: #86868b;
+  font-size: 28rpx;
+}
+
+.queue-scroll {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+  max-height: 800rpx;
+}
+
+.queue-item {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  padding: 16rpx;
+  background: rgba(255,255,255,0.35);
+  backdrop-filter: blur(20rpx);
+  -webkit-backdrop-filter: blur(20rpx);
+  border: 1rpx solid rgba(255,255,255,0.4);
+  border-radius: 20rpx;
+  touch-action: none;
+  transition: transform 0.25s cubic-bezier(0.25,0.1,0.25,1), box-shadow 0.25s;
+  will-change: transform;
+}
+
+.queue-item.dragging {
+  transition: none;
+  transform: scale(1.06);
+  box-shadow: 0 16rpx 40rpx rgba(0,0,0,0.18);
+  z-index: 100;
+}
+
+.queue-rank {
+  width: 40rpx;
+  text-align: center;
+  font-size: 26rpx;
+  font-weight: 700;
+  color: #0EA5E9;
+  font-family: 'SF Mono', 'Menlo', 'Consolas', monospace;
+  flex-shrink: 0;
+}
+
+.queue-cover-wrap {
+  flex-shrink: 0;
+}
+
+.queue-cover-img {
+  width: 72rpx;
+  height: 72rpx;
+  border-radius: 20rpx;
+}
+
+.queue-cover-placeholder {
+  width: 72rpx;
+  height: 72rpx;
+  border-radius: 20rpx;
+  background: linear-gradient(135deg, rgba(14,165,233,0.1), rgba(56,189,248,0.06));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.queue-initial {
+  font-size: 28rpx;
+  font-weight: 700;
+  color: #0EA5E9;
+}
+
+.queue-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.queue-song {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #1d1d1f;
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.queue-artist {
+  font-size: 22rpx;
+  color: #86868b;
+  display: block;
+}
+
+.queue-by {
+  font-size: 20rpx;
+  color: #a1a1aa;
+  display: block;
+  margin-top: 2rpx;
+}
+
+/* 收藏按钮 */
+.queue-fav {
+  width: 56rpx;
+  height: 56rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  flex-shrink: 0;
+  font-size: 32rpx;
+  color: #86868b;
+  transition: transform 0.15s, color 0.2s;
+}
+
+.queue-fav:active {
+  transform: scale(1.2);
+}
+
+.queue-fav.fav-on {
+  color: #ec4899;
+}
+
+/* 删除按钮 */
+.queue-del {
+  width: 48rpx;
+  height: 48rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  flex-shrink: 0;
+  transition: background 0.15s;
+}
+.queue-del image {
+  width: 32rpx;
+  height: 32rpx;
+}
+
+.queue-del:active {
+  background: rgba(239,68,68,0.08);
+}
+
+/* ─── 聊天 ─── */
+.chat-section {
+  margin: 24rpx 40rpx;
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.chat-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24rpx 28rpx;
+}
+
+.chat-title {
+  font-size: 28rpx;
+  font-weight: 700;
+  color: #1d1d1f;
+}
+
+.chat-arrow {
+  font-size: 24rpx;
+  color: #86868b;
+  transition: transform 0.2s;
+}
+
+.chat-arrow.open {
+  transform: rotate(180deg);
+}
+
+.chat-body {
+  border-top: 1rpx solid rgba(255,255,255,0.3);
+}
+
+.chat-messages {
+  height: calc(100vh - 900rpx - env(safe-area-inset-bottom));
+  max-height: 400rpx;
+  padding: 16rpx 28rpx;
+}
+
+.chat-empty {
+  text-align: center;
+  padding: 60rpx 0;
+  color: #86868b;
+  font-size: 26rpx;
+}
+
+.chat-msg {
+  padding: 8rpx 0;
+  font-size: 26rpx;
+  line-height: 1.5;
+}
+
+.chat-msg.system {
+  text-align: center;
+}
+
+.chat-msg.system .msg-content {
+  color: #86868b;
+  font-size: 24rpx;
+}
+
+.msg-nick {
+  color: #0EA5E9;
+  font-weight: 600;
+  margin-right: 8rpx;
+}
+
+.msg-content {
+  color: #1d1d1f;
+}
+
+.msg-time {
+  font-size: 20rpx;
+  color: #86868b;
+  margin-left: 8rpx;
+}
+
+.chat-input-bar {
+  display: flex;
+  gap: 16rpx;
+  padding: 16rpx 20rpx;
+  padding-bottom: calc(16rpx + env(safe-area-inset-bottom));
+  border-top: 1rpx solid rgba(255,255,255,0.3);
+}
+
+.chat-input {
+  flex: 1;
+  height: 72rpx;
+  background: rgba(255,255,255,0.5);
+  border: 1rpx solid rgba(255,255,255,0.6);
+  border-radius: 56rpx;
+  padding: 0 24rpx;
+  font-size: 26rpx;
+}
+
+.chat-placeholder {
+  color: #86868b;
+}
+
+.chat-send-btn {
+  width: 120rpx;
+  height: 72rpx;
+  background: #0EA5E9;
+  color: #fff;
+  border: none;
+  border-radius: 999rpx;
+  font-size: 26rpx;
+  font-weight: 600;
+  line-height: 72rpx;
+  padding: 0;
+  margin: 0;
+}
+
+/* ─── Toast 通知 ─── */
+.room-toast {
+  position: fixed;
+  left: 50%;
+  bottom: 200rpx;
+  transform: translateX(-50%) translateY(40rpx);
+  background: rgba(0,0,0,0.78);
+  color: #fff;
+  padding: 18rpx 40rpx;
+  border-radius: 28rpx;
+  font-size: 28rpx;
+  z-index: 999;
+  opacity: 0;
+  transition: opacity 0.3s, transform 0.3s;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+.room-toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* ─── 语音消息 ─── */
+.voice-msg {
+  display: flex;
+  flex-direction: column;
+  gap: 4rpx;
+}
+
+.voice-bubble {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  background: rgba(14, 165, 233, 0.1);
+  border-radius: 24rpx;
+  padding: 16rpx 24rpx;
+  max-width: 400rpx;
+  transition: background 0.2s;
+}
+
+.voice-bubble.playing {
+  background: rgba(14, 165, 233, 0.2);
+}
+
+.voice-icon {
+  font-size: 32rpx;
+  color: #0EA5E9;
+  flex-shrink: 0;
+}
+
+.voice-waves {
+  display: flex;
+  align-items: center;
+  gap: 4rpx;
+  height: 32rpx;
+}
+
+.voice-wave {
+  width: 4rpx;
+  background: #0EA5E9;
+  border-radius: 2rpx;
+  transition: height 0.3s;
+}
+
+.voice-duration {
+  font-size: 22rpx;
+  color: #86868b;
+  flex-shrink: 0;
+}
+
+/* ─── 录音中 UI ─── */
+.recording-bar {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  padding: 16rpx 20rpx;
+  padding-bottom: calc(16rpx + env(safe-area-inset-bottom));
+  border-top: 1rpx solid rgba(255,255,255,0.3);
+  background: rgba(255, 235, 235, 0.5);
+}
+
+.recording-indicator {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+
+.recording-dot {
+  width: 16rpx;
+  height: 16rpx;
+  border-radius: 50%;
+  background: #ef4444;
+  animation: pulse 1s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+.recording-text {
+  font-size: 26rpx;
+  color: #ef4444;
+  font-weight: 600;
+}
+
+.recording-cancel {
+  width: 120rpx;
+  height: 64rpx;
+  background: rgba(0,0,0,0.05);
+  color: #666;
+  border: none;
+  border-radius: 999rpx;
+  font-size: 24rpx;
+  line-height: 64rpx;
+  padding: 0;
+  margin: 0;
+}
+
+.recording-send {
+  width: 120rpx;
+  height: 64rpx;
+  background: #0EA5E9;
+  color: #fff;
+  border: none;
+  border-radius: 999rpx;
+  font-size: 24rpx;
+  font-weight: 600;
+  line-height: 64rpx;
+  padding: 0;
+  margin: 0;
+}
+
+/* ─── 麦克风按钮 ─── */
+.chat-mic-btn {
+  width: 72rpx;
+  height: 72rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255,255,255,0.5);
+  border-radius: 50%;
+  flex-shrink: 0;
+  transition: background 0.15s;
+}
+
+.chat-mic-btn:active {
+  background: rgba(255,255,255,0.8);
+}
+
+.mic-icon {
+  font-size: 36rpx;
+}

@@ -1,0 +1,53 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/register/register",
+    "pages/room-select/room-select",
+    "pages/home/home",
+    "pages/music/music",
+    "pages/list/list",
+    "pages/profile/profile",
+    "pages/detail/detail",
+    "pages/rooms/rooms",
+    "pages/user/user",
+    "pages/notifications/notifications"
+  ],
+  "window": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "声域友",
+    "navigationBarBackgroundColor": "#F5F7FA",
+    "backgroundColor": "#71fcfe"
+  },
+  "tabBar": {
+    "custom": true,
+    "color": "#999999",
+    "selectedColor": "#0EA5E9",
+    "borderStyle": "white",
+    "list": [
+      {
+        "pagePath": "pages/home/home",
+        "text": "探索"
+      },
+      {
+        "pagePath": "pages/music/music",
+        "text": "榜单"
+      },
+      {
+        "pagePath": "pages/list/list",
+        "text": "房间"
+      },
+      {
+        "pagePath": "pages/profile/profile",
+        "text": "我的"
+      },
+      {
+        "pagePath": "pages/user/user",
+        "text": "个人主页"
+      }
+    ]
+  },
+  "style": "v2",
+  "componentFramework": "glass-easel",
+  "sitemapLocation": "sitemap.json",
+  "lazyCodeLoading": "requiredComponents"
+}

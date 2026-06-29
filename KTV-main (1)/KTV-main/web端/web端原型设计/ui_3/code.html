@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Manrope:wght@400;500;600;700;800&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-fill {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary-container": "#003670",
+                        "error": "#ba1a1a",
+                        "tertiary-container": "#e39f14",
+                        "surface-dim": "#d8dadc",
+                        "secondary-fixed-dim": "#a9c7ff",
+                        "outline": "#6f7882",
+                        "on-surface-variant": "#3f4851",
+                        "surface-tint": "#006399",
+                        "on-secondary-fixed-variant": "#00468c",
+                        "on-error-container": "#93000a",
+                        "on-background": "#191c1e",
+                        "inverse-primary": "#95ccff",
+                        "on-tertiary": "#ffffff",
+                        "surface-container": "#eceef0",
+                        "on-surface": "#191c1e",
+                        "primary-container": "#4fb3ff",
+                        "secondary-fixed": "#d6e3ff",
+                        "inverse-on-surface": "#eff1f3",
+                        "inverse-surface": "#2d3133",
+                        "on-secondary-fixed": "#001b3d",
+                        "tertiary-fixed-dim": "#ffba3f",
+                        "primary-fixed": "#cde5ff",
+                        "surface-container-high": "#e6e8ea",
+                        "on-primary-fixed-variant": "#004a75",
+                        "on-primary-fixed": "#001d32",
+                        "background": "#f7f9fb",
+                        "on-error": "#ffffff",
+                        "tertiary": "#7f5600",
+                        "on-primary-container": "#00436a",
+                        "on-tertiary-fixed": "#281900",
+                        "primary-fixed-dim": "#95ccff",
+                        "tertiary-fixed": "#ffdeae",
+                        "surface-container-highest": "#e0e3e5",
+                        "on-tertiary-fixed-variant": "#604100",
+                        "surface-container-lowest": "#ffffff",
+                        "secondary-container": "#64a1ff",
+                        "surface-bright": "#f7f9fb",
+                        "on-tertiary-container": "#583a00",
+                        "surface": "#f7f9fb",
+                        "error-container": "#ffdad6",
+                        "surface-container-low": "#f2f4f6",
+                        "surface-variant": "#e0e3e5",
+                        "secondary": "#005db7",
+                        "on-primary": "#ffffff",
+                        "on-secondary": "#ffffff",
+                        "outline-variant": "#bfc7d2",
+                        "primary": "#006399"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Plus Jakarta Sans"],
+                        "display": ["Plus Jakarta Sans"],
+                        "body": ["Manrope"],
+                        "label": ["Manrope"]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-background text-on-background font-body selection:bg-primary-fixed selection:text-on-primary-fixed">
+<!-- SideNavBar Shell -->
+<nav class="h-screen w-64 fixed left-0 top-0 bg-[#f7f9fb] dark:bg-slate-950 flex flex-col p-6 gap-y-8 pt-24 z-50 shadow-sm">
+<div class="absolute top-8 left-10">
+<h1 class="text-xl font-bold tracking-tighter text-[#191c1e] dark:text-white">声域友</h1>
+<p class="text-[10px] text-slate-400 font-bold uppercase tracking-[0.2em] -mt-1">Vocal Suite</p>
+</div>
+<div class="space-y-2 mt-8">
+<a class="flex items-center gap-4 px-4 py-3 text-slate-500 dark:text-slate-400 hover:text-[#006399] hover:bg-[#f2f4f6] rounded-2xl transition-all duration-200" href="#">
+<span class="material-symbols-outlined">explore</span>
+<span class="font-medium">探索歌曲</span>
+</a>
+<a class="flex items-center gap-4 px-4 py-3 text-slate-500 dark:text-slate-400 hover:text-[#006399] hover:bg-[#f2f4f6] rounded-2xl transition-all duration-200" href="#">
+<span class="material-symbols-outlined">trending_up</span>
+<span class="font-medium">热门榜单</span>
+</a>
+<a class="flex items-center gap-4 px-4 py-3 bg-[#ffffff] dark:bg-slate-800 text-[#006399] dark:text-[#4fb3ff] rounded-2xl shadow-sm scale-98 transition-all duration-200" href="#">
+<span class="material-symbols-outlined">favorite</span>
+<span class="font-medium">我的收藏</span>
+</a>
+<a class="flex items-center gap-4 px-4 py-3 text-slate-500 dark:text-slate-400 hover:text-[#006399] hover:bg-[#f2f4f6] rounded-2xl transition-all duration-200" href="#">
+<span class="material-symbols-outlined">meeting_room</span>
+<span class="font-medium">当前房间</span>
+</a>
+</div>
+</nav>
+<!-- TopAppBar Shell -->
+<header class="fixed top-0 right-0 w-[calc(100%-16rem)] h-16 z-40 bg-[#f7f9fb]/80 dark:bg-slate-950/80 backdrop-blur-md flex items-center justify-between px-8">
+<div class="flex items-center gap-4 flex-1 max-w-md">
+<div class="relative w-full">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm" data-icon="search">search</span>
+<input class="w-full bg-surface-container-high border-none rounded-lg py-2 pl-10 pr-4 text-sm font-body focus:ring-2 focus:ring-primary/20 placeholder:text-slate-400" placeholder="搜索歌曲、歌手..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-4"><button class="p-2 text-slate-400 hover:bg-[#eceef0] dark:hover:bg-slate-800 rounded-full duration-200 ease-in-out">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="p-2 text-slate-400 hover:bg-[#eceef0] dark:hover:bg-slate-800 rounded-full duration-200 ease-in-out">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+</button>
+<div class="w-9 h-9 rounded-full bg-slate-200 flex items-center justify-center text-[8px] text-slate-500 font-bold uppercase text-center leading-tight cursor-pointer hover:bg-slate-300 transition-colors ml-2">
+    User<br/>Avatar
+</div></div>
+</header>
+<!-- Main Content Canvas -->
+<main class="ml-64 mt-16 pb-32 p-10 min-h-screen">
+<section class="max-w-6xl mx-auto">
+<div class="mb-10 flex items-end gap-6">
+<h2 class="text-5xl font-black text-on-surface tracking-tighter font-display">我的收藏</h2>
+<span class="text-sm font-bold text-primary mb-2 font-label uppercase tracking-widest">48 首歌曲</span>
+</div>
+<!-- Song List (The Sonic Grid) -->
+<div class="space-y-10">
+<!-- Row 1 -->
+<div class="group flex items-center gap-6 p-4 rounded-lg hover:bg-surface-container-low transition-all duration-200">
+<div class="w-20 h-20 bg-slate-200 rounded-lg flex-shrink-0 shadow-sm overflow-hidden flex items-center justify-center">
+<span class="text-slate-400 text-xs font-bold uppercase tracking-tighter opacity-50">专辑封面</span>
+</div>
+<div class="flex-1 min-w-0">
+<h3 class="text-xl font-bold text-on-surface truncate font-display">歌曲名称</h3>
+<p class="text-sm text-slate-500 font-medium font-body">歌手名称</p>
+</div>
+<div class="flex items-center gap-4 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-3 text-error hover:bg-error/10 rounded-full transition-colors">
+<span class="material-symbols-outlined material-symbols-fill" data-icon="favorite" style="font-variation-settings: 'FILL' 1;">favorite</span>
+</button>
+<button class="px-8 py-3 bg-primary text-white rounded-full font-bold text-sm tracking-wide hover:bg-secondary active:scale-95 transition-all shadow-md shadow-primary/20">
+                            点歌
+                        </button>
+</div>
+</div>
+<!-- Row 2 -->
+<div class="group flex items-center gap-6 p-4 rounded-lg hover:bg-surface-container-low transition-all duration-200">
+<div class="w-20 h-20 bg-slate-200 rounded-lg flex-shrink-0 shadow-sm overflow-hidden flex items-center justify-center">
+<span class="text-slate-400 text-xs font-bold uppercase tracking-tighter opacity-50">专辑封面</span>
+</div>
+<div class="flex-1 min-w-0">
+<h3 class="text-xl font-bold text-on-surface truncate font-display">歌曲名称</h3>
+<p class="text-sm text-slate-500 font-medium font-body">歌手名称</p>
+</div>
+<div class="flex items-center gap-4 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-3 text-error hover:bg-error/10 rounded-full transition-colors">
+<span class="material-symbols-outlined material-symbols-fill" data-icon="favorite" style="font-variation-settings: 'FILL' 1;">favorite</span>
+</button>
+<button class="px-8 py-3 bg-primary text-white rounded-full font-bold text-sm tracking-wide hover:bg-secondary active:scale-95 transition-all shadow-md shadow-primary/20">
+                            点歌
+                        </button>
+</div>
+</div>
+<!-- Row 3 -->
+<div class="group flex items-center gap-6 p-4 rounded-lg hover:bg-surface-container-low transition-all duration-200">
+<div class="w-20 h-20 bg-slate-200 rounded-lg flex-shrink-0 shadow-sm overflow-hidden flex items-center justify-center">
+<span class="text-slate-400 text-xs font-bold uppercase tracking-tighter opacity-50">专辑封面</span>
+</div>
+<div class="flex-1 min-w-0">
+<h3 class="text-xl font-bold text-on-surface truncate font-display">歌曲名称</h3>
+<p class="text-sm text-slate-500 font-medium font-body">歌手名称</p>
+</div>
+<div class="flex items-center gap-4 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-3 text-error hover:bg-error/10 rounded-full transition-colors">
+<span class="material-symbols-outlined material-symbols-fill" data-icon="favorite" style="font-variation-settings: 'FILL' 1;">favorite</span>
+</button>
+<button class="px-8 py-3 bg-primary text-white rounded-full font-bold text-sm tracking-wide hover:bg-secondary active:scale-95 transition-all shadow-md shadow-primary/20">
+                            点歌
+                        </button>
+</div>
+</div>
+<!-- Row 4 -->
+<div class="group flex items-center gap-6 p-4 rounded-lg hover:bg-surface-container-low transition-all duration-200">
+<div class="w-20 h-20 bg-slate-200 rounded-lg flex-shrink-0 shadow-sm overflow-hidden flex items-center justify-center">
+<span class="text-slate-400 text-xs font-bold uppercase tracking-tighter opacity-50">专辑封面</span>
+</div>
+<div class="flex-1 min-w-0">
+<h3 class="text-xl font-bold text-on-surface truncate font-display">歌曲名称</h3>
+<p class="text-sm text-slate-500 font-medium font-body">歌手名称</p>
+</div>
+<div class="flex items-center gap-4 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-3 text-error hover:bg-error/10 rounded-full transition-colors">
+<span class="material-symbols-outlined material-symbols-fill" data-icon="favorite" style="font-variation-settings: 'FILL' 1;">favorite</span>
+</button>
+<button class="px-8 py-3 bg-primary text-white rounded-full font-bold text-sm tracking-wide hover:bg-secondary active:scale-95 transition-all shadow-md shadow-primary/20">
+                            点歌
+                        </button>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar -->
+<footer class="fixed bottom-0 left-0 w-full z-50 h-24 bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl flex justify-between items-center px-12 pb-safe rounded-t-[3rem] shadow-[0_-8px_32px_rgba(25,28,30,0.06)]">
+<div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#006399] to-[#005db7]"></div>
+<!-- Now Playing Info -->
+<div class="flex items-center gap-4 w-1/4">
+<div class="w-12 h-12 bg-slate-200 rounded-lg flex items-center justify-center text-[8px] text-slate-500 text-center px-1">专辑封面</div>
+<div class="overflow-hidden">
+<p class="font-['Manrope'] text-xs font-bold uppercase tracking-widest text-[#006399]">Playing</p>
+<p class="text-sm font-bold truncate">歌曲名称</p>
+</div>
+</div>
+<!-- Controls -->
+<div class="flex items-center gap-8">
+<button class="text-slate-400 hover:scale-110 transition-transform"><span class="material-symbols-outlined">skip_previous</span></button>
+<button class="text-[#006399] hover:scale-110 transition-transform scale-125"><span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">play_circle</span></button>
+<button class="text-slate-400 hover:scale-110 transition-transform"><span class="material-symbols-outlined">skip_next</span></button>
+</div>
+<!-- Volume & Actions -->
+<div class="flex items-center gap-6 w-1/4 justify-end">
+<div class="flex items-center gap-3 w-32">
+<span class="material-symbols-outlined text-slate-400">volume_up</span>
+<div class="h-1 flex-grow bg-surface-container rounded-full">
+<div class="h-full w-3/4 bg-primary rounded-full relative">
+<div class="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 bg-primary border-2 border-white rounded-full shadow-sm"></div>
+</div>
+</div>
+</div>
+<button class="text-slate-400 hover:scale-110 transition-transform"><span class="material-symbols-outlined">lyrics</span></button>
+</div>
+</footer>
+</body></html>

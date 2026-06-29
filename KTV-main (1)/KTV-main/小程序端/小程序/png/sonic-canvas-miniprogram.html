@@ -1,0 +1,1390 @@
+
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>声域友 SONIC CANVAS — 社交 KTV</title>
+  <style>
+    /* ─── tokens ─────────────────────────────────────────────────── */
+    :root {
+      --primary:     oklch(65% 0.14 230);
+      --primary-400: oklch(74% 0.12 230);
+      --primary-700: oklch(45% 0.14 230);
+      --bg:          oklch(97% 0.005 240);
+      --surface:     oklch(100% 0 0 / 0.45);
+      --surface-solid:oklch(100% 0 0);
+      --fg:          oklch(18% 0.02 250);
+      --muted:       oklch(50% 0.02 250);
+      --border:      oklch(100% 0 0 / 0.5);
+      --glass-blur:  40px;
+      --radius:      24px;
+      --radius-sm:   14px;
+      --radius-pill: 999px;
+      --shadow:      0 20px 60px oklch(65% 0.14 230 / 0.12);
+      --frame-bg:    oklch(90% 0.01 250);
+      --success:     oklch(65% 0.16 150);
+      --warn:        oklch(70% 0.14 75);
+      --danger:      oklch(60% 0.20 25);
+      --pink:        oklch(70% 0.14 350);
+      --font-body:   -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', system-ui, sans-serif;
+      --font-display:'Plus Jakarta Sans', var(--font-body);
+    }
+
+    /* ─── reset ──────────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { -webkit-text-size-adjust: 100%; }
+    body {
+      font-family: var(--font-body);
+      font-size: 15px;
+      line-height: 1.5;
+      color: var(--fg);
+      background: var(--frame-bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+    button { font: inherit; cursor: pointer; border: none; background: none; }
+    input { font: inherit; }
+    img { display: block; max-width: 100%; }
+    a { color: inherit; text-decoration: none; }
+
+    /* ─── phone frame ────────────────────────────────────────────── */
+    .phone {
+      width: 390px;
+      height: 844px;
+      position: relative;
+      overflow: hidden;
+      border-radius: 44px;
+      background: var(--bg);
+      box-shadow: 0 40px 100px oklch(0% 0 0 / 0.18), 0 0 0 1px oklch(0% 0 0 / 0.06);
+    }
+
+    /* ─── animated gradient bg ───────────────────────────────────── */
+    .bg-gradient {
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg, oklch(91% 0.04 230) 0%, oklch(95% 0.02 230) 50%, oklch(97% 0.01 230) 100%);
+      z-index: 0;
+    }
+    .blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.45;
+      will-change: transform;
+    }
+    .blob-1 {
+      width: 260px; height: 260px;
+      background: radial-gradient(circle, var(--primary-400), transparent 70%);
+      top: -60px; left: -40px;
+      animation: float1 24s ease-in-out infinite;
+    }
+    .blob-2 {
+      width: 200px; height: 200px;
+      background: radial-gradient(circle, var(--pink), transparent 70%);
+      top: 120px; right: -50px;
+      animation: float2 28s ease-in-out infinite;
+    }
+    .blob-3 {
+      width: 180px; height: 180px;
+      background: radial-gradient(circle, oklch(70% 0.16 300), transparent 70%);
+      bottom: 200px; left: 20px;
+      animation: float3 32s ease-in-out infinite;
+    }
+    .blob-4 {
+      width: 140px; height: 140px;
+      background: radial-gradient(circle, var(--warn), transparent 70%);
+      bottom: 80px; right: 30px;
+      animation: float4 26s ease-in-out infinite;
+    }
+    .blob-5 {
+      width: 120px; height: 120px;
+      background: radial-gradient(circle, var(--success), transparent 70%);
+      top: 380px; left: 140px;
+      animation: float5 36s ease-in-out infinite;
+    }
+    @keyframes float1 { 0%,100%{transform:translate(0,0)} 33%{transform:translate(30px,40px)} 66%{transform:translate(-20px,60px)} }
+    @keyframes float2 { 0%,100%{transform:translate(0,0)} 33%{transform:translate(-40px,30px)} 66%{transform:translate(20px,-20px)} }
+    @keyframes float3 { 0%,100%{transform:translate(0,0)} 33%{transform:translate(50px,-30px)} 66%{transform:translate(-30px,20px)} }
+    @keyframes float4 { 0%,100%{transform:translate(0,0)} 33%{transform:translate(-20px,-40px)} 66%{transform:translate(40px,10px)} }
+    @keyframes float5 { 0%,100%{transform:translate(0,0)} 33%{transform:translate(30px,20px)} 66%{transform:translate(-40px,-30px)} }
+
+    /* ─── glass card ─────────────────────────────────────────────── */
+    .glass {
+      background: var(--surface);
+      backdrop-filter: blur(var(--glass-blur));
+      -webkit-backdrop-filter: blur(var(--glass-blur));
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+    .glass-sm {
+      background: oklch(100% 0 0 / 0.35);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid oklch(100% 0 0 / 0.4);
+      border-radius: var(--radius-sm);
+    }
+
+    /* ─── screen container ───────────────────────────────────────── */
+    .screen {
+      position: absolute; inset: 0;
+      z-index: 1;
+      display: none;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .screen.active { display: flex; }
+
+    /* ─── bottom tab bar ─────────────────────────────────────────── */
+    .tab-bar {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      padding: 6px 8px 28px;
+      background: oklch(100% 0 0 / 0.55);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border-top: 1px solid oklch(100% 0 0 / 0.6);
+    }
+    .tab-item {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      padding: 6px 0;
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+    .tab-item.active { color: var(--primary); }
+    .tab-item svg { width: 22px; height: 22px; }
+
+    /* ─── status bar ─────────────────────────────────────────────── */
+    .status-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 24px 4px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--fg);
+      flex-shrink: 0;
+    }
+    .status-bar .time { font-variant-numeric: tabular-nums; }
+
+    /* ================================================================
+       SCREEN 1 — LOGIN
+       ================================================================ */
+    .login-wrap {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 0 28px 80px;
+    }
+    .login-card {
+      width: 100%;
+      padding: 40px 28px 36px;
+      text-align: center;
+    }
+    .login-logo {
+      font-size: 42px;
+      margin-bottom: 12px;
+      line-height: 1;
+      display: flex; justify-content: center;
+    }
+    .login-title {
+      font-family: var(--font-display);
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--primary-700);
+      letter-spacing: 0.02em;
+    }
+    .login-subtitle {
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+    .login-fields {
+      margin-top: 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .login-input {
+      width: 100%;
+      padding: 14px 18px 14px 44px;
+      background: oklch(100% 0 0 / 0.5);
+      border: 1px solid oklch(100% 0 0 / 0.6);
+      border-radius: 28px;
+      font-size: 15px;
+      color: var(--fg);
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .login-input::placeholder { color: var(--muted); }
+    .login-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px oklch(65% 0.14 230 / 0.15);
+    }
+    .input-wrap {
+      position: relative;
+    }
+    .input-wrap .input-icon {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--muted);
+      width: 18px; height: 18px;
+    }
+    .login-btn {
+      width: 100%;
+      padding: 15px;
+      margin-top: 8px;
+      border-radius: 44px;
+      background: linear-gradient(135deg, var(--primary), var(--primary-400));
+      color: var(--surface-solid);
+      font-size: 16px;
+      font-weight: 600;
+      box-shadow: 0 8px 24px oklch(65% 0.14 230 / 0.3);
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+    .login-btn:active {
+      transform: scale(0.98);
+      box-shadow: 0 4px 12px oklch(65% 0.14 230 / 0.25);
+    }
+    .login-register {
+      margin-top: 20px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+    .login-register a {
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    /* ================================================================
+       SCREEN 2 — EXPLORE
+       ================================================================ */
+    .nav-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 20px 10px;
+      flex-shrink: 0;
+    }
+    .nav-title {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--primary-700);
+    }
+    .nav-icon-btn {
+      width: 36px; height: 36px;
+      display: grid; place-items: center;
+      border-radius: 12px;
+      color: var(--muted);
+      transition: background 0.15s;
+    }
+    .nav-icon-btn:hover { background: oklch(65% 0.14 230 / 0.08); }
+    .nav-icon-btn svg { width: 20px; height: 20px; }
+
+    /* search */
+    .search-wrap {
+      padding: 0 20px 10px;
+      flex-shrink: 0;
+      position: relative;
+    }
+    .search-bar {
+      width: 100%;
+      padding: 12px 16px 12px 42px;
+      background: oklch(100% 0 0 / 0.45);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid oklch(100% 0 0 / 0.5);
+      border-radius: 28px;
+      font-size: 14px;
+      color: var(--fg);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .search-bar::placeholder { color: var(--muted); }
+    .search-bar:focus { border-color: var(--primary); }
+    .search-icon {
+      position: absolute;
+      left: 36px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--muted);
+      width: 16px; height: 16px;
+      pointer-events: none;
+    }
+
+    /* AI search dropdown */
+    .ai-dropdown {
+      position: absolute;
+      top: 48px; left: 20px; right: 20px;
+      z-index: 50;
+      display: none;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .ai-dropdown.show { display: flex; }
+    .ai-dropdown-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 11px 14px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .ai-dropdown-item:hover { background: oklch(65% 0.14 230 / 0.06); }
+    .ai-dropdown-item .ai-thumb {
+      width: 32px; height: 32px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, oklch(65% 0.14 230 / 0.15), oklch(74% 0.12 230 / 0.1));
+      flex-shrink: 0;
+      display: grid; place-items: center;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--primary);
+    }
+    .ai-dropdown-item .ai-info { flex: 1; min-width: 0; }
+    .ai-dropdown-item .ai-song { font-weight: 600; font-size: 14px; }
+    .ai-dropdown-item .ai-artist { font-size: 12px; color: var(--muted); }
+    .ai-dropdown-item .ai-badge {
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 999px;
+      background: oklch(65% 0.14 230 / 0.1);
+      color: var(--primary);
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+    .ai-dropdown-footer {
+      padding: 10px 14px;
+      text-align: center;
+      font-size: 12px;
+      color: var(--primary);
+      font-weight: 600;
+      border-top: 1px solid oklch(65% 0.14 230 / 0.08);
+      cursor: pointer;
+    }
+
+    /* genre tags */
+    .genre-scroll {
+      padding: 0 20px 12px;
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      flex-shrink: 0;
+      -webkit-overflow-scrolling: touch;
+    }
+    .genre-scroll::-webkit-scrollbar { display: none; }
+    .genre-tag {
+      padding: 7px 16px;
+      border-radius: var(--radius-pill);
+      font-size: 13px;
+      font-weight: 500;
+      white-space: nowrap;
+      flex-shrink: 0;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .genre-tag.inactive {
+      background: oklch(100% 0 0 / 0.35);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid oklch(100% 0 0 / 0.5);
+      color: var(--muted);
+    }
+    .genre-tag.active {
+      background: var(--primary);
+      color: var(--surface-solid);
+      border: 1px solid var(--primary);
+    }
+
+    /* song list */
+    .song-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 0 20px 100px;
+      -webkit-overflow-scrolling: touch;
+    }
+    .song-list::-webkit-scrollbar { display: none; }
+    .song-card {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px;
+      margin-bottom: 10px;
+      cursor: pointer;
+      transition: transform 0.15s;
+    }
+    .song-card:active { transform: scale(0.98); }
+    .song-cover {
+      width: 56px; height: 56px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, oklch(65% 0.14 230 / 0.12), oklch(70% 0.16 300 / 0.1));
+      flex-shrink: 0;
+      display: grid; place-items: center;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--primary);
+    }
+    .song-info { flex: 1; min-width: 0; }
+    .song-name {
+      font-size: 15px;
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .song-artist {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+    .song-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+    .btn-order {
+      padding: 7px 14px;
+      border-radius: var(--radius-pill);
+      background: var(--primary);
+      color: var(--surface-solid);
+      font-size: 12px;
+      font-weight: 600;
+      transition: transform 0.15s;
+    }
+    .btn-order:active { transform: scale(0.95); }
+    .btn-fav {
+      width: 32px; height: 32px;
+      display: grid; place-items: center;
+      border-radius: 50%;
+      color: var(--muted);
+      transition: color 0.2s, transform 0.15s;
+    }
+    .btn-fav.liked { color: var(--pink); }
+    .btn-fav:active { transform: scale(0.85); }
+    .btn-fav svg { width: 18px; height: 18px; }
+
+    /* AI recommendation slide-up */
+    .ai-rec-panel {
+      position: absolute;
+      bottom: 72px; left: 12px; right: 12px;
+      z-index: 40;
+      padding: 16px;
+      display: none;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .ai-rec-panel.show { display: flex; }
+    .ai-rec-header {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--primary-700);
+    }
+    .ai-rec-scroll {
+      display: flex;
+      gap: 10px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+      -webkit-overflow-scrolling: touch;
+    }
+    .ai-rec-scroll::-webkit-scrollbar { display: none; }
+    .ai-rec-card {
+      flex-shrink: 0;
+      width: 130px;
+      padding: 10px;
+      text-align: center;
+      cursor: pointer;
+      transition: transform 0.15s;
+    }
+    .ai-rec-card:active { transform: scale(0.96); }
+    .ai-rec-cover {
+      width: 64px; height: 64px;
+      margin: 0 auto 8px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, oklch(65% 0.14 230 / 0.12), oklch(70% 0.14 350 / 0.1));
+      display: grid; place-items: center;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--primary);
+    }
+    .ai-rec-song { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .ai-rec-artist { font-size: 11px; color: var(--muted); margin-top: 1px; }
+    .ai-rec-btn {
+      margin-top: 6px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: oklch(65% 0.14 230 / 0.1);
+      color: var(--primary);
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    /* feedback FAB */
+    .fab {
+      position: absolute;
+      bottom: 84px; right: 20px;
+      z-index: 30;
+      padding: 10px 18px;
+      border-radius: var(--radius-pill);
+      background: var(--primary);
+      color: var(--surface-solid);
+      font-size: 13px;
+      font-weight: 600;
+      box-shadow: 0 6px 20px oklch(65% 0.14 230 / 0.3);
+      transition: transform 0.15s;
+    }
+    .fab:active { transform: scale(0.95); }
+
+    /* ================================================================
+       SCREEN 3 — ROOM
+       ================================================================ */
+    .room-info-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: 0 20px 8px;
+      padding: 10px 14px;
+      font-size: 12px;
+      flex-shrink: 0;
+    }
+    .room-code { font-weight: 600; color: var(--fg); }
+    .room-code span { color: var(--primary); font-family: monospace; font-size: 13px; }
+    .room-users {
+      display: flex; align-items: center; gap: 4px;
+      color: var(--success); font-weight: 600;
+    }
+    .room-users::before {
+      content: '';
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--success);
+    }
+    .room-leave {
+      padding: 5px 12px;
+      border-radius: var(--radius-pill);
+      border: 1px solid oklch(70% 0.14 50 / 0.4);
+      color: var(--warn);
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    /* now playing hero */
+    .now-playing {
+      margin: 0 20px;
+      padding: 24px 20px 20px;
+      text-align: center;
+      flex-shrink: 0;
+    }
+    .np-cover {
+      width: 160px; height: 160px;
+      margin: 0 auto 16px;
+      border-radius: 28px;
+      background: linear-gradient(135deg, oklch(65% 0.14 230 / 0.15), oklch(70% 0.16 300 / 0.12));
+      display: grid; place-items: center;
+      box-shadow: 0 12px 40px oklch(65% 0.14 230 / 0.12);
+    }
+    .np-song { font-size: 18px; font-weight: 700; margin-top: 4px; }
+    .np-artist { font-size: 13px; color: var(--muted); margin-top: 2px; }
+    .progress-wrap {
+      display: flex; align-items: center; gap: 8px;
+      margin-top: 16px;
+    }
+    .progress-time {
+      font-size: 11px;
+      font-family: monospace;
+      color: var(--muted);
+      font-variant-numeric: tabular-nums;
+      min-width: 32px;
+    }
+    .progress-track {
+      flex: 1;
+      height: 4px;
+      border-radius: 2px;
+      background: oklch(65% 0.14 230 / 0.12);
+      position: relative;
+      cursor: pointer;
+    }
+    .progress-fill {
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 35%;
+      border-radius: 2px;
+      background: var(--primary);
+      transition: width 0.3s;
+    }
+    .np-controls {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 28px;
+      margin-top: 16px;
+    }
+    .np-ctrl-btn {
+      width: 36px; height: 36px;
+      display: grid; place-items: center;
+      color: var(--muted);
+      transition: color 0.15s, transform 0.1s;
+    }
+    .np-ctrl-btn:active { transform: scale(0.9); }
+    .np-ctrl-btn svg { width: 24px; height: 24px; }
+    .np-play-btn {
+      width: 52px; height: 52px;
+      border-radius: 50%;
+      background: var(--primary);
+      color: var(--surface-solid);
+      display: grid; place-items: center;
+      box-shadow: 0 6px 20px oklch(65% 0.14 230 / 0.3);
+      transition: transform 0.15s;
+    }
+    .np-play-btn:active { transform: scale(0.93); }
+    .np-play-btn svg { width: 24px; height: 24px; }
+
+    /* queue */
+    .queue-section {
+      margin: 12px 20px 0;
+      flex-shrink: 0;
+    }
+    .section-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--fg);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .section-title .count {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--primary);
+      background: oklch(65% 0.14 230 / 0.1);
+      padding: 1px 7px;
+      border-radius: 999px;
+    }
+    .queue-list {
+      max-height: 120px;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    .queue-list::-webkit-scrollbar { display: none; }
+    .queue-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 0;
+      border-bottom: 1px solid oklch(65% 0.14 230 / 0.06);
+    }
+    .queue-rank {
+      width: 20px;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--primary);
+      text-align: center;
+      font-family: monospace;
+    }
+    .queue-cover {
+      width: 36px; height: 36px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, oklch(65% 0.14 230 / 0.1), oklch(74% 0.12 230 / 0.06));
+      display: grid; place-items: center;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--primary);
+      flex-shrink: 0;
+    }
+    .queue-info { flex: 1; min-width: 0; }
+    .queue-song { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .queue-artist { font-size: 11px; color: var(--muted); }
+    .queue-del {
+      width: 24px; height: 24px;
+      display: grid; place-items: center;
+      color: var(--muted);
+      font-size: 16px;
+      border-radius: 50%;
+      transition: background 0.15s;
+    }
+    .queue-del:hover { background: oklch(60% 0.20 25 / 0.08); color: var(--danger); }
+
+    /* chat */
+    .chat-section {
+      margin: 10px 20px 0;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+    .chat-toggle {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 14px;
+      font-weight: 700;
+      padding: 6px 0;
+      cursor: pointer;
+      color: var(--fg);
+    }
+    .chat-toggle .arrow {
+      transition: transform 0.2s;
+      font-size: 12px;
+    }
+    .chat-toggle .arrow.open { transform: rotate(180deg); }
+    .chat-body {
+      flex: 1;
+      display: none;
+      flex-direction: column;
+      min-height: 0;
+    }
+    .chat-body.open { display: flex; }
+    .chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 8px 0;
+      -webkit-overflow-scrolling: touch;
+    }
+    .chat-messages::-webkit-scrollbar { display: none; }
+    .chat-msg {
+      padding: 4px 0;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+    .chat-msg .nick {
+      color: var(--primary);
+      font-weight: 600;
+      margin-right: 4px;
+    }
+    .chat-msg .time {
+      font-size: 10px;
+      color: var(--muted);
+      margin-left: 4px;
+    }
+    .chat-input-bar {
+      display: flex;
+      gap: 8px;
+      padding: 8px 0 4px;
+      flex-shrink: 0;
+    }
+    .chat-input {
+      flex: 1;
+      padding: 10px 14px;
+      background: oklch(100% 0 0 / 0.4);
+      border: 1px solid oklch(100% 0 0 / 0.5);
+      border-radius: 20px;
+      font-size: 13px;
+      color: var(--fg);
+      outline: none;
+    }
+    .chat-input:focus { border-color: var(--primary); }
+    .chat-send {
+      padding: 8px 16px;
+      border-radius: 20px;
+      background: var(--primary);
+      color: var(--surface-solid);
+      font-size: 13px;
+      font-weight: 600;
+      transition: transform 0.1s;
+    }
+    .chat-send:active { transform: scale(0.95); }
+
+    /* ================================================================
+       SCREEN 4 — CHARTS
+       ================================================================ */
+    .charts-tab-bar {
+      display: flex;
+      gap: 0;
+      margin: 0 20px 12px;
+      border-radius: var(--radius-pill);
+      overflow: hidden;
+      background: oklch(100% 0 0 / 0.3);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid oklch(100% 0 0 / 0.4);
+      flex-shrink: 0;
+    }
+    .charts-tab {
+      flex: 1;
+      padding: 10px;
+      text-align: center;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--muted);
+      border-radius: var(--radius-pill);
+      transition: all 0.2s;
+    }
+    .charts-tab.active {
+      background: var(--primary);
+      color: var(--surface-solid);
+    }
+
+    .chart-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 0 20px 100px;
+      -webkit-overflow-scrolling: touch;
+    }
+    .chart-list::-webkit-scrollbar { display: none; }
+    .chart-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px;
+      margin-bottom: 8px;
+    }
+    .chart-rank {
+      width: 28px;
+      font-size: 18px;
+      font-weight: 800;
+      text-align: center;
+      font-family: monospace;
+      font-variant-numeric: tabular-nums;
+      flex-shrink: 0;
+    }
+    .chart-rank.gold { color: var(--warn); }
+    .chart-rank.silver { color: var(--muted); }
+    .chart-rank.bronze { color: oklch(60% 0.12 60); }
+    .chart-rank.normal { color: var(--muted); }
+    .chart-cover {
+      width: 52px; height: 52px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, oklch(65% 0.14 230 / 0.12), oklch(80% 0.14 85 / 0.08));
+      display: grid; place-items: center;
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--primary);
+      flex-shrink: 0;
+    }
+    .chart-info { flex: 1; min-width: 0; }
+    .chart-song { font-size: 15px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .chart-artist { font-size: 12px; color: var(--muted); margin-top: 1px; }
+    .chart-plays {
+      font-size: 11px;
+      color: var(--muted);
+      font-family: monospace;
+      font-variant-numeric: tabular-nums;
+      margin-top: 2px;
+    }
+    .chart-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    /* toast */
+    .toast {
+      position: absolute;
+      top: 60px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-20px);
+      z-index: 200;
+      padding: 10px 20px;
+      border-radius: 12px;
+      background: oklch(18% 0.02 250 / 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      color: var(--surface-solid);
+      font-size: 13px;
+      font-weight: 600;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s, transform 0.25s;
+    }
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+  </style>
+</head>
+<body>
+
+<div class="phone" id="app">
+  <!-- background -->
+  <div class="bg-gradient">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+    <div class="blob blob-4"></div>
+    <div class="blob blob-5"></div>
+  </div>
+
+  <!-- toast -->
+  <div class="toast" id="toast"></div>
+
+  <!-- ========== SCREEN: LOGIN ========== -->
+  <div class="screen active" id="screen-login">
+    <div class="status-bar">
+      <span class="time">9:41</span>
+      <span style="display:flex;gap:4px;align-items:center;">
+        <svg width="16" height="12" fill="currentColor"><rect x="0" y="4" width="3" height="8" rx="1"/><rect x="4.5" y="2" width="3" height="10" rx="1"/><rect x="9" y="0" width="3" height="12" rx="1"/><rect x="13" y="3" width="3" height="9" rx="1"/></svg>
+        <svg width="15" height="12" fill="currentColor"><path d="M7.5 3.6C9.3 3.6 10.8 4.3 11.9 5.5l1.4-1.4C11.8 2.6 9.8 1.6 7.5 1.6S3.2 2.6 1.7 4.1l1.4 1.4C4.2 4.3 5.7 3.6 7.5 3.6zm0 3.2c1 0 1.9.4 2.5 1.1l1.4-1.4C10.2 5.4 8.9 4.8 7.5 4.8S4.8 5.4 3.6 6.5l1.4 1.4C5.6 7.2 6.5 6.8 7.5 6.8zm0 3.2c.5 0 1 .2 1.3.5L7.5 12 6.2 10.5c.3-.3.8-.5 1.3-.5z"/></svg>
+        <svg width="24" height="12" fill="currentColor"><rect x="0" y="0" width="20" height="12" rx="3" opacity="0.35"/><rect x="1.5" y="1.5" width="14" height="9" rx="1.5"/><rect x="21" y="3.5" width="2" height="5" rx="1"/></svg>
+      </span>
+    </div>
+    <div class="login-wrap">
+      <div class="login-card glass">
+        <div class="login-logo"><svg viewBox="0 0 48 48" width="42" height="42" fill="none" stroke="var(--primary)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="16" y="4" width="16" height="24" rx="8"/><path d="M10 22c0 6.6 5.4 12 12 12s12-5.4 12-12"/><line x1="24" y1="34" x2="24" y2="42"/><line x1="18" y1="42" x2="30" y2="42"/></svg></div>
+        <div class="login-title">SONIC CANVAS</div>
+        <div class="login-subtitle">声域友 — 线上社交 KTV</div>
+        <div class="login-fields">
+          <div class="input-wrap">
+            <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg>
+            <input class="login-input" type="text" placeholder="用户名 / 手机号 / 邮箱" />
+          </div>
+          <div class="input-wrap">
+            <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="11" width="18" height="10" rx="3"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            <input class="login-input" type="password" placeholder="密码" />
+          </div>
+          <button class="login-btn" onclick="handleLogin()">登 录</button>
+        </div>
+        <div class="login-register">还没有账号？<a href="#" onclick="showToast('注册功能开发中')">立即注册</a></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== SCREEN: EXPLORE ========== -->
+  <div class="screen" id="screen-explore">
+    <div class="nav-header">
+      <button class="nav-icon-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+      <span class="nav-title">探索歌曲</span>
+      <button class="nav-icon-btn" style="position:relative;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="1.8"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        <span style="position:absolute;top:4px;right:4px;width:7px;height:7px;background:var(--danger);border-radius:50%;border:1.5px solid var(--surface-solid);"></span>
+      </button>
+    </div>
+
+    <div class="search-wrap">
+      <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input class="search-bar" type="text" placeholder="搜索歌曲、歌手，支持拼音…" id="searchInput" oninput="handleSearch(this.value)" onfocus="handleSearch(this.value)" onblur="setTimeout(()=>closeSearch(),200)" />
+      <div class="ai-dropdown glass" id="aiDropdown"></div>
+    </div>
+
+    <div class="genre-scroll" id="genreScroll"></div>
+
+    <div class="song-list" id="songList"></div>
+
+    <!-- AI recommendation panel -->
+    <div class="ai-rec-panel glass" id="aiRecPanel">
+      <div class="ai-rec-header"><svg viewBox="0 0 20 20" width="16" height="16" fill="var(--primary)"><path d="M10 0l2.5 7.5L20 10l-7.5 2.5L10 20l-2.5-7.5L0 10l7.5-2.5z"/></svg> 为你推荐</div>
+      <div class="ai-rec-scroll" id="aiRecScroll"></div>
+    </div>
+
+    <button class="fab" onclick="showToast('反馈已收到，感谢！')">反馈</button>
+  </div>
+
+  <!-- ========== SCREEN: ROOM ========== -->
+  <div class="screen" id="screen-room">
+    <div class="nav-header">
+      <button class="nav-icon-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <span class="nav-title">声域友</span>
+      <button class="nav-icon-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg>
+      </button>
+    </div>
+
+    <div class="room-info-bar glass-sm">
+      <span class="room-code">房间码：<span>A3X9K2</span></span>
+      <span class="room-users">12 人在线</span>
+      <button class="room-leave" onclick="showToast('已退出房间')">退出</button>
+    </div>
+
+    <div class="now-playing glass" style="margin:0 20px;">
+      <div class="np-cover"><svg viewBox="0 0 48 48" width="52" height="52" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="14" cy="36" r="7"/><circle cx="38" cy="30" r="7"/><path d="M21 36V12l24-6v24"/></svg></div>
+      <div class="np-song">晴天</div>
+      <div class="np-artist">周杰伦</div>
+      <div class="progress-wrap">
+        <span class="progress-time" id="npTimeCurrent">1:23</span>
+        <div class="progress-track" id="progressTrack">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+        <span class="progress-time">4:29</span>
+      </div>
+      <div class="np-controls">
+        <button class="np-ctrl-btn" onclick="showToast('上一首')">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></svg>
+        </button>
+        <button class="np-play-btn" id="playBtn" onclick="togglePlay()">
+          <svg viewBox="0 0 24 24" fill="currentColor" id="playIcon"><polygon points="8,5 19,12 8,19"/></svg>
+        </button>
+        <button class="np-ctrl-btn" onclick="showToast('下一首')">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 18h2V6h-2zM6 18l8.5-6L6 6z"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="queue-section">
+      <div class="section-title">已点列表 <span class="count" id="queueCount">3</span></div>
+      <div class="queue-list" id="queueList"></div>
+    </div>
+
+    <div class="chat-section">
+      <div class="chat-toggle" onclick="toggleChat()">
+        实时聊天 <span class="arrow" id="chatArrow">▼</span>
+      </div>
+      <div class="chat-body" id="chatBody">
+        <div class="chat-messages" id="chatMessages"></div>
+        <div class="chat-input-bar">
+          <input class="chat-input" type="text" placeholder="说点什么…" id="chatInput" onkeydown="if(event.key==='Enter')sendChat()" />
+          <button class="chat-send" onclick="sendChat()">发送</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== SCREEN: CHARTS ========== -->
+  <div class="screen" id="screen-charts">
+    <div class="nav-header">
+      <button class="nav-icon-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+      <span class="nav-title">热门榜单</span>
+      <button class="nav-icon-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      </button>
+    </div>
+
+    <div class="charts-tab-bar">
+      <button class="charts-tab active" onclick="switchChart('daily',this)">日 榜</button>
+      <button class="charts-tab" onclick="switchChart('weekly',this)">周 榜</button>
+    </div>
+
+    <div class="chart-list" id="chartList"></div>
+  </div>
+
+  <!-- bottom tab bar -->
+  <div class="tab-bar" id="tabBar" style="display:none;">
+    <button class="tab-item active" onclick="switchScreen('explore',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      探索
+    </button>
+    <button class="tab-item" onclick="switchScreen('room',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+      房间
+    </button>
+    <button class="tab-item" onclick="switchScreen('charts',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+      榜单
+    </button>
+  </div>
+</div>
+
+<script>
+  /* ─── DATA ──────────────────────────────────────────────────── */
+  const SONGS = [
+    { id:1, name:'晴天',    artist:'周杰伦', genre:'流行', plays:'12.3万', initial:'晴' },
+    { id:2, name:'起风了',  artist:'买辣椒也用券', genre:'流行', plays:'9.8万',  initial:'起' },
+    { id:3, name:'孤勇者',  artist:'陈奕迅',   genre:'流行', plays:'8.5万',  initial:'孤' },
+    { id:4, name:'海阔天空',artist:'Beyond',   genre:'摇滚', plays:'7.2万',  initial:'海' },
+    { id:5, name:'平凡之路',artist:'朴树',     genre:'民谣', plays:'6.9万',  initial:'平' },
+    { id:6, name:'夜曲',    artist:'周杰伦',   genre:'流行', plays:'6.1万',  initial:'夜' },
+    { id:7, name:'光辉岁月',artist:'Beyond',   genre:'摇滚', plays:'5.8万',  initial:'光' },
+    { id:8, name:'小幸运',  artist:'田馥甄',   genre:'流行', plays:'5.4万',  initial:'幸' },
+    { id:9, name:'成都',    artist:'赵雷',     genre:'民谣', plays:'4.7万',  initial:'成' },
+    { id:10,name:'红玫瑰',  artist:'陈奕迅',   genre:'流行', plays:'4.2万',  initial:'玫' },
+    { id:11,name:'蓝莲花',  artist:'许巍',     genre:'摇滚', plays:'3.9万',  initial:'蓝' },
+    { id:12,name:'南山南',  artist:'马頔',     genre:'民谣', plays:'3.5万',  initial:'南' },
+  ];
+
+  const GENRES = ['全部','流行','摇滚','民谣','R&B','说唱','电子'];
+
+  const DAILY_CHART = SONGS.slice().sort((a,b)=>parseFloat(b.plays)-parseFloat(a.plays));
+  const WEEKLY_CHART = [...SONGS].sort(()=>Math.random()-0.5).map((s,i)=>({...s, plays: (parseFloat(s.plays)*(1.5+i*0.1)).toFixed(1)+'万'}));
+
+  const QUEUE = [
+    { name:'晴天', artist:'周杰伦', initial:'晴' },
+    { name:'起风了', artist:'买辣椒也用券', initial:'起' },
+    { name:'孤勇者', artist:'陈奕迅', initial:'孤' },
+  ];
+
+  const CHAT_DATA = [
+    { nick:'小明', msg:'这首歌太好听了！', time:'13:42' },
+    { nick:'花花', msg:'下一首谁点的？', time:'13:43' },
+    { nick:'阿杰', msg:'我来我来 🎤', time:'13:44' },
+    { nick:'小美', msg:'周杰伦永远的神', time:'13:45' },
+    { nick:'大雄', msg:'有人一起合唱吗', time:'13:46' },
+  ];
+
+  /* ─── STATE ─────────────────────────────────────────────────── */
+  let currentGenre = '全部';
+  let currentChart = 'daily';
+  let isPlaying = true;
+  let chatOpen = false;
+  let favorites = new Set();
+  let recShown = false;
+
+  /* ─── INIT ──────────────────────────────────────────────────── */
+  function init() {
+    renderGenres();
+    renderSongList(SONGS);
+    renderQueue();
+    renderChat();
+    renderChart(DAILY_CHART);
+    renderAIRec();
+  }
+
+  /* ─── LOGIN ─────────────────────────────────────────────────── */
+  function handleLogin() {
+    const tabBar = document.getElementById('tabBar');
+    tabBar.style.display = 'flex';
+    switchScreen('explore', tabBar.querySelector('.tab-item'));
+    showToast('登录成功，欢迎回来！');
+  }
+
+  /* ─── SCREEN SWITCH ─────────────────────────────────────────── */
+  function switchScreen(name, btn) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById('screen-' + name).classList.add('active');
+    if (btn) {
+      document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+      btn.classList.add('active');
+    }
+  }
+
+  /* ─── TOAST ─────────────────────────────────────────────────── */
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2000);
+  }
+
+  /* ─── GENRE ─────────────────────────────────────────────────── */
+  function renderGenres() {
+    const el = document.getElementById('genreScroll');
+    el.innerHTML = GENRES.map(g =>
+      `<button class="genre-tag ${g===currentGenre?'active':'inactive'}" onclick="selectGenre('${g}',this)">${g}</button>`
+    ).join('');
+  }
+
+  function selectGenre(g, btn) {
+    currentGenre = g;
+    document.querySelectorAll('.genre-tag').forEach(t => { t.className = 'genre-tag inactive'; });
+    btn.className = 'genre-tag active';
+    const filtered = g === '全部' ? SONGS : SONGS.filter(s => s.genre === g);
+    renderSongList(filtered);
+  }
+
+  /* ─── SONG LIST ─────────────────────────────────────────────── */
+  function renderSongList(songs) {
+    const el = document.getElementById('songList');
+    el.innerHTML = songs.map(s => `
+      <div class="song-card glass-sm">
+        <div class="song-cover">${s.initial}</div>
+        <div class="song-info">
+          <div class="song-name">${s.name}</div>
+          <div class="song-artist">${s.artist}</div>
+        </div>
+        <div class="song-actions">
+          <button class="btn-order" onclick="orderSong('${s.name}')">点歌</button>
+          <button class="btn-fav ${favorites.has(s.id)?'liked':''}" onclick="toggleFav(${s.id},this)">
+            <svg viewBox="0 0 24 24" fill="${favorites.has(s.id)?'currentColor':'none'}" stroke="currentColor" stroke-width="1.8">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function orderSong(name) {
+    showToast(`已加入队列：${name}`);
+    if (!recShown) {
+      document.getElementById('aiRecPanel').classList.add('show');
+      recShown = true;
+    }
+  }
+
+  function toggleFav(id, btn) {
+    if (favorites.has(id)) {
+      favorites.delete(id);
+      btn.classList.remove('liked');
+      btn.querySelector('svg').setAttribute('fill','none');
+      showToast('已取消收藏');
+    } else {
+      favorites.add(id);
+      btn.classList.add('liked');
+      btn.querySelector('svg').setAttribute('fill','currentColor');
+      showToast('已收藏');
+    }
+  }
+
+  /* ─── AI SEARCH ─────────────────────────────────────────────── */
+  function handleSearch(val) {
+    const dd = document.getElementById('aiDropdown');
+    if (!val.trim()) { dd.classList.remove('show'); return; }
+    const lower = val.toLowerCase();
+    const matches = SONGS.filter(s =>
+      s.name.includes(val) || s.artist.includes(val) ||
+      s.name.toLowerCase().includes(lower) || s.artist.toLowerCase().includes(lower)
+    ).slice(0,5);
+    if (!matches.length) { dd.classList.remove('show'); return; }
+    dd.innerHTML = matches.map(s => `
+      <div class="ai-dropdown-item" onmousedown="document.getElementById('searchInput').value='${s.name}';closeSearch();">
+        <div class="ai-thumb">${s.initial}</div>
+        <div class="ai-info">
+          <div class="ai-song">${highlight(s.name,val)}</div>
+          <div class="ai-artist">${s.artist}</div>
+        </div>
+        <span class="ai-badge">AI</span>
+      </div>
+    `).join('') + '<div class="ai-dropdown-footer">查看更多</div>';
+    dd.classList.add('show');
+  }
+
+  function highlight(text, query) {
+    if (!query) return text;
+    const i = text.indexOf(query);
+    if (i === -1) return text;
+    return text.slice(0,i) + '<span style="color:var(--primary);font-weight:700">' + text.slice(i,i+query.length) + '</span>' + text.slice(i+query.length);
+  }
+
+  function closeSearch() {
+    document.getElementById('aiDropdown').classList.remove('show');
+  }
+
+  /* ─── AI RECOMMENDATIONS ────────────────────────────────────── */
+  function renderAIRec() {
+    const recs = SONGS.slice(3,8);
+    document.getElementById('aiRecScroll').innerHTML = recs.map(s => `
+      <div class="ai-rec-card glass-sm" onclick="orderSong('${s.name}')">
+        <div class="ai-rec-cover">${s.initial}</div>
+        <div class="ai-rec-song">${s.name}</div>
+        <div class="ai-rec-artist">${s.artist}</div>
+        <button class="ai-rec-btn">点歌</button>
+      </div>
+    `).join('');
+  }
+
+  /* ─── QUEUE ─────────────────────────────────────────────────── */
+  function renderQueue() {
+    document.getElementById('queueCount').textContent = QUEUE.length;
+    document.getElementById('queueList').innerHTML = QUEUE.map((q,i) => `
+      <div class="queue-item">
+        <span class="queue-rank">${i+1}</span>
+        <div class="queue-cover">${q.initial}</div>
+        <div class="queue-info">
+          <div class="queue-song">${q.name}</div>
+          <div class="queue-artist">${q.artist}</div>
+        </div>
+        <button class="queue-del" onclick="removeQueue(${i})">×</button>
+      </div>
+    `).join('');
+  }
+
+  function removeQueue(i) {
+    QUEUE.splice(i,1);
+    renderQueue();
+    showToast('已从队列移除');
+  }
+
+  /* ─── PLAYBACK ──────────────────────────────────────────────── */
+  function togglePlay() {
+    isPlaying = !isPlaying;
+    const icon = document.getElementById('playIcon');
+    if (isPlaying) {
+      icon.innerHTML = '<polygon points="8,5 19,12 8,19"/>';
+    } else {
+      icon.innerHTML = '<rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/>';
+    }
+  }
+
+  /* progress bar click */
+  document.addEventListener('DOMContentLoaded', () => {
+    const track = document.getElementById('progressTrack');
+    if (track) {
+      track.addEventListener('click', e => {
+        const rect = track.getBoundingClientRect();
+        const pct = ((e.clientX - rect.left) / rect.width) * 100;
+        document.getElementById('progressFill').style.width = pct + '%';
+      });
+    }
+  });
+
+  /* ─── CHAT ──────────────────────────────────────────────────── */
+  function renderChat() {
+    document.getElementById('chatMessages').innerHTML = CHAT_DATA.map(c =>
+      `<div class="chat-msg"><span class="nick">${c.nick}</span>${c.msg}<span class="time">${c.time}</span></div>`
+    ).join('');
+  }
+
+  function toggleChat() {
+    chatOpen = !chatOpen;
+    document.getElementById('chatBody').classList.toggle('open', chatOpen);
+    document.getElementById('chatArrow').classList.toggle('open', chatOpen);
+  }
+
+  function sendChat() {
+    const input = document.getElementById('chatInput');
+    const msg = input.value.trim();
+    if (!msg) return;
+    const now = new Date();
+    const time = now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0');
+    CHAT_DATA.push({ nick:'我', msg, time });
+    renderChat();
+    input.value = '';
+    const container = document.getElementById('chatMessages');
+    container.scrollTop = container.scrollHeight;
+  }
+
+  /* ─── CHARTS ────────────────────────────────────────────────── */
+  function switchChart(type, btn) {
+    currentChart = type;
+    document.querySelectorAll('.charts-tab').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+    renderChart(type === 'daily' ? DAILY_CHART : WEEKLY_CHART);
+  }
+
+  function renderChart(data) {
+    document.getElementById('chartList').innerHTML = data.map((s,i) => {
+      let rankClass = 'normal';
+      if (i===0) rankClass = 'gold';
+      else if (i===1) rankClass = 'silver';
+      else if (i===2) rankClass = 'bronze';
+      return `
+        <div class="chart-item glass-sm">
+          <span class="chart-rank ${rankClass}">${i+1}</span>
+          <div class="chart-cover">${s.initial}</div>
+          <div class="chart-info">
+            <div class="chart-song">${s.name}</div>
+            <div class="chart-artist">${s.artist}</div>
+            <div class="chart-plays">${s.plays}播放</div>
+          </div>
+          <div class="chart-actions">
+            <button class="btn-order" onclick="orderSong('${s.name}')">点歌</button>
+            <button class="btn-fav ${favorites.has(s.id)?'liked':''}" onclick="toggleFav(${s.id},this)">
+              <svg viewBox="0 0 24 24" fill="${favorites.has(s.id)?'currentColor':'none'}" stroke="currentColor" stroke-width="1.8"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+            </svg>
+            </button>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  /* ─── GO ────────────────────────────────────────────────────── */
+  init();
+</script>
+
+</body>
+</html>

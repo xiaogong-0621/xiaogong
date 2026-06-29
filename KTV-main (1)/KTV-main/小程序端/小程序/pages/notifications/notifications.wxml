@@ -1,0 +1,74 @@
+<view class="notifications-container">
+  <!-- 漂浮光晕 -->
+  <view class="blob blob-1"></view>
+  <view class="blob blob-2"></view>
+  <view class="blob blob-3"></view>
+
+  <!-- 顶部安全区域占位 -->
+  <view style="height: {{statusBarHeight + navHeight}}rpx;"></view>
+
+  <!-- 固定导航栏 -->
+  <view class="nav-header-fixed" style="top: {{statusBarHeight}}rpx; height: {{navHeight}}rpx;">
+    <view class="nav-icon-btn" bindtap="goBack">
+      <text class="back-icon">←</text>
+    </view>
+    <view class="nav-title-row">
+      <text class="nav-title">消息通知</text>
+      <view class="unread-badge" wx:if="{{unreadCount > 0}}">
+        <text>{{unreadCount}}</text>
+      </view>
+    </view>
+    <view class="nav-action-btn" bindtap="onMarkAllRead" wx:if="{{hasUnread}}">
+      <text class="action-text">全部已读</text>
+    </view>
+  </view>
+
+  <!-- 加载中 -->
+  <view class="loading" wx:if="{{loading && notifications.length === 0}}">
+    <text>加载中...</text>
+  </view>
+
+  <!-- 通知列表 -->
+  <view class="notification-list" wx:if="{{notifications.length > 0}}">
+    <view
+      class="notification-item {{!item.isRead ? 'unread' : ''}}"
+      wx:for="{{notifications}}"
+      wx:key="id"
+      bindtap="onNotificationTap"
+      data-id="{{item.id}}"
+    >
+      <!-- 图标 -->
+      <view class="notification-icon" style="background: {{item.iconColor}}15;">
+        <text class="icon-text" style="color: {{item.iconColor}};">
+          {{item.iconType === 'notifications' ? '🔔' : item.iconType === 'check_circle' ? '✅' : '❌'}}
+        </text>
+      </view>
+
+      <!-- 内容 -->
+      <view class="notification-content">
+        <view class="notification-header">
+          <text class="notification-title {{!item.isRead ? 'unread' : ''}}">{{item.title}}</text>
+          <view class="unread-dot" wx:if="{{!item.isRead}}"></view>
+        </view>
+        <text class="notification-desc">{{item.content}}</text>
+        <view class="notification-footer">
+          <text class="notification-time">{{item.timeText}}</text>
+          <view class="notification-tag" wx:if="{{item.typeText}}" style="background: {{item.iconColor}}15; color: {{item.iconColor}};">
+            <text>{{item.typeText}}</text>
+          </view>
+        </view>
+        <!-- 加入房间按钮 -->
+        <view class="join-btn" wx:if="{{item.type === 'room_approved'}}" catchtap="joinRoom" data-content="{{item.content}}">
+          <text>加入房间</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="empty" wx:if="{{!loading && notifications.length === 0}}">
+    <view class="empty-icon">📭</view>
+    <text class="empty-title">暂无通知</text>
+    <text class="empty-desc">有新消息时会在这里提醒你</text>
+  </view>
+</view>

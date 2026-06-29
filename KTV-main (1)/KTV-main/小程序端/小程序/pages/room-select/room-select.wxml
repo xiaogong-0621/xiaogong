@@ -1,0 +1,50 @@
+<view class="room-select-container">
+  <view class="blob blob-1"></view>
+  <view class="blob blob-2"></view>
+  <view class="blob blob-3"></view>
+  <view class="blob blob-4"></view>
+  <view class="blob blob-5"></view>
+  <view class="room-select-card glass">
+    <view class="logo-wrap">
+      <view class="logo">🎤</view>
+    </view>
+    <text class="title">选择房间</text>
+    <text class="subtitle">加入房间开始 K 歌</text>
+
+    <view class="action-group">
+      <view class="action-card" wx:if="{{!showInput}}" bindtap="showCodeInput">
+        <text class="action-icon">🔑</text>
+        <view class="action-info">
+          <text class="action-title">输入房间码</text>
+          <text class="action-desc">已有房间？输入 6 位房间码加入</text>
+        </view>
+      </view>
+
+      <view class="code-input-wrap" wx:if="{{showInput}}">
+        <input
+          class="code-input"
+          placeholder="输入 6 位房间码"
+          placeholder-class="placeholder"
+          maxlength="6"
+          bindinput="onCodeInput"
+          value="{{roomCode}}"
+        />
+        <button class="join-btn" bindtap="joinRoom" disabled="{{joining}}">
+          {{joining ? '加入中...' : '加入房间'}}
+        </button>
+      </view>
+
+      <view class="action-card" bindtap="requestRoom">
+        <text class="action-icon">✨</text>
+        <view class="action-info">
+          <text class="action-title">申请开房间</text>
+          <text class="action-desc">提交申请，等待管理员审批</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="skip-link" bindtap="skip">
+      <text>稍后再选，先去逛逛</text>
+    </view>
+  </view>
+</view>

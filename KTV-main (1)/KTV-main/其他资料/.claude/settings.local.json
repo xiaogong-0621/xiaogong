@@ -1,0 +1,28 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(curl -s http://localhost:5173/)",
+      "Bash(curl -s http://localhost:5174/)",
+      "Bash(netstat -ano)",
+      "Bash(taskkill //F //IM node.exe)",
+      "Bash(npx vite *)",
+      "Bash(curl -s http://localhost:5174/src/App.vue)",
+      "Bash(npx vue-tsc *)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:5173)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:5174)",
+      "Bash(dotnet run *)",
+      "Bash(curl -k -s -o /dev/null -w \"%{http_code}\" https://localhost:5001/api/auth/login)",
+      "Bash(sqllocaldb info *)",
+      "Bash(reg query *)",
+      "Bash(odbcconf /a {qn /l})",
+      "Bash(net start *)",
+      "Bash(sqlcmd -S \"localhost\\\\SQLEXPRESS\" -Q \"SELECT @@VERSION\")",
+      "Bash(sqlcmd -S \"localhost\\\\SQLEXPRESS\" -Q \"SELECT name FROM sys.databases WHERE name = 'KTVSystem'\")",
+      "Bash(sqlcmd -S \"localhost\\\\SQLEXPRESS\" -d KTVSystem -Q \"SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE = 'BASE TABLE'\")",
+      "Bash(sqlcmd -S 'localhost\\\\SQLEXPRESS' -d KTVSystem -Q 'SELECT COUNT\\(*\\) as cnt FROM [__TRACKED_VAR__]')",
+      "Bash(sqlcmd -S 'localhost\\\\SQLEXPRESS' -d KTVSystem -Q 'SELECT TOP 3 * FROM [__TRACKED_VAR__]')",
+      "Bash(sqlcmd -S 'localhost\\\\SQLEXPRESS' -d KTVSystem -Q ' *)",
+      "Bash(sqlcmd -S \"localhost\\\\SQLEXPRESS\" -d KTVSystem -i /e/KTV/KTVsystem/database/setup.sql)"
+    ]
+  }
+}

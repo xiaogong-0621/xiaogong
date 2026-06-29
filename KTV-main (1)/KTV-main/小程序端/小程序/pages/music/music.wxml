@@ -1,0 +1,103 @@
+<view class="music-container">
+  <!-- 漂浮光晕 -->
+  <view class="blob blob-1"></view>
+  <view class="blob blob-2"></view>
+  <view class="blob blob-3"></view>
+  <view class="blob blob-4"></view>
+  <view class="blob blob-5"></view>
+
+  <!-- 顶部安全区域占位 -->
+  <view style="height: {{statusBarHeight + navHeight}}rpx;"></view>
+
+  <!-- 固定导航栏 -->
+  <view class="nav-header-fixed" style="top: {{statusBarHeight}}rpx; height: {{navHeight}}rpx;">
+    <view class="nav-icon-btn" bindtap="openMenu">
+      <image src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMjQgMjQiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzFkMWQxZiIgc3Ryb2tlLXdpZHRoPSIxLjgiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48bGluZSB4MT0iMyIgeTE9IjYiIHgyPSIyMSIgeTI9IjYiLz48bGluZSB4MT0iMyIgeTE9IjEyIiB4Mj0iMjEiIHkyPSIxMiIvPjxsaW5lIHgxPSIzIiB5MT0iMTgiIHgyPSIyMSIgeTI9IjE4Ii8+PC9zdmc+" mode="aspectFit"/>
+    </view>
+    <text class="nav-title">热门榜单</text>
+    <view class="nav-placeholder"></view>
+  </view>
+
+  <!-- 日榜/周榜切换 -->
+  <view class="chart-tabs">
+    <view
+      class="chart-tab {{activeTabIndex === index ? 'active' : ''}}"
+      wx:for="{{tabs}}"
+      wx:key="index"
+      bindtap="toggleTab"
+      data-index="{{index}}"
+    >
+      <text class="chart-tab-text">{{item}}</text>
+    </view>
+  </view>
+
+  <view class="loading" wx:if="{{loading}}">
+    <text>加载中...</text>
+  </view>
+
+  <view class="chart-list {{listSpring ? 'spring' : ''}}" wx:if="{{!loading && chartList.length > 0}}">
+    <view
+      class="chart-item {{item.rank <= 3 ? 'top-3' : ''}}"
+      wx:for="{{chartList}}"
+      wx:key="id"
+    >
+      <text class="chart-rank {{item.rank === 1 ? 'gold' : item.rank === 2 ? 'silver' : item.rank === 3 ? 'bronze' : ''}}">{{item.rank}}</text>
+      <view class="chart-cover-wrap">
+        <view class="chart-cover" style="background: linear-gradient(135deg, {{item.coverColor}}22, {{item.coverColor}}11);">
+          <image wx:if="{{item.coverOk}}" class="chart-cover-img" src="{{item.cover}}" mode="aspectFill" binderror="onCoverError" data-id="{{item.id}}"/>
+          <text wx:else class="chart-initial">{{item.name.charAt(0)}}</text>
+        </view>
+      </view>
+      <view class="chart-info">
+        <text class="chart-song">{{item.name}}</text>
+        <text class="chart-artist">{{item.artist}}</text>
+        <text class="chart-plays">{{item.playCount}}播放</text>
+      </view>
+      <view class="chart-actions">
+        <view class="order-btn {{item.ordered ? 'ordered' : ''}}" bindtap="orderSong" data-id="{{item.id}}">
+          <text>{{item.ordered ? '已点' : '点歌'}}</text>
+        </view>
+        <view class="fav-btn {{item._filling ? 'jelly' : ''}} {{item._unfilling ? 'shrink' : ''}}" bindtap="toggleLike" data-id="{{item.id}}">
+          <image class="heart-outline-img" src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMjQgMjQiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzg2ODY4YiIgc3Ryb2tlLXdpZHRoPSIxLjgiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNMjAuODQgNC42MWE1LjUgNS41IDAgMCAwLTcuNzggMEwxMiA1LjY3bC0xLjA2LTEuMDZhNS41IDUuNSAwIDAgMC03Ljc4IDcuNzhsMS4wNiAxLjA2TDEyIDIxLjIzbDcuNzgtNy43OCAxLjA2LTEuMDZhNS41IDUuNSAwIDAgMCAwLTcuNzh6Ii8+PC9zdmc+" mode="aspectFit"/>
+          <view class="heart-fill-clip {{item.liked ? 'filled' : ''}} {{item._filling ? 'filling-anim' : ''}} {{item._unfilling ? 'unfilling-anim' : ''}}">
+            <image class="heart-fill-img" src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMjQgMjQiIGZpbGw9IiNlYzQ4OTkiIHN0cm9rZT0iI2VjNDg5OSIgc3Ryb2tlLXdpZHRoPSIxLjgiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNMjAuODQgNC42MWE1LjUgNS41IDAgMCAwLTcuNzggMEwxMiA1LjY3bC0xLjA2LTEuMDZhNS41IDUuNSAwIDAgMC03Ljc4IDcuNzhsMS4wNiAxLjA2TDEyIDIxLjIzbDcuNzgtNy43OCAxLjA2LTEuMDZhNS41IDUuNSAwIDAgMCAwLTcuNzh6Ii8+PC9zdmc+" mode="aspectFit"/>
+          </view>
+          <view class="glow-ring {{item._filling ? 'popping' : ''}}"></view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="empty" wx:if="{{!loading && chartList.length === 0}}">
+    <text>暂无数据</text>
+  </view>
+
+  <!-- 加入/申请房间弹窗 -->
+  <view class="room-mask" wx:if="{{showRoomDialog}}" bindtap="closeRoomDialog">
+    <view class="room-modal glass" catchtap="stopPropagation">
+      <view class="room-modal-header">
+        <text class="room-modal-title">请先加入房间</text>
+        <text class="room-modal-close" bindtap="closeRoomDialog">✕</text>
+      </view>
+      <view class="room-modal-body">
+        <view class="room-modal-section">
+          <text class="room-modal-label">输入房间码加入</text>
+          <view class="room-modal-row">
+            <input class="room-modal-input" placeholder="请输入6位房间码" placeholder-class="room-modal-placeholder" maxlength="6" value="{{roomCodeInput}}" bindinput="onRoomDialogInput" bindconfirm="joinRoomFromDialog"/>
+            <button class="room-modal-join-btn" bindtap="joinRoomFromDialog" disabled="{{joiningRoom}}">
+              {{joiningRoom ? '加入中' : '加入'}}
+            </button>
+          </view>
+        </view>
+        <view class="room-modal-divider"><text class="divider-text">或</text></view>
+        <button class="room-modal-request-btn" bindtap="requestRoomFromDialog">申请开房间</button>
+      </view>
+      <view class="room-modal-footer">
+        <button class="room-modal-cancel-btn" bindtap="closeRoomDialog">取消</button>
+      </view>
+    </view>
+  </view>
+
+  <!-- Duang 重复点歌提示 -->
+  <view class="duang-toast {{duangVisible ? 'show' : ''}}">duang~ 已经在列表</view>
+</view>

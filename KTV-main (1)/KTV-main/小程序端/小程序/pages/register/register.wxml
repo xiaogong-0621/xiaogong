@@ -1,0 +1,52 @@
+<view class="register-container">
+  <view class="blob blob-1"></view>
+  <view class="blob blob-2"></view>
+  <view class="blob blob-3"></view>
+  <view class="blob blob-4"></view>
+  <view class="blob blob-5"></view>
+
+  <view class="nav-header" style="padding-top: {{statusBarHeight}}rpx">
+    <view class="nav-back" bindtap="goBack">
+      <image src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMjQgMjQiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzFkMWQxZiIgc3Ryb2tlLXdpZHRoPSIxLjgiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cG9seWxpbmUgcG9pbnRzPSIxNSAxOCA5IDEyIDE1IDYiLz48L3N2Zz4=" mode="aspectFit"/>
+    </view>
+    <text class="nav-title">注册</text>
+    <view style="width: 72rpx"></view>
+  </view>
+
+  <view class="register-card glass">
+    <view class="type-tabs">
+      <view class="type-tab {{registerType === 'username' ? 'active' : ''}}" bindtap="onTypeChange" data-type="username">用户名</view>
+      <view class="type-tab {{registerType === 'phone' ? 'active' : ''}}" bindtap="onTypeChange" data-type="phone">手机号</view>
+      <view class="type-tab {{registerType === 'email' ? 'active' : ''}}" bindtap="onTypeChange" data-type="email">邮箱</view>
+    </view>
+
+    <view class="input-group">
+      <view class="input-item" wx:if="{{registerType === 'username'}}">
+        <image class="input-svg-icon" src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMjQgMjQiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzg2ODY4YiIgc3Ryb2tlLXdpZHRoPSIxLjgiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48Y2lyY2xlIGN4PSIxMiIgY3k9IjgiIHI9IjQiLz48cGF0aCBkPSJNNCAyMWMwLTQuNCAzLjYtOCA4LThzOCAzLjYgOCA4Ii8+PC9zdmc+" mode="aspectFit"/>
+        <input class="input-field" placeholder="用户名" placeholder-class="placeholder" bindinput="onInput" data-field="username" value="{{username}}" />
+      </view>
+      <view class="input-item" wx:if="{{registerType === 'phone'}}">
+        <image class="input-svg-icon" src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMjQgMjQiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzg2ODY4YiIgc3Ryb2tlLXdpZHRoPSIxLjgiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB4PSI1IiB5PSIyIiB3aWR0aD0iMTQiIGhlaWdodD0iMjAiIHJ4PSIyIi8+PGxpbmUgeDE9IjEyIiB5MT0iMTgiIHgyPSIxMi4wMSIgeTI9IjE4Ii8+PC9zdmc+" mode="aspectFit"/>
+        <input class="input-field" type="number" placeholder="手机号" placeholder-class="placeholder" bindinput="onInput" data-field="phone" value="{{phone}}" />
+      </view>
+      <view class="input-item" wx:if="{{registerType === 'email'}}">
+        <image class="input-svg-icon" src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMjQgMjQiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzg2ODY4YiIgc3Ryb2tlLXdpZHRoPSIxLjgiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNNCA0aDE2YzEuMSAwIDIgLjkgMiAydjEyYzAgMS4xLS45IDItMiAySDRjLTEuMSAwLTItLjktMi0yVjZjMC0xLjEuOS0yIDItMnoiLz48cG9seWxpbmUgcG9pbnRzPSIyMiw2IDEyLDEzIDIsNiIvPjwvc3ZnPg==" mode="aspectFit"/>
+        <input class="input-field" type="text" placeholder="邮箱" placeholder-class="placeholder" bindinput="onInput" data-field="email" value="{{email}}" />
+      </view>
+      <view class="input-item">
+        <image class="input-svg-icon" src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMjQgMjQiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzg2ODY4YiIgc3Ryb2tlLXdpZHRoPSIxLjgiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNMjAuNTkgMTMuNDFsLTcuMTcgNy4xN2EyIDIgMCAwMS0yLjgzIDBMMiAxMlYyaDEwbDguNTkgOC41OWEyIDIgMCAwMTAgMi44MnoiLz48bGluZSB4MT0iNyIgeTE9IjciIHgyPSI3LjAxIiB5Mj0iNyIvPjwvc3ZnPg==" mode="aspectFit"/>
+        <input class="input-field" placeholder="昵称" placeholder-class="placeholder" bindinput="onInput" data-field="displayName" value="{{displayName}}" />
+      </view>
+      <view class="input-item">
+        <image class="input-svg-icon" src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMjQgMjQiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzg2ODY4YiIgc3Ryb2tlLXdpZHRoPSIxLjgiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB4PSIzIiB5PSIxMSIgd2lkdGg9IjE4IiBoZWlnaHQ9IjEwIiByeD0iMyIvPjxwYXRoIGQ9Ik03IDExVjdhNSA1IDAgMDExMCAwdjQiLz48L3N2Zz4=" mode="aspectFit"/>
+        <input class="input-field" type="password" placeholder="密码（至少6位）" placeholder-class="placeholder" bindinput="onInput" data-field="password" value="{{password}}" />
+      </view>
+      <view class="input-item">
+        <image class="input-svg-icon" src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMjQgMjQiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzg2ODY4YiIgc3Ryb2tlLXdpZHRoPSIxLjgiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB4PSIzIiB5PSIxMSIgd2lkdGg9IjE4IiBoZWlnaHQ9IjEwIiByeD0iMyIvPjxwYXRoIGQ9Ik03IDExVjdhNSA1IDAgMDExMCAwdjQiLz48L3N2Zz4=" mode="aspectFit"/>
+        <input class="input-field" type="password" placeholder="确认密码" placeholder-class="placeholder" bindinput="onInput" data-field="confirmPassword" value="{{confirmPassword}}" />
+      </view>
+    </view>
+
+    <button class="register-btn" bindtap="register">注 册</button>
+  </view>
+</view>

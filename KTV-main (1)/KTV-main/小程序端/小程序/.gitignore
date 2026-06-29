@@ -1,0 +1,48 @@
+# Dependencies
+node_modules/
+package-lock.json
+
+# Build outputs
+dist/
+build/
+
+# .NET
+bin/
+obj/
+
+# IDE
+.vs/
+.vscode/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+~$*
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+npm-debug.log*
+
+# Cache
+.cache/
+*.cache
+
+# Claude Code
+.claude/
+
+# Uploads (user-generated content)
+KTV/KTVsystem/backend/wwwroot/uploads/music/
+KTV/KTVsystem/backend/wwwroot/uploads/covers/
+KTV/KTVsystem/backend/wwwroot/uploads/avatars/
+!KTV/KTVsystem/backend/wwwroot/uploads/avatars/default.jpg
+!KTV/KTVsystem/backend/wwwroot/uploads/covers/default.jpg

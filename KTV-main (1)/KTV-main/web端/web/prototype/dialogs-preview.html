@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>弹窗预览</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+<style>
+:root {
+  --primary: #6750A4;
+  --on-primary: #FFFFFF;
+  --primary-container: #EADDFF;
+  --on-primary-container: #21005D;
+  --surface: #FFFBFE;
+  --surface-container: #F3EDF7;
+  --surface-container-high: #ECE6F0;
+  --surface-container-lowest: #FFFFFF;
+  --on-surface: #1C1B1F;
+  --on-surface-variant: #49454F;
+  --outline-variant: #CAC4D0;
+  --error: #B3261E;
+  --shadow: rgba(0,0,0,0.15);
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'Noto Sans SC', sans-serif;
+  background: var(--surface);
+  color: var(--on-surface);
+  min-height: 100vh;
+  padding: 40px;
+}
+
+/* --- Trigger buttons --- */
+.trigger-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+.trigger-card {
+  background: var(--surface-container);
+  border-radius: 16px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: box-shadow 0.2s;
+}
+.trigger-card:hover { box-shadow: 0 4px 16px var(--shadow); }
+.trigger-card h3 { font-size: 16px; font-weight: 700; }
+.trigger-card p { font-size: 13px; color: var(--on-surface-variant); }
+.trigger-card button {
+  align-self: flex-start;
+  padding: 10px 24px;
+  border-radius: 24px;
+  border: none;
+  background: var(--primary);
+  color: var(--on-primary);
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+.trigger-card button:hover { opacity: 0.85; }
+
+.page-title {
+  text-align: center;
+  font-size: 32px;
+  font-weight: 900;
+  margin-bottom: 40px;
+  letter-spacing: -0.5px;
+}
+
+/* --- Overlay backdrop --- */
+.overlay {
+  position: fixed; inset: 0; z-index: 50;
+  background: rgba(0,0,0,0.4);
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.25s;
+}
+.overlay.open { opacity: 1; pointer-events: auto; }
+
+/* --- Glass card dialog --- */
+.glass-dialog {
+  background: rgba(255,255,255,0.92);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+  padding: 28px;
+  width: 420px;
+  max-width: 90vw;
+  transform: scale(0.95) translateY(10px);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.overlay.open .glass-dialog { transform: scale(1) translateY(0); }
+
+.dialog-title { font-size: 20px; font-weight: 700; margin-bottom: 20px; }
+
+.form-group { margin-bottom: 16px; }
+.form-group label {
+  display: block; font-size: 13px; font-weight: 600;
+  color: var(--on-surface-variant); margin-bottom: 6px;
+}
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1.5px solid var(--outline-variant);
+  border-radius: 12px;
+  font-size: 14px;
+  font-family: inherit;
+  background: var(--surface-container);
+  color: var(--on-surface);
+  outline: none;
+  transition: border-color 0.2s;
+}
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  border-color: var(--primary);
+}
+.form-group textarea { resize: none; }
+
+.dialog-footer {
+  display: flex; justify-content: flex-end; gap: 10px; margin-top: 24px;
+}
+.btn-ghost {
+  padding: 10px 24px; border-radius: 10px; border: none;
+  background: transparent; color: var(--on-surface-variant);
+  font-weight: 500; font-size: 14px; cursor: pointer;
+  transition: background 0.2s;
+}
+.btn-ghost:hover { background: var(--surface-container); }
+.btn-primary {
+  padding: 10px 24px; border-radius: 10px; border: none;
+  background: var(--primary); color: var(--on-primary);
+  font-weight: 600; font-size: 14px; cursor: pointer;
+  transition: opacity 0.2s;
+}
+.btn-primary:hover { opacity: 0.9; }
+
+/* --- el-dialog style --- */
+.el-overlay {
+  position: fixed; inset: 0; z-index: 50;
+  background: rgba(0,0,0,0.4);
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.25s;
+}
+.el-overlay.open { opacity: 1; pointer-events: auto; }
+
+.el-dialog-box {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 12px 48px rgba(0,0,0,0.18);
+  width: 420px;
+  max-width: 90vw;
+  overflow: hidden;
+  transform: scale(0.95) translateY(10px);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.el-overlay.open .el-dialog-box { transform: scale(1) translateY(0); }
+
+.el-dialog-header {
+  padding: 20px 24px 16px;
+  font-size: 18px; font-weight: 700;
+  border-bottom: 1px solid #f0f0f0;
+}
+.el-dialog-body { padding: 24px; }
+.el-dialog-footer {
+  padding: 12px 24px 20px;
+  display: flex; justify-content: flex-end; gap: 10px;
+  border-top: 1px solid #f0f0f0;
+}
+
+.el-input {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1.5px solid var(--outline-variant);
+  border-radius: 10px;
+  font-size: 14px;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.el-input:focus { border-color: var(--primary); }
+
+.el-btn { padding: 10px 20px; border-radius: 8px; border: none; font-size: 14px; font-weight: 500; cursor: pointer; transition: all 0.2s; }
+.el-btn-default { background: #fff; border: 1px solid #dcdfe6; color: #606266; }
+.el-btn-default:hover { color: var(--primary); border-color: var(--primary); }
+.el-btn-primary { background: var(--primary); color: #fff; }
+.el-btn-primary:hover { opacity: 0.9; }
+
+/* --- Avatar dropdown --- */
+.avatar-zone {
+  position: relative; display: inline-block;
+}
+.avatar-btn {
+  width: 44px; height: 44px; border-radius: 50%; border: none;
+  background: var(--primary-container); color: var(--on-primary-container);
+  font-size: 18px; font-weight: 700; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 2px 8px var(--shadow);
+}
+.avatar-dropdown {
+  position: absolute; right: 0; top: 52px;
+  width: 176px;
+  background: var(--surface-container-lowest);
+  border-radius: 14px;
+  box-shadow: 0 8px 32px var(--shadow);
+  padding: 8px 0;
+  opacity: 0; pointer-events: none;
+  transform: translateY(-6px);
+  transition: opacity 0.2s, transform 0.2s;
+  z-index: 60;
+}
+.avatar-dropdown.open { opacity: 1; pointer-events: auto; transform: translateY(0); }
+.dropdown-name {
+  padding: 10px 16px; font-size: 12px;
+  color: var(--on-surface-variant);
+  border-bottom: 1px solid #f0f0f0;
+}
+.dropdown-item {
+  display: flex; align-items: center; gap: 8px;
+  width: 100%; padding: 10px 16px;
+  border: none; background: none; font-size: 14px;
+  cursor: pointer; text-align: left; font-family: inherit;
+  color: var(--on-surface);
+  transition: background 0.15s;
+}
+.dropdown-item:hover { background: var(--surface-container); }
+.dropdown-item.danger { color: var(--error); }
+.dropdown-item .material-symbols-outlined { font-size: 20px; }
+.dropdown-backdrop {
+  position: fixed; inset: 0; z-index: 55;
+}
+
+/* --- Toast --- */
+.toast {
+  position: fixed; top: 32px; left: 50%; transform: translateX(-50%) translateY(-20px);
+  background: var(--error); color: #fff;
+  padding: 12px 24px; border-radius: 14px;
+  font-size: 14px; font-weight: 500;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.3s, transform 0.3s;
+  z-index: 200;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* --- Success state --- */
+.success-state { text-align: center; padding: 40px 0; }
+.success-state .material-symbols-outlined { font-size: 56px; color: var(--primary); display: block; margin-bottom: 12px; }
+.success-state p { font-size: 18px; font-weight: 600; }
+</style>
+</head>
+<body>
+
+<h1 class="page-title">弹窗预览</h1>
+
+<div class="trigger-grid">
+  <!-- 1. Join Room -->
+  <div class="trigger-card">
+    <h3>1. 加入房间</h3>
+    <p>el-dialog 风格，输入 6 位房间码</p>
+    <button onclick="openEl('join')">打开弹窗</button>
+  </div>
+  <!-- 2. Edit Profile -->
+  <div class="trigger-card">
+    <h3>2. 编辑资料</h3>
+    <p>el-dialog 风格，编辑昵称/手机/邮箱</p>
+    <button onclick="openEl('edit')">打开弹窗</button>
+  </div>
+  <!-- 3. Change Password -->
+  <div class="trigger-card">
+    <h3>3. 修改密码</h3>
+    <p>el-dialog 风格，旧密码+新密码+确认</p>
+    <button onclick="openEl('password')">打开弹窗</button>
+  </div>
+  <!-- 4. Feedback -->
+  <div class="trigger-card">
+    <h3>4. 用户反馈</h3>
+    <p>glass 自定义弹窗，含成功态</p>
+    <button onclick="openGlass('feedback')">打开弹窗</button>
+  </div>
+  <!-- 5. Lyrics Fullscreen -->
+  <div class="trigger-card">
+    <h3>5. 歌词全屏</h3>
+    <p>全屏覆盖，左侧播放器 + 右侧聊天/列表</p>
+    <button onclick="openLyrics()">打开弹窗</button>
+  </div>
+  <!-- 6. Avatar Dropdown -->
+  <div class="trigger-card">
+    <h3>6. 头像下拉菜单</h3>
+    <p>头像点击展开，个人主页 + 退出登录</p>
+    <div style="display:flex;gap:12px;align-items:center">
+      <div class="avatar-zone">
+        <button class="avatar-btn" onclick="toggleDropdown()">李</button>
+        <div class="avatar-dropdown" id="dropdown">
+          <div class="dropdown-name">李小明</div>
+          <button class="dropdown-item" onclick="closeDropdown()"><span class="material-symbols-outlined">person</span> 个人主页</button>
+          <button class="dropdown-item danger" onclick="closeDropdown()"><span class="material-symbols-outlined">logout</span> 退出登录</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- 7. Toast -->
+  <div class="trigger-card">
+    <h3>7. Toast 提示</h3>
+    <p>glass 风格顶部提示，重复点歌 / 操作错误</p>
+    <button onclick="showToast('这首歌已经在播放列表中了')">触发 Toast</button>
+  </div>
+</div>
+
+<!-- ===== 1. Join Room (el-dialog) ===== -->
+<div class="el-overlay" id="el-join" onclick="closeEl('join',event)">
+  <div class="el-dialog-box" style="width:380px" onclick="event.stopPropagation()">
+    <div class="el-dialog-header">加入房间</div>
+    <div class="el-dialog-body">
+      <label style="display:block;font-size:13px;font-weight:600;margin-bottom:8px">房间码</label>
+      <input class="el-input" placeholder="输入 6 位房间码" maxlength="6" id="joinCodeInput">
+    </div>
+    <div class="el-dialog-footer">
+      <button class="el-btn el-btn-default" onclick="closeEl('join')">取消</button>
+      <button class="el-btn el-btn-primary" onclick="handleJoin()">加入</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 2. Edit Profile (el-dialog) ===== -->
+<div class="el-overlay" id="el-edit" onclick="closeEl('edit',event)">
+  <div class="el-dialog-box" onclick="event.stopPropagation()">
+    <div class="el-dialog-header">编辑资料</div>
+    <div class="el-dialog-body">
+      <div class="form-group"><label>昵称</label><input placeholder="输入昵称" value="李小明"></div>
+      <div class="form-group"><label>手机号</label><input placeholder="输入手机号" value="138****8888"></div>
+      <div class="form-group"><label>邮箱</label><input placeholder="输入邮箱" value="li@example.com"></div>
+    </div>
+    <div class="el-dialog-footer">
+      <button class="el-btn el-btn-default" onclick="closeEl('edit')">取消</button>
+      <button class="el-btn el-btn-primary" onclick="closeEl('edit')">保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 3. Change Password (el-dialog) ===== -->
+<div class="el-overlay" id="el-password" onclick="closeEl('password',event)">
+  <div class="el-dialog-box" onclick="event.stopPropagation()">
+    <div class="el-dialog-header">修改密码</div>
+    <div class="el-dialog-body">
+      <div class="form-group"><label>原密码</label><input type="password" placeholder="输入原密码"></div>
+      <div class="form-group"><label>新密码</label><input type="password" placeholder="输入新密码"></div>
+      <div class="form-group"><label>确认新密码</label><input type="password" placeholder="再次输入新密码"></div>
+    </div>
+    <div class="el-dialog-footer">
+      <button class="el-btn el-btn-default" onclick="closeEl('password')">取消</button>
+      <button class="el-btn el-btn-primary" onclick="closeEl('password')">确认修改</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 4. Feedback (glass custom) ===== -->
+<div class="overlay" id="glass-feedback" onclick="closeGlass('feedback',event)">
+  <div class="glass-dialog" onclick="event.stopPropagation()">
+    <template id="feedback-form">
+      <div class="dialog-title">用户反馈</div>
+      <div class="form-group">
+        <label>反馈类型</label>
+        <select id="feedbackType" onchange="toggleFeedbackFields()">
+          <option value="request_song">请求添加歌曲</option>
+          <option value="report_error">歌曲信息纠错</option>
+          <option value="other">其他建议</option>
+        </select>
+      </div>
+      <div class="form-group" id="fb-song-group">
+        <label>歌曲名称 <span style="font-weight:400;color:var(--on-surface-variant)">(必填)</span></label>
+        <input placeholder="输入歌曲名称">
+      </div>
+      <div class="form-group" id="fb-artist-group">
+        <label>歌手（可选）</label>
+        <input placeholder="输入歌手名称">
+      </div>
+      <div class="form-group">
+        <label>补充说明（可选）</label>
+        <textarea rows="3" placeholder="请输入补充说明"></textarea>
+      </div>
+      <div class="dialog-footer">
+        <button class="btn-ghost" onclick="closeGlass('feedback')">取消</button>
+        <button class="btn-primary" onclick="showFeedbackSuccess()">提交</button>
+      </div>
+    </template>
+    <div id="feedback-success" style="display:none">
+      <div class="success-state">
+        <span class="material-symbols-outlined">check_circle</span>
+        <p>反馈已提交，感谢您的建议</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 5. Lyrics Fullscreen ===== -->
+<div id="lyrics-overlay" style="position:fixed;inset:0;z-index:60;background:#1a1a2e;opacity:0;pointer-events:none;transition:opacity 0.4s;display:flex">
+  <!-- Left: Player -->
+  <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px;position:relative">
+    <button onclick="closeLyrics()" style="position:absolute;top:20px;left:20px;background:none;border:none;color:rgba(255,255,255,0.5);cursor:pointer;font-size:28px">&times;</button>
+    <!-- Cover -->
+    <div style="width:240px;height:240px;border-radius:20px;background:linear-gradient(135deg,#6750A4,#EADDFF);box-shadow:0 12px 48px rgba(103,80,164,0.4);margin-bottom:32px;display:flex;align-items:center;justify-content:center">
+      <span class="material-symbols-outlined" style="font-size:80px;color:rgba(255,255,255,0.8)">music_note</span>
+    </div>
+    <!-- Song info -->
+    <h2 style="color:#fff;font-size:22px;font-weight:700;margin-bottom:6px">夜曲</h2>
+    <p style="color:rgba(255,255,255,0.5);font-size:14px;margin-bottom:24px">周杰伦</p>
+    <!-- Heart -->
+    <div style="margin-bottom:20px">
+      <button style="background:none;border:none;cursor:pointer">
+        <svg viewBox="0 0 24 24" width="28" height="28"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="1.5"/></svg>
+      </button>
+    </div>
+    <!-- Progress -->
+    <div style="width:320px;margin-bottom:20px">
+      <div style="height:4px;background:rgba(255,255,255,0.15);border-radius:2px;overflow:hidden">
+        <div style="width:35%;height:100%;background:var(--primary);border-radius:2px"></div>
+      </div>
+      <div style="display:flex;justify-content:space-between;margin-top:6px;font-size:12px;color:rgba(255,255,255,0.4)">
+        <span>1:24</span><span>3:58</span>
+      </div>
+    </div>
+    <!-- Controls -->
+    <div style="display:flex;align-items:center;gap:28px">
+      <button style="background:none;border:none;color:rgba(255,255,255,0.6);cursor:pointer"><span class="material-symbols-outlined" style="font-size:28px">skip_previous</span></button>
+      <button style="width:56px;height:56px;border-radius:50%;background:var(--primary);border:none;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(103,80,164,0.5)"><span class="material-symbols-outlined" style="font-size:32px">play_arrow</span></button>
+      <button style="background:none;border:none;color:rgba(255,255,255,0.6);cursor:pointer"><span class="material-symbols-outlined" style="font-size:28px">skip_next</span></button>
+    </div>
+    <!-- Volume -->
+    <div style="display:flex;align-items:center;gap:8px;margin-top:20px">
+      <span class="material-symbols-outlined" style="font-size:20px;color:rgba(255,255,255,0.4)">volume_up</span>
+      <div style="width:100px;height:4px;background:rgba(255,255,255,0.15);border-radius:2px;overflow:hidden">
+        <div style="width:70%;height:100%;background:rgba(255,255,255,0.5);border-radius:2px"></div>
+      </div>
+    </div>
+    <!-- Lyrics preview (scrolled area) -->
+    <div style="position:absolute;bottom:40px;left:0;right:0;text-align:center;overflow:hidden;height:100px">
+      <p style="color:rgba(255,255,255,0.2);font-size:15px;margin:8px 0">一盏离愁孤单伫立在窗口</p>
+      <p style="color:#fff;font-size:18px;font-weight:600;margin:8px 0;text-shadow:0 0 20px rgba(103,80,164,0.5)">我在门后假装你人还没走</p>
+      <p style="color:rgba(255,255,255,0.2);font-size:15px;margin:8px 0">月圆寂寞 愈发深秋</p>
+    </div>
+  </div>
+  <!-- Divider -->
+  <div style="width:1px;background:rgba(255,255,255,0.08);align-self:stretch"></div>
+  <!-- Right: Chat + Playlist -->
+  <div style="width:360px;display:flex;flex-direction:column">
+    <!-- Chat -->
+    <div style="flex:1;padding:20px;display:flex;flex-direction:column">
+      <h3 style="color:rgba(255,255,255,0.7);font-size:14px;font-weight:600;margin-bottom:16px">
+        <span class="material-symbols-outlined" style="font-size:18px;vertical-align:middle;margin-right:4px">chat</span>聊天
+      </h3>
+      <div style="flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:12px">
+        <div style="display:flex;gap:8px;align-items:flex-start">
+          <div style="width:28px;height:28px;border-radius:50%;background:#EADDFF;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;color:#21005D;flex-shrink:0">张</div>
+          <div>
+            <div style="font-size:12px;color:rgba(255,255,255,0.4);margin-bottom:2px">张三</div>
+            <div style="background:rgba(255,255,255,0.08);padding:8px 12px;border-radius:12px;font-size:13px;color:rgba(255,255,255,0.8)">这首歌太好听了!</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:flex-start">
+          <div style="width:28px;height:28px;border-radius:50%;background:#EADDFF;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;color:#21005D;flex-shrink:0">李</div>
+          <div>
+            <div style="font-size:12px;color:rgba(255,255,255,0.4);margin-bottom:2px">李小明</div>
+            <div style="background:rgba(255,255,255,0.08);padding:8px 12px;border-radius:12px;font-size:13px;color:rgba(255,255,255,0.8)">周杰伦永远的神</div>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top:12px;display:flex;gap:8px">
+        <input style="flex:1;background:rgba(255,255,255,0.08);border:none;border-radius:20px;padding:10px 16px;color:#fff;font-size:13px;outline:none;font-family:inherit" placeholder="发消息...">
+        <button style="width:36px;height:36px;border-radius:50%;background:var(--primary);border:none;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center"><span class="material-symbols-outlined" style="font-size:18px">send</span></button>
+      </div>
+    </div>
+    <!-- Divider -->
+    <div style="height:1px;background:rgba(255,255,255,0.08);margin:0 20px"></div>
+    <!-- Playlist -->
+    <div style="flex:1;padding:20px;display:flex;flex-direction:column;overflow:hidden">
+      <h3 style="color:rgba(255,255,255,0.7);font-size:14px;font-weight:600;margin-bottom:16px">
+        <span class="material-symbols-outlined" style="font-size:18px;vertical-align:middle;margin-right:4px">queue_music</span>播放列表
+      </h3>
+      <div style="flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:4px">
+        <div style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;background:rgba(103,80,164,0.2)">
+          <span class="material-symbols-outlined" style="font-size:16px;color:var(--primary)">play_circle</span>
+          <div style="flex:1;min-width:0">
+            <div style="font-size:13px;color:#fff;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">夜曲</div>
+            <div style="font-size:11px;color:rgba(255,255,255,0.4)">周杰伦</div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px">
+          <span style="font-size:13px;color:rgba(255,255,255,0.3);width:16px;text-align:center">2</span>
+          <div style="flex:1;min-width:0">
+            <div style="font-size:13px;color:rgba(255,255,255,0.7);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">晴天</div>
+            <div style="font-size:11px;color:rgba(255,255,255,0.3)">周杰伦</div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px">
+          <span style="font-size:13px;color:rgba(255,255,255,0.3);width:16px;text-align:center">3</span>
+          <div style="flex:1;min-width:0">
+            <div style="font-size:13px;color:rgba(255,255,255,0.7);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">稻香</div>
+            <div style="font-size:11px;color:rgba(255,255,255,0.3)">周杰伦</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast">toast message</div>
+
+<script>
+// --- el-dialog ---
+function openEl(id) {
+  document.getElementById('el-' + id).classList.add('open');
+}
+function closeEl(id, e) {
+  if (e && e.target !== e.currentTarget) return;
+  document.getElementById('el-' + id).classList.remove('open');
+}
+
+// --- glass dialog ---
+function openGlass(id) {
+  document.getElementById('glass-' + id).classList.add('open');
+  // reset feedback
+  document.getElementById('feedback-form').style.display = '';
+  document.getElementById('feedback-success').style.display = 'none';
+}
+function closeGlass(id, e) {
+  if (e && e.target !== e.currentTarget) return;
+  document.getElementById('glass-' + id).classList.remove('open');
+}
+
+// --- feedback fields ---
+function toggleFeedbackFields() {
+  const type = document.getElementById('feedbackType').value;
+  const show = type === 'request_song' || type === 'report_error';
+  document.getElementById('fb-song-group').style.display = show ? '' : 'none';
+  document.getElementById('fb-artist-group').style.display = show ? '' : 'none';
+}
+function showFeedbackSuccess() {
+  document.getElementById('feedback-form').style.display = 'none';
+  document.getElementById('feedback-success').style.display = '';
+  setTimeout(() => closeGlass('feedback'), 1500);
+}
+
+// --- lyrics ---
+function openLyrics() {
+  const el = document.getElementById('lyrics-overlay');
+  el.style.opacity = '1';
+  el.style.pointerEvents = 'auto';
+}
+function closeLyrics() {
+  const el = document.getElementById('lyrics-overlay');
+  el.style.opacity = '0';
+  el.style.pointerEvents = 'none';
+}
+
+// --- avatar dropdown ---
+let dropdownOpen = false;
+function toggleDropdown() {
+  dropdownOpen = !dropdownOpen;
+  document.getElementById('dropdown').classList.toggle('open', dropdownOpen);
+}
+function closeDropdown() {
+  dropdownOpen = false;
+  document.getElementById('dropdown').classList.remove('open');
+}
+
+// --- join ---
+function handleJoin() {
+  const code = document.getElementById('joinCodeInput').value;
+  if (!code.trim()) { showToast('请输入房间码'); return; }
+  closeEl('join');
+  showToast('已加入房间');
+}
+
+// --- toast ---
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2000);
+}
+
+// --- escape key ---
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    closeEl('join'); closeEl('edit'); closeEl('password');
+    closeGlass('feedback'); closeLyrics(); closeDropdown();
+  }
+});
+</script>
+</body>
+</html>

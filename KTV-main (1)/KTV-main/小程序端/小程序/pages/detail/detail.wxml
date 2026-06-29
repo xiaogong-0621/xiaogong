@@ -1,0 +1,128 @@
+<wxs src="../../utils/format.wxs" module="fmt" />
+
+<view class="detail-container">
+  <view class="blob blob-1"></view>
+  <view class="blob blob-2"></view>
+  <view class="blob blob-3"></view>
+  <view class="blob blob-4"></view>
+  <view class="blob blob-5"></view>
+  <view class="nav-header" style="padding-top: {{statusBarHeight}}rpx">
+    <view class="nav-back" bindtap="goBack">
+      <image src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMjQgMjQiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzFkMWQxZiIgc3Ryb2tlLXdpZHRoPSIxLjgiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cG9seWxpbmUgcG9pbnRzPSIxNSAxOCA5IDEyIDE1IDYiLz48L3N2Zz4=" mode="aspectFit"/>
+    </view>
+    <text class="nav-title">歌曲详情</text>
+    <view class="nav-action" bindtap="toggleLike">
+      <image src="{{isLiked ? 'data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMjQgMjQiIGZpbGw9IiNlYzQ4OTkiIHN0cm9rZT0iI2VjNDg5OSIgc3Ryb2tlLXdpZHRoPSIxLjgiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNMjAuODQgNC42MWE1LjUgNS41IDAgMCAwLTcuNzggMEwxMiA1LjY3bC0xLjA2LTEuMDZhNS41IDUuNSAwIDAgMC03Ljc4IDcuNzhsMS4wNiAxLjA2TDEyIDIxLjIzbDcuNzgtNy43OCAxLjA2LTEuMDZhNS41IDUuNSAwIDAgMCAwLTcuNzh6Ii8+PC9zdmc+' : 'data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMjQgMjQiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzg2ODY4YiIgc3Ryb2tlLXdpZHRoPSIxLjgiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNMjAuODQgNC42MWE1LjUgNS41IDAgMCAwLTcuNzggMEwxMiA1LjY3bC0xLjA2LTEuMDZhNS41IDUuNSAwIDAgMC03Ljc4IDcuNzhsMS4wNiAxLjA2TDEyIDIxLjIzbDcuNzgtNy43OCAxLjA2LTEuMDZhNS41IDUuNSAwIDAgMCAwLTcuNzh6Ii8+PC9zdmc+'}}" mode="aspectFit"/>
+    </view>
+  </view>
+
+  <view class="song-card">
+    <view class="song-card-bg">
+      <image
+        wx:if="{{song.coverOk}}"
+        class="song-card-bg-img"
+        src="{{song.cover}}"
+        mode="aspectFill"
+      />
+    </view>
+    <view class="cover-wrap">
+      <image 
+        wx:if="{{song.coverOk}}" 
+        class="song-cover" 
+        src="{{song.cover}}" 
+        mode="aspectFill"
+        binderror="onCoverError"
+      />
+      <view class="cover-fallback" wx:else>
+        <text class="cover-initial">{{song.name.charAt(0)}}</text>
+      </view>
+    </view>
+    <view class="song-info">
+      <text class="song-name">{{song.name}}</text>
+      <text class="song-artist">{{song.artist}}</text>
+      <text class="song-album">{{song.album}}</text>
+    </view>
+  </view>
+
+  <view class="detail-actions">
+    <button class="order-btn {{ordered ? 'ordered' : ''}}" bindtap="orderSong">{{ordered ? '已点歌' : '点歌'}}</button>
+  </view>
+
+  <view class="lyrics-section">
+    <text class="section-title">歌词</text>
+    <scroll-view class="lyrics-scroll" scroll-y scroll-top="{{lyricsScrollTop}}">
+      <view class="lyrics-container">
+        <view 
+          class="lyric-item {{currentLyricIndex === index ? 'active' : ''}}" 
+          wx:for="{{lyrics}}" 
+          wx:key="index"
+          id="lyric-{{index}}"
+        >
+          <text class="lyric-text">{{item.text}}</text>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+
+  <view class="progress-section">
+    <view class="time-info">
+      <text class="current-time">{{fmt.formatTime(currentTime)}}</text>
+      <text class="total-time">{{fmt.formatTime(duration)}}</text>
+    </view>
+    <view class="progress-bar" bindtap="seekTo">
+      <view class="progress-track">
+        <view class="progress-fill" style="width: {{duration > 0 ? (currentTime / duration) * 100 : 0}}%"></view>
+        <view class="progress-thumb" style="left: {{duration > 0 ? (currentTime / duration) * 100 : 0}}%"></view>
+      </view>
+    </view>
+  </view>
+
+  <view class="player-controls">
+    <view class="control-btn" bindtap="prevSong">
+      <image src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMjQgMjQiIGZpbGw9IiM4Njg2OGIiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTYgNmgydjEySDZ6bTMuNSA2bDguNSA2VjZ6Ii8+PC9zdmc+" mode="aspectFit"/>
+    </view>
+    <view class="play-btn" bindtap="togglePlay">
+      <image wx:if="{{isPlaying}}" src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMjQgMjQiIGZpbGw9IiNmZmYiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3QgeD0iNiIgeT0iNSIgd2lkdGg9IjQiIGhlaWdodD0iMTQiIHJ4PSIxIi8+PHJlY3QgeD0iMTQiIHk9IjUiIHdpZHRoPSI0IiBoZWlnaHQ9IjE0IiByeD0iMSIvPjwvc3ZnPg==" mode="aspectFit"/>
+      <image wx:else src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMjQgMjQiIGZpbGw9IiNmZmYiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBvbHlnb24gcG9pbnRzPSI4LDUgMTksMTIgOCwxOSIvPjwvc3ZnPg==" mode="aspectFit"/>
+    </view>
+    <view class="control-btn" bindtap="nextSong">
+      <image src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMjQgMjQiIGZpbGw9IiM4Njg2OGIiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTE2IDE4aDJWNmgtMnpNNiAxOGw4LjUtNkw2IDZ6Ii8+PC9zdmc+" mode="aspectFit"/>
+    </view>
+  </view>
+
+  <!-- 加入/申请房间弹窗 -->
+  <view class="room-mask" wx:if="{{showRoomDialog}}" bindtap="closeRoomDialog">
+    <view class="room-modal glass" catchtap="stopPropagation">
+      <view class="room-modal-header">
+        <text class="room-modal-title">请先加入房间</text>
+        <text class="room-modal-close" bindtap="closeRoomDialog">✕</text>
+      </view>
+      <view class="room-modal-body">
+        <view class="room-modal-section">
+          <text class="room-modal-label">输入房间码加入</text>
+          <view class="room-modal-row">
+            <input
+              class="room-modal-input"
+              placeholder="请输入6位房间码"
+              placeholder-class="room-modal-placeholder"
+              maxlength="6"
+              value="{{roomCodeInput}}"
+              bindinput="onRoomDialogInput"
+              bindconfirm="joinRoomFromDialog"
+            />
+            <button class="room-modal-join-btn" bindtap="joinRoomFromDialog" disabled="{{joiningRoom}}">
+              {{joiningRoom ? '加入中' : '加入'}}
+            </button>
+          </view>
+        </view>
+        <view class="room-modal-divider">
+          <text class="divider-text">或</text>
+        </view>
+        <button class="room-modal-request-btn" bindtap="requestRoomFromDialog">申请开房间</button>
+      </view>
+      <view class="room-modal-footer">
+        <button class="room-modal-cancel-btn" bindtap="closeRoomDialog">取消</button>
+      </view>
+    </view>
+  </view>
+</view>

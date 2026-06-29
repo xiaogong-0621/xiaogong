@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>重复点歌反馈预览</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+<style>
+:root {
+  --primary: #6750A4;
+  --on-primary: #FFFFFF;
+  --surface: #FFFBFE;
+  --surface-container: #F3EDF7;
+  --surface-container-high: #ECE6F0;
+  --on-surface: #1C1B1F;
+  --on-surface-variant: #49454F;
+  --outline-variant: #CAC4D0;
+  --shadow: rgba(0,0,0,0.15);
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'Noto Sans SC', sans-serif;
+  background: var(--surface);
+  color: var(--on-surface);
+  min-height: 100vh;
+  padding: 40px 40px 80px;
+}
+.page-title {
+  text-align: center; font-size: 32px; font-weight: 900;
+  margin-bottom: 8px; letter-spacing: -0.5px;
+}
+.page-subtitle {
+  text-align: center; font-size: 14px; color: var(--on-surface-variant);
+  margin-bottom: 48px;
+}
+.section-title {
+  font-size: 22px; font-weight: 800; margin-bottom: 6px;
+}
+.section-desc {
+  font-size: 13px; color: var(--on-surface-variant); margin-bottom: 24px;
+}
+
+/* --- Song list --- */
+.song-list {
+  display: flex; flex-direction: column; gap: 8px;
+  background: var(--surface-container);
+  border-radius: 20px; padding: 16px 20px;
+  margin-bottom: 48px;
+  position: relative;
+  transform-origin: center top;
+}
+.song-list.spring { animation: listSpring 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); }
+@keyframes listSpring {
+  0% { transform: scaleY(1); }
+  20% { transform: scaleY(0.96); }
+  50% { transform: scaleY(1.02); }
+  75% { transform: scaleY(0.99); }
+  100% { transform: scaleY(1); }
+}
+
+.song-item {
+  display: flex; align-items: center; gap: 14px;
+  padding: 12px 14px; border-radius: 14px;
+  transition: background 0.2s;
+  position: relative; overflow: visible;
+}
+.song-item:hover { background: rgba(0,0,0,0.04); }
+
+.song-cover {
+  width: 44px; height: 44px; border-radius: 10px;
+  background: linear-gradient(135deg, #6750A4, #EADDFF);
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.song-cover .material-symbols-outlined { font-size: 22px; color: rgba(255,255,255,0.7); }
+.song-info { flex: 1; min-width: 0; }
+.song-title { font-size: 15px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.song-artist { font-size: 12px; color: var(--on-surface-variant); }
+
+/* --- Order button (统一显示"点歌") --- */
+.order-btn {
+  padding: 8px 20px; border-radius: 20px; border: none;
+  background: var(--primary); color: var(--on-primary);
+  font-weight: 600; font-size: 13px; cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  white-space: nowrap; flex-shrink: 0;
+}
+.order-btn:hover { opacity: 0.85; }
+
+/* ===== 方案 2.1: 按钮临时变灰 ===== */
+.order-btn.rejected {
+  background: var(--outline-variant) !important;
+  color: var(--on-surface-variant) !important;
+}
+
+/* ===== 方案 2.2: 微型标签 ===== */
+.inline-chip {
+  position: absolute; right: 100px; top: 50%; transform: translateY(-50%) translateX(10px);
+  background: var(--surface-container-high);
+  color: var(--on-surface-variant);
+  padding: 5px 12px; border-radius: 20px;
+  font-size: 12px; font-weight: 500;
+  white-space: nowrap;
+  opacity: 0; pointer-events: none;
+  box-shadow: 0 2px 8px var(--shadow);
+}
+.inline-chip.show {
+  opacity: 1; transform: translateY(-50%) translateX(0);
+  animation: chipBounce 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+@keyframes chipBounce {
+  0% { transform: translateY(-50%) translateX(10px) scale(0.8); }
+  60% { transform: translateY(-50%) translateX(0) scale(1.05); }
+  100% { transform: translateY(-50%) translateX(0) scale(1); }
+}
+
+/* ===== 方案 2.3: 条目抖动 + 角标闪烁 ===== */
+.song-item.shake { animation: rowShake 0.35s ease; }
+@keyframes rowShake {
+  0%, 100% { transform: translateX(0); }
+  15% { transform: translateX(-3px); }
+  30% { transform: translateX(3px); }
+  45% { transform: translateX(-2px); }
+  60% { transform: translateX(2px); }
+  75% { transform: translateX(-1px); }
+}
+.corner-badge {
+  position: absolute; top: -4px; right: -4px;
+  background: #f97316; color: #fff;
+  font-size: 10px; font-weight: 700;
+  padding: 2px 8px; border-radius: 10px;
+  opacity: 0; transform: scale(0);
+}
+.corner-badge.show {
+  opacity: 1; transform: scale(1);
+  animation: badgeFlash 1s ease forwards;
+}
+@keyframes badgeFlash {
+  0%   { opacity: 1; }
+  20%  { opacity: 0.3; }
+  40%  { opacity: 1; }
+  60%  { opacity: 0.3; }
+  80%  { opacity: 0.7; }
+  100% { opacity: 0; transform: scale(0.8); }
+}
+
+/* ===== 方案 4.1: 气泡飘升 ===== */
+.bubble-layer {
+  position: fixed; inset: 0; pointer-events: none; z-index: 100;
+}
+.floating-bubble {
+  position: absolute;
+  background: linear-gradient(135deg, rgba(103,80,164,0.85), rgba(234,221,255,0.9));
+  color: #fff; font-size: 13px; font-weight: 600;
+  padding: 10px 18px; border-radius: 20px;
+  white-space: nowrap;
+  box-shadow: 0 4px 20px rgba(103,80,164,0.3);
+  border: 2px solid rgba(255,255,255,0.4);
+}
+
+/* ===== 方案 4.3: 列表弹簧 + duang 文字 ===== */
+.duang-toast {
+  position: fixed; left: 50%; top: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  background: rgba(0,0,0,0.75); color: #fff;
+  padding: 10px 24px; border-radius: 14px;
+  font-size: 16px; font-weight: 700;
+  white-space: nowrap; pointer-events: none;
+  z-index: 200; opacity: 0;
+}
+.duang-toast.show {
+  animation: duangPop 1s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+@keyframes duangPop {
+  0%   { transform: translate(-50%, -50%) scale(0); opacity: 0; }
+  30%  { transform: translate(-50%, -50%) scale(1.1); opacity: 1; }
+  50%  { transform: translate(-50%, -50%) scale(0.95); opacity: 1; }
+  70%  { transform: translate(-50%, -50%) scale(1.02); opacity: 1; }
+  100% { transform: translate(-50%, -50%) scale(1); opacity: 0; }
+}
+</style>
+</head>
+<body>
+
+<h1 class="page-title">重复点歌反馈预览</h1>
+<p class="page-subtitle">所有按钮统一显示「点歌」，点击已在列表中的歌曲触发反馈</p>
+
+<!-- ===== 方案 2.1 ===== -->
+<h2 class="section-title">方案 2.1 — 按钮状态变化</h2>
+<p class="section-desc">按钮始终显示「点歌」，点击已在列表的歌曲后临时变灰显示「已在列表」0.8秒，然后恢复</p>
+<div class="song-list">
+  <div class="song-item">
+    <div class="song-cover"><span class="material-symbols-outlined">music_note</span></div>
+    <div class="song-info"><div class="song-title">夜曲</div><div class="song-artist">周杰伦</div></div>
+    <button class="order-btn" onclick="click21(this)" data-in="1">点歌</button>
+  </div>
+  <div class="song-item">
+    <div class="song-cover"><span class="material-symbols-outlined">music_note</span></div>
+    <div class="song-info"><div class="song-title">晴天</div><div class="song-artist">周杰伦</div></div>
+    <button class="order-btn" onclick="click21(this)">点歌</button>
+  </div>
+  <div class="song-item">
+    <div class="song-cover"><span class="material-symbols-outlined">music_note</span></div>
+    <div class="song-info"><div class="song-title">稻香</div><div class="song-artist">周杰伦</div></div>
+    <button class="order-btn" onclick="click21(this)" data-in="1">点歌</button>
+  </div>
+</div>
+
+<!-- ===== 方案 2.2 ===== -->
+<h2 class="section-title">方案 2.2 — 微型标签弹出</h2>
+<p class="section-desc">点击已在列表的歌曲后，按钮旁滑出「✓ 已在列表中」气泡标签，停留1.2秒后淡出</p>
+<div class="song-list">
+  <div class="song-item">
+    <div class="song-cover"><span class="material-symbols-outlined">music_note</span></div>
+    <div class="song-info"><div class="song-title">夜曲</div><div class="song-artist">周杰伦</div></div>
+    <span class="inline-chip" id="chip-22a">✓ 已在列表中</span>
+    <button class="order-btn" onclick="click22(this, 'chip-22a')" data-in="1">点歌</button>
+  </div>
+  <div class="song-item">
+    <div class="song-cover"><span class="material-symbols-outlined">music_note</span></div>
+    <div class="song-info"><div class="song-title">晴天</div><div class="song-artist">周杰伦</div></div>
+    <button class="order-btn" onclick="click22(this)">点歌</button>
+  </div>
+  <div class="song-item">
+    <div class="song-cover"><span class="material-symbols-outlined">music_note</span></div>
+    <div class="song-info"><div class="song-title">稻香</div><div class="song-artist">周杰伦</div></div>
+    <span class="inline-chip" id="chip-22b">✓ 已在列表中</span>
+    <button class="order-btn" onclick="click22(this, 'chip-22b')" data-in="1">点歌</button>
+  </div>
+</div>
+
+<!-- ===== 方案 2.3 ===== -->
+<h2 class="section-title">方案 2.3 — 条目抖动 + 角标闪烁</h2>
+<p class="section-desc">整行左右抖动，右上角弹出「已有」角标闪烁一次后消失</p>
+<div class="song-list">
+  <div class="song-item" id="item-23a">
+    <div class="corner-badge" id="badge-23a">已有</div>
+    <div class="song-cover"><span class="material-symbols-outlined">music_note</span></div>
+    <div class="song-info"><div class="song-title">夜曲</div><div class="song-artist">周杰伦</div></div>
+    <button class="order-btn" onclick="click23('item-23a', 'badge-23a')" data-in="1">点歌</button>
+  </div>
+  <div class="song-item">
+    <div class="song-cover"><span class="material-symbols-outlined">music_note</span></div>
+    <div class="song-info"><div class="song-title">晴天</div><div class="song-artist">周杰伦</div></div>
+    <button class="order-btn" onclick="click23()">点歌</button>
+  </div>
+  <div class="song-item" id="item-23b">
+    <div class="corner-badge" id="badge-23b">已有</div>
+    <div class="song-cover"><span class="material-symbols-outlined">music_note</span></div>
+    <div class="song-info"><div class="song-title">稻香</div><div class="song-artist">周杰伦</div></div>
+    <button class="order-btn" onclick="click23('item-23b', 'badge-23b')" data-in="1">点歌</button>
+  </div>
+</div>
+
+<!-- ===== 方案 4.1 ===== -->
+<h2 class="section-title">方案 4.1 — 气泡飘升破裂</h2>
+<p class="section-desc">从按钮位置升起彩色气泡「已经在列表里咯~」，上浮后飘散小气泡</p>
+<div class="song-list">
+  <div class="song-item">
+    <div class="song-cover"><span class="material-symbols-outlined">music_note</span></div>
+    <div class="song-info"><div class="song-title">夜曲</div><div class="song-artist">周杰伦</div></div>
+    <button class="order-btn" onclick="click41(this)" data-in="1">点歌</button>
+  </div>
+  <div class="song-item">
+    <div class="song-cover"><span class="material-symbols-outlined">music_note</span></div>
+    <div class="song-info"><div class="song-title">晴天</div><div class="song-artist">周杰伦</div></div>
+    <button class="order-btn" onclick="click41(this)">点歌</button>
+  </div>
+  <div class="song-item">
+    <div class="song-cover"><span class="material-symbols-outlined">music_note</span></div>
+    <div class="song-info"><div class="song-title">稻香</div><div class="song-artist">周杰伦</div></div>
+    <button class="order-btn" onclick="click41(this)" data-in="1">点歌</button>
+  </div>
+</div>
+<div class="bubble-layer" id="bubble-layer"></div>
+
+<!-- ===== 方案 4.3 ===== -->
+<h2 class="section-title">方案 4.3 — 物理弹簧效果</h2>
+<p class="section-desc">整个列表快速压缩再弹回，中央出现「duang~ 已经在列表」</p>
+<div class="song-list" id="list-43">
+  <div class="song-item">
+    <div class="song-cover"><span class="material-symbols-outlined">music_note</span></div>
+    <div class="song-info"><div class="song-title">夜曲</div><div class="song-artist">周杰伦</div></div>
+    <button class="order-btn" onclick="click43('list-43')" data-in="1">点歌</button>
+  </div>
+  <div class="song-item">
+    <div class="song-cover"><span class="material-symbols-outlined">music_note</span></div>
+    <div class="song-info"><div class="song-title">晴天</div><div class="song-artist">周杰伦</div></div>
+    <button class="order-btn" onclick="click43()">点歌</button>
+  </div>
+  <div class="song-item">
+    <div class="song-cover"><span class="material-symbols-outlined">music_note</span></div>
+    <div class="song-info"><div class="song-title">稻香</div><div class="song-artist">周杰伦</div></div>
+    <button class="order-btn" onclick="click43('list-43')" data-in="1">点歌</button>
+  </div>
+</div>
+<div class="duang-toast" id="duang-toast">duang~ 已经在列表</div>
+
+<script>
+function isInList(btn) { return btn.dataset.in === '1'; }
+
+// ===== 2.1 按钮状态变化 =====
+// 按钮始终显示"点歌"，点击已在列表的歌曲后临时变灰"已在列表"0.8秒
+function click21(btn) {
+  if (!isInList(btn)) { btn.style.background = '#4CAF50'; btn.textContent = '已点 ✓'; return; }
+  btn.classList.add('rejected');
+  btn.textContent = '已在列表';
+  setTimeout(() => {
+    btn.classList.remove('rejected');
+    btn.textContent = '点歌';
+  }, 800);
+}
+
+// ===== 2.2 微型标签 =====
+function click22(btn, chipId) {
+  if (!isInList(btn)) { btn.style.background = '#4CAF50'; btn.textContent = '已点 ✓'; return; }
+  const chip = document.getElementById(chipId);
+  if (!chip) return;
+  chip.classList.remove('show');
+  void chip.offsetWidth;
+  chip.classList.add('show');
+  setTimeout(() => chip.classList.remove('show'), 1200);
+}
+
+// ===== 2.3 条目抖动 + 角标闪烁 =====
+function click23(itemId, badgeId) {
+  if (!itemId) return;
+  const item = document.getElementById(itemId);
+  const badge = document.getElementById(badgeId);
+  item.classList.remove('shake');
+  void item.offsetWidth;
+  item.classList.add('shake');
+  badge.classList.remove('show');
+  void badge.offsetWidth;
+  badge.classList.add('show');
+  setTimeout(() => { item.classList.remove('shake'); badge.classList.remove('show'); }, 1100);
+}
+
+// ===== 4.1 气泡飘升 =====
+function click41(btn) {
+  if (!isInList(btn)) { btn.style.background = '#4CAF50'; btn.textContent = '已点 ✓'; return; }
+  const layer = document.getElementById('bubble-layer');
+  const rect = btn.getBoundingClientRect();
+  const x = rect.left + rect.width / 2;
+  const y = rect.top;
+
+  const bubble = document.createElement('div');
+  bubble.className = 'floating-bubble';
+  bubble.textContent = '已经在列表里咯~';
+  bubble.style.left = (x - 70) + 'px';
+  bubble.style.top = (y - 10) + 'px';
+  layer.appendChild(bubble);
+
+  bubble.animate([
+    { transform: 'translateY(0) scale(0.5)', opacity: 0 },
+    { transform: 'translateY(-20px) scale(1) rotate(-2deg)', opacity: 1, offset: 0.15 },
+    { transform: 'translateY(-60px) rotate(2deg)', opacity: 1, offset: 0.5 },
+    { transform: 'translateY(-120px) rotate(-1deg)', opacity: 0.8, offset: 0.8 },
+    { transform: 'translateY(-160px) scale(0.3)', opacity: 0 },
+  ], { duration: 1200, easing: 'cubic-bezier(0.4, 0, 0.2, 1)', fill: 'forwards' });
+
+  setTimeout(() => {
+    const cx = parseFloat(bubble.style.left) + 70;
+    const cy = y - 130;
+    for (let i = 0; i < 6; i++) {
+      const dot = document.createElement('div');
+      const size = 4 + Math.random() * 4;
+      Object.assign(dot.style, {
+        position: 'fixed', borderRadius: '50%', pointerEvents: 'none',
+        left: cx + 'px', top: cy + 'px',
+        width: size + 'px', height: size + 'px',
+        background: ['#6750A4', '#EADDFF', '#a78bfa', '#c4b5fd', '#ddd6fe', '#f5f3ff'][i],
+        opacity: '1', zIndex: '101',
+      });
+      layer.appendChild(dot);
+      const angle = (Math.PI * 2 * i) / 6 - Math.PI / 2;
+      const dist = 20 + Math.random() * 15;
+      dot.animate([
+        { transform: 'translate(0,0) scale(1)', opacity: 1 },
+        { transform: `translate(${Math.cos(angle)*dist}px,${Math.sin(angle)*dist}px) scale(0)`, opacity: 0 },
+      ], { duration: 500, easing: 'cubic-bezier(.22,.61,.36,1)', fill: 'forwards' });
+    }
+  }, 700);
+
+  setTimeout(() => bubble.remove(), 1300);
+}
+
+// ===== 4.3 列表弹簧 + duang =====
+function click43(listId) {
+  if (!listId) return;
+  const list = document.getElementById(listId);
+  const toast = document.getElementById('duang-toast');
+
+  // List spring
+  list.classList.remove('spring');
+  void list.offsetWidth;
+  list.classList.add('spring');
+  setTimeout(() => list.classList.remove('spring'), 550);
+
+  // Duang toast
+  toast.classList.remove('show');
+  void toast.offsetWidth;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 1100);
+}
+</script>
+</body>
+</html>

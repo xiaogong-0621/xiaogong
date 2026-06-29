@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+
+<html class="light" lang="zh-CN"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>声域友 - 登录</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&amp;family=Manrope:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-lowest": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "on-primary-fixed": "#001d32",
+                        "tertiary-fixed-dim": "#ffba3f",
+                        "on-secondary-fixed-variant": "#00468c",
+                        "surface-dim": "#d8dadc",
+                        "primary-fixed": "#cde5ff",
+                        "surface-tint": "#006399",
+                        "on-tertiary-fixed-variant": "#604100",
+                        "on-surface-variant": "#3f4851",
+                        "on-error": "#ffffff",
+                        "on-secondary-container": "#003670",
+                        "on-background": "#191c1e",
+                        "surface-container-highest": "#e0e3e5",
+                        "surface-container-low": "#f2f4f6",
+                        "surface-container-high": "#e6e8ea",
+                        "on-secondary": "#ffffff",
+                        "tertiary": "#7f5600",
+                        "tertiary-fixed": "#ffdeae",
+                        "surface": "#f7f9fb",
+                        "on-tertiary-container": "#583a00",
+                        "secondary-fixed-dim": "#a9c7ff",
+                        "on-secondary-fixed": "#001b3d",
+                        "surface-container": "#eceef0",
+                        "inverse-surface": "#2d3133",
+                        "on-primary-fixed-variant": "#004a75",
+                        "primary-fixed-dim": "#95ccff",
+                        "on-primary": "#ffffff",
+                        "on-tertiary-fixed": "#281900",
+                        "on-error-container": "#93000a",
+                        "error": "#ba1a1a",
+                        "on-surface": "#191c1e",
+                        "inverse-primary": "#95ccff",
+                        "tertiary-container": "#e39f14",
+                        "on-tertiary": "#ffffff",
+                        "secondary-fixed": "#d6e3ff",
+                        "outline-variant": "#bfc7d2",
+                        "secondary": "#005db7",
+                        "outline": "#6f7882",
+                        "primary": "#006399",
+                        "surface-bright": "#f7f9fb",
+                        "surface-variant": "#e0e3e5",
+                        "primary-container": "#4fb3ff",
+                        "on-primary-container": "#00436a",
+                        "inverse-on-surface": "#eff1f3",
+                        "background": "#f7f9fb",
+                        "secondary-container": "#64a1ff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Plus Jakarta Sans"],
+                        "display": ["Plus Jakarta Sans"],
+                        "body": ["Manrope"],
+                        "label": ["Manrope"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body min-h-screen flex items-center justify-center relative overflow-hidden">
+<!-- Decorative Background -->
+<div class="absolute inset-0 pointer-events-none overflow-hidden z-0">
+<div class="absolute top-[-10%] left-[-5%] w-[800px] h-[800px] rounded-full bg-primary-fixed/40 blur-[120px]"></div>
+<div class="absolute bottom-[-10%] right-[-5%] w-[600px] h-[600px] rounded-full bg-secondary-fixed/50 blur-[150px]"></div>
+</div>
+<!-- Login Card Container -->
+<div class="relative z-10 w-full max-w-[480px] px-6 sm:px-0">
+<div class="bg-surface-container-lowest rounded-2xl p-10 sm:p-12 shadow-[0_32px_64px_rgba(25,28,30,0.06)] flex flex-col items-center">
+<!-- Header section -->
+<div class="flex flex-col items-center w-full mb-10">
+<!-- Logo Placeholder -->
+<div class="w-16 h-16 bg-surface-container-high rounded-full flex items-center justify-center mb-6">
+<span class="material-symbols-outlined text-outline text-3xl">waves</span>
+</div>
+<h1 class="font-headline font-bold text-3xl tracking-tight text-primary mb-2">声域友</h1>
+<p class="font-label text-sm font-semibold tracking-widest text-outline uppercase">Hydro-Sonic Canvas</p>
+</div>
+<!-- Login Form -->
+<form class="w-full space-y-6">
+<!-- Username Input -->
+<div class="relative">
+<div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-outline">person</span>
+</div>
+<input class="w-full pl-12 pr-4 py-4 bg-surface-container-high border-none rounded-lg font-body text-base text-on-surface placeholder-outline focus:ring-2 focus:ring-primary/20 transition-all outline-none" placeholder="用户名" type="text"/>
+</div>
+<!-- Password Input -->
+<div class="relative">
+<div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-outline">lock</span>
+</div>
+<input class="w-full pl-12 pr-4 py-4 bg-surface-container-high border-none rounded-lg font-body text-base text-on-surface placeholder-outline focus:ring-2 focus:ring-primary/20 transition-all outline-none" placeholder="密码" type="password"/>
+</div>
+<!-- Login Button -->
+<button class="w-full py-4 mt-4 bg-gradient-to-r from-primary to-secondary text-on-primary rounded-full font-label font-bold text-base tracking-wide hover:opacity-90 active:scale-[0.98] transition-all flex items-center justify-center gap-2" type="button">
+                    登录
+                    <span class="material-symbols-outlined text-xl">arrow_forward</span>
+</button>
+</form>
+</div>
+</div>
+</body></html>

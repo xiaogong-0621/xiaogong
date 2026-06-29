@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+
+<html class="light" lang="zh-CN"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>歌曲管理 - 声域友</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Manrope:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-primary-container": "#00436a",
+                        "tertiary": "#7f5600",
+                        "secondary-fixed-dim": "#a9c7ff",
+                        "primary-fixed-dim": "#95ccff",
+                        "surface-bright": "#f7f9fb",
+                        "on-tertiary-fixed": "#281900",
+                        "on-secondary-fixed-variant": "#00468c",
+                        "inverse-surface": "#2d3133",
+                        "surface-container-lowest": "#ffffff",
+                        "outline": "#6f7882",
+                        "on-secondary-fixed": "#001b3d",
+                        "secondary-fixed": "#d6e3ff",
+                        "on-error": "#ffffff",
+                        "inverse-primary": "#95ccff",
+                        "background": "#f7f9fb",
+                        "inverse-on-surface": "#eff1f3",
+                        "tertiary-fixed-dim": "#ffba3f",
+                        "tertiary-fixed": "#ffdeae",
+                        "on-primary": "#ffffff",
+                        "surface-dim": "#d8dadc",
+                        "surface-container-highest": "#e0e3e5",
+                        "surface-container-low": "#f2f4f6",
+                        "primary-container": "#4fb3ff",
+                        "on-background": "#191c1e",
+                        "on-tertiary-container": "#583a00",
+                        "on-secondary-container": "#003670",
+                        "tertiary-container": "#e39f14",
+                        "surface-container": "#eceef0",
+                        "error-container": "#ffdad6",
+                        "primary-fixed": "#cde5ff",
+                        "outline-variant": "#bfc7d2",
+                        "secondary": "#005db7",
+                        "error": "#ba1a1a",
+                        "on-surface": "#191c1e",
+                        "on-tertiary-fixed-variant": "#604100",
+                        "on-error-container": "#93000a",
+                        "surface": "#f7f9fb",
+                        "on-surface-variant": "#3f4851",
+                        "on-secondary": "#ffffff",
+                        "surface-variant": "#e0e3e5",
+                        "secondary-container": "#64a1ff",
+                        "surface-container-high": "#e6e8ea",
+                        "on-tertiary": "#ffffff",
+                        "on-primary-fixed-variant": "#004a75",
+                        "surface-tint": "#006399",
+                        "primary": "#006399",
+                        "on-primary-fixed": "#001d32"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Plus Jakarta Sans"],
+                        "display": ["Plus Jakarta Sans"],
+                        "body": ["Manrope"],
+                        "label": ["Manrope"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+    </style>
+</head>
+<body class="bg-surface font-body text-on-surface antialiased flex">
+<!-- SideNavBar -->
+<nav class="h-screen w-64 fixed left-0 top-0 bg-slate-900 flex flex-col py-6 space-y-2 shadow-xl z-50">
+<div class="px-6 mb-8">
+<h1 class="text-2xl font-black text-white font-headline tracking-tight">声域友</h1>
+<p class="text-sm text-slate-400 mt-1 font-medium tracking-wider">Admin Console</p>
+</div>
+<div class="flex-1 flex flex-col gap-1 px-2">
+<a class="text-slate-400 hover:text-white hover:bg-slate-800 transition-all duration-200 px-4 py-3 flex items-center gap-3 rounded-lg font-headline text-sm tracking-wide" href="#">
+<span class="material-symbols-outlined text-lg">dashboard</span>
+                仪表盘
+            </a>
+<a class="text-slate-400 hover:text-white hover:bg-slate-800 transition-all duration-200 px-4 py-3 flex items-center gap-3 rounded-lg font-headline text-sm tracking-wide" href="#">
+<span class="material-symbols-outlined text-lg">meeting_room</span>
+                包厢管理
+            </a>
+<a class="bg-sky-600/10 text-sky-400 border-r-4 border-sky-500 px-4 py-3 flex items-center gap-3 rounded-l-lg font-headline text-sm tracking-wide" href="#">
+<span class="material-symbols-outlined text-lg">library_music</span>
+                歌曲管理
+            </a>
+<a class="text-slate-400 hover:text-white hover:bg-slate-800 transition-all duration-200 px-4 py-3 flex items-center gap-3 rounded-lg font-headline text-sm tracking-wide" href="#">
+<span class="material-symbols-outlined text-lg">receipt_long</span>
+                订单管理
+            </a>
+<a class="text-slate-400 hover:text-white hover:bg-slate-800 transition-all duration-200 px-4 py-3 flex items-center gap-3 rounded-lg font-headline text-sm tracking-wide" href="#">
+<span class="material-symbols-outlined text-lg">manage_accounts</span>
+                账户管理
+            </a><a class="text-slate-400 hover:text-white hover:bg-slate-800 transition-all duration-200 px-4 py-3 flex items-center gap-3 rounded-lg font-headline text-sm tracking-wide" href="#">
+<span class="material-symbols-outlined text-lg">settings</span>
+                系统设置
+            </a>
+</div>
+<div class="mt-auto pt-6 px-4 mb-6">
+<div class="flex items-center gap-3 text-slate-400 hover:text-white transition-colors cursor-pointer">
+<div class="w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center text-[10px] text-slate-500 overflow-hidden leading-tight text-center px-1">管理员头像</div>
+<div class="flex flex-col">
+<span class="text-sm font-semibold text-white">管理员</span>
+<span class="text-xs">退出登录</span>
+</div>
+</div>
+</div></nav>
+<!-- Main Content Canvas -->
+<main class="ml-64 flex-1 min-h-screen flex flex-col bg-[#f5f7fa]">
+<!-- TopNavBar Structure (Integrated into canvas for pure UI) -->
+<header class="w-full h-16 bg-surface-container-lowest shadow-sm flex justify-between items-center px-8 sticky top-0 z-40">
+<h2 class="font-headline font-bold text-lg text-on-surface">歌曲管理</h2>
+<div class="flex items-center gap-4">
+<button class="p-2 text-on-surface-variant hover:bg-surface-container-low rounded-full transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<div class="w-8 h-8 rounded-full bg-surface-variant flex items-center justify-center">
+<span class="material-symbols-outlined text-on-surface-variant text-sm">person</span>
+</div>
+</div>
+</header>
+<div class="p-8 flex flex-col gap-8 max-w-7xl mx-auto w-full">
+<!-- Statistics Cards Row -->
+<section class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<!-- Card 1 -->
+<div class="bg-surface-container-lowest rounded-lg p-6 flex flex-col gap-2 relative shadow-sm">
+<div class="flex items-center gap-3 text-on-surface-variant">
+<span class="material-symbols-outlined text-primary">album</span>
+<span class="font-label text-sm font-medium">总曲目</span>
+</div>
+<div class="font-display font-bold text-3xl text-on-surface">0,000</div>
+</div>
+<!-- Card 2 -->
+<div class="bg-surface-container-lowest rounded-lg p-6 flex flex-col gap-2 relative shadow-sm">
+<div class="flex items-center gap-3 text-on-surface-variant">
+<span class="material-symbols-outlined text-tertiary-container">library_add</span>
+<span class="font-label text-sm font-medium">本周新增</span>
+</div>
+<div class="font-display font-bold text-3xl text-on-surface">0,000</div>
+</div>
+<!-- Card 3 -->
+<div class="bg-surface-container-lowest rounded-lg p-6 flex flex-col gap-2 relative shadow-sm">
+<div class="flex items-center gap-3 text-on-surface-variant">
+<span class="material-symbols-outlined text-secondary">play_circle</span>
+<span class="font-label text-sm font-medium">今日播放量</span>
+</div>
+<div class="font-display font-bold text-3xl text-on-surface">0,000</div>
+</div>
+</section>
+<!-- Search & Action Row -->
+<section class="flex flex-col md:flex-row justify-between items-center gap-4">
+<div class="relative w-full md:w-96">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+<input class="w-full pl-12 pr-4 py-3 bg-surface-container-lowest border-none rounded-lg text-body-lg text-on-surface placeholder:text-outline-variant shadow-sm focus:ring-2 focus:ring-primary/20 transition-shadow" placeholder="搜索歌曲、歌手..." type="text"/>
+</div>
+<button class="w-full md:w-auto px-6 py-3 bg-primary text-on-primary rounded-lg font-headline font-semibold flex items-center justify-center gap-2 hover:bg-primary/90 transition-colors shadow-sm">
+<span class="material-symbols-outlined text-sm">add</span>
+                    新增歌曲
+                </button>
+</section>
+<!-- Data Table Container -->
+<section class="bg-surface-container-lowest rounded-lg shadow-sm overflow-hidden flex flex-col">
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-low text-on-surface-variant font-label text-sm border-b border-surface-container-highest">
+<th class="p-4 font-medium w-24">封面</th>
+<th class="p-4 font-medium">歌曲名称</th>
+<th class="p-4 font-medium">歌手</th>
+<th class="p-4 font-medium">风格</th>
+<th class="p-4 font-medium">状态</th>
+<th class="p-4 font-medium text-right w-32">操作</th>
+</tr>
+</thead>
+<tbody class="text-sm font-body text-on-surface">
+<!-- Row 1 -->
+<tr class="border-b border-surface-container-highest hover:bg-surface transition-colors group">
+<td class="p-4">
+<div class="w-12 h-12 bg-slate-200 rounded flex items-center justify-center text-slate-400 text-xs text-center">专辑封面</div>
+</td>
+<td class="p-4 font-medium">歌曲名称</td>
+<td class="p-4 text-on-surface-variant">歌手名称</td>
+<td class="p-4 text-on-surface-variant">流行</td>
+<td class="p-4">
+<span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-primary-fixed text-on-primary-fixed">已上架</span>
+</td>
+<td class="p-4 text-right space-x-2">
+<button class="text-primary hover:text-secondary transition-colors font-medium">编辑</button>
+<button class="text-error hover:text-error/80 transition-colors font-medium">删除</button>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="border-b border-surface-container-highest hover:bg-surface transition-colors group">
+<td class="p-4">
+<div class="w-12 h-12 bg-slate-200 rounded flex items-center justify-center text-slate-400 text-xs text-center">专辑封面</div>
+</td>
+<td class="p-4 font-medium">歌曲名称</td>
+<td class="p-4 text-on-surface-variant">歌手名称</td>
+<td class="p-4 text-on-surface-variant">流行</td>
+<td class="p-4">
+<span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-primary-fixed text-on-primary-fixed">已上架</span>
+</td>
+<td class="p-4 text-right space-x-2">
+<button class="text-primary hover:text-secondary transition-colors font-medium">编辑</button>
+<button class="text-error hover:text-error/80 transition-colors font-medium">删除</button>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="border-b border-surface-container-highest hover:bg-surface transition-colors group">
+<td class="p-4">
+<div class="w-12 h-12 bg-slate-200 rounded flex items-center justify-center text-slate-400 text-xs text-center">专辑封面</div>
+</td>
+<td class="p-4 font-medium">歌曲名称</td>
+<td class="p-4 text-on-surface-variant">歌手名称</td>
+<td class="p-4 text-on-surface-variant">流行</td>
+<td class="p-4">
+<span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-primary-fixed text-on-primary-fixed">已上架</span>
+</td>
+<td class="p-4 text-right space-x-2">
+<button class="text-primary hover:text-secondary transition-colors font-medium">编辑</button>
+<button class="text-error hover:text-error/80 transition-colors font-medium">删除</button>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="hover:bg-surface transition-colors group">
+<td class="p-4">
+<div class="w-12 h-12 bg-slate-200 rounded flex items-center justify-center text-slate-400 text-xs text-center">专辑封面</div>
+</td>
+<td class="p-4 font-medium">歌曲名称</td>
+<td class="p-4 text-on-surface-variant">歌手名称</td>
+<td class="p-4 text-on-surface-variant">流行</td>
+<td class="p-4">
+<span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-primary-fixed text-on-primary-fixed">已上架</span>
+</td>
+<td class="p-4 text-right space-x-2">
+<button class="text-primary hover:text-secondary transition-colors font-medium">编辑</button>
+<button class="text-error hover:text-error/80 transition-colors font-medium">删除</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination -->
+<div class="p-4 border-t border-surface-container-highest flex justify-end items-center gap-2 text-sm text-on-surface-variant">
+<button class="p-1 text-outline hover:text-on-surface transition-colors disabled:opacity-50">
+<span class="material-symbols-outlined">chevron_left</span>
+</button>
+<span class="px-3 py-1 bg-primary text-on-primary rounded font-medium">1</span>
+<span class="px-3 py-1 hover:bg-surface-container-low rounded cursor-pointer transition-colors">2</span>
+<span class="px-3 py-1 hover:bg-surface-container-low rounded cursor-pointer transition-colors">3</span>
+<span class="px-2 text-outline-variant">...</span>
+<span class="px-3 py-1 hover:bg-surface-container-low rounded cursor-pointer transition-colors">10</span>
+<button class="p-1 text-outline hover:text-on-surface transition-colors">
+<span class="material-symbols-outlined">chevron_right</span>
+</button>
+</div>
+</section>
+</div>
+</main>
+</body></html>

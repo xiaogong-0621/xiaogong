@@ -1,0 +1,10 @@
+# Ignore all user-uploaded files
+# Keep: directory structure (.gitkeep) and default images
+*
+!.gitignore
+!.gitkeep
+!avatars/
+!avatars/default.jpg
+!covers/
+!covers/default.jpg
+!music/

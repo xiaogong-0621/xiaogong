@@ -1,0 +1,95 @@
+<view class="profile-container">
+  <view class="blob blob-1"></view>
+  <view class="blob blob-2"></view>
+  <view class="blob blob-3"></view>
+  <view class="blob blob-4"></view>
+  <view class="blob blob-5"></view>
+  <view class="nav-header" style="padding-top: {{statusBarHeight}}rpx">
+    <view class="nav-icon-btn" bindtap="openSearch">
+      <image src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMjQgMjQiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzFkMWQxZiIgc3Ryb2tlLXdpZHRoPSIxLjgiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48Y2lyY2xlIGN4PSIxMSIgY3k9IjExIiByPSI4Ii8+PGxpbmUgeDE9IjIxIiB5MT0iMjEiIHgyPSIxNi42NSIgeTI9IjE2LjY1Ii8+PC9zdmc+" mode="aspectFit"/>
+    </view>
+    <text class="nav-title">我的收藏</text>
+    <view style="width: 40rpx"></view>
+  </view>
+
+  <view class="section-header">
+    <text class="section-title">我的收藏</text>
+    <text class="section-count">{{favoriteList.length}}首歌曲</text>
+  </view>
+
+  <view class="empty" wx:if="{{loading}}">
+    <text>加载中...</text>
+  </view>
+
+  <view class="empty" wx:elif="{{favoriteList.length === 0}}">
+    <text>暂无收藏歌曲</text>
+  </view>
+
+  <view class="favorite-list {{listSpring ? 'spring' : ''}}" wx:else>
+    <view class="favorite-item {{_removingId === item.id ? 'fav-dismiss' : ''}}" wx:for="{{favoriteList}}" wx:key="id">
+      <view class="fav-cover-wrap">
+        <image 
+          wx:if="{{item.coverOk}}"
+          class="favorite-cover" 
+          src="{{item.cover}}" 
+          mode="aspectFill"
+          binderror="onCoverError"
+          data-id="{{item.id}}"
+        />
+        <view class="fav-cover-fallback" wx:else>
+          <text class="cover-initial">{{item.name.charAt(0)}}</text>
+        </view>
+      </view>
+      <view class="favorite-info">
+        <text class="favorite-name">{{item.name}}</text>
+        <text class="favorite-artist">{{item.artist}}</text>
+      </view>
+      <view class="favorite-actions">
+        <view class="delete-btn" bindtap="removeFavorite" data-id="{{item.id}}">
+          <image src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMjQgMjQiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2VmNDQ0NCIgc3Ryb2tlLXdpZHRoPSIxLjgiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cG9seWxpbmUgcG9pbnRzPSIzIDYgNSA2IDIxIDYiLz48cGF0aCBkPSJNMTkgNnYxNGEyIDIgMCAwMS0yIDJIN2EyIDIgMCAwMS0yLTJWNm0zIDBWNGEyIDIgMCAwMTItMmg0YTIgMiAwIDAxMiAydjIiLz48L3N2Zz4=" mode="aspectFit"/>
+        </view>
+        <button class="order-btn {{item.ordered ? 'ordered' : ''}}" bindtap="orderSong" data-id="{{item.id}}">{{item.ordered ? '已点歌' : '点歌'}}</button>
+      </view>
+    </view>
+  </view>
+
+  <!-- 加入/申请房间弹窗 -->
+  <view class="room-mask" wx:if="{{showRoomDialog}}" bindtap="closeRoomDialog">
+    <view class="room-modal glass" catchtap="stopPropagation">
+      <view class="room-modal-header">
+        <text class="room-modal-title">请先加入房间</text>
+        <text class="room-modal-close" bindtap="closeRoomDialog">✕</text>
+      </view>
+      <view class="room-modal-body">
+        <view class="room-modal-section">
+          <text class="room-modal-label">输入房间码加入</text>
+          <view class="room-modal-row">
+            <input
+              class="room-modal-input"
+              placeholder="请输入6位房间码"
+              placeholder-class="room-modal-placeholder"
+              maxlength="6"
+              value="{{roomCodeInput}}"
+              bindinput="onRoomDialogInput"
+              bindconfirm="joinRoomFromDialog"
+            />
+            <button class="room-modal-join-btn" bindtap="joinRoomFromDialog" disabled="{{joiningRoom}}">
+              {{joiningRoom ? '加入中' : '加入'}}
+            </button>
+          </view>
+        </view>
+        <view class="room-modal-divider">
+          <text class="divider-text">或</text>
+        </view>
+        <button class="room-modal-request-btn" bindtap="requestRoomFromDialog">申请开房间</button>
+      </view>
+      <view class="room-modal-footer">
+        <button class="room-modal-cancel-btn" bindtap="closeRoomDialog">取消</button>
+      </view>
+    </view>
+  </view>
+
+  <!-- Duang 重复点歌提示 -->
+  <view class="duang-toast {{duangVisible ? 'show' : ''}}">duang~ 已经在列表</view>
+
+</view>

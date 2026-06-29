@@ -1,0 +1,54 @@
+<view class="login-container" style="padding-top: {{statusBarHeight}}rpx">
+  <!-- animated gradient background with floating blobs -->
+  <view class="bg-gradient"></view>
+  <view class="blob blob-1"></view>
+  <view class="blob blob-2"></view>
+  <view class="blob blob-3"></view>
+  <view class="blob blob-4"></view>
+  <view class="blob blob-5"></view>
+
+  <view class="login-card glass">
+    <!-- mic SVG icon -->
+    <view class="logo-wrap">
+      <view class="logo-icon">
+        <image src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgNDggNDgiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzAzNjlBMSIgc3Ryb2tlLXdpZHRoPSIyLjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB4PSIxNiIgeT0iNCIgd2lkdGg9IjE2IiBoZWlnaHQ9IjI0IiByeD0iOCIvPjxwYXRoIGQ9Ik0xMCAyMmMwIDYuNiA1LjQgMTIgMTIgMTJzMTItNS40IDEyLTEyIi8+PGxpbmUgeDE9IjI0IiB5MT0iMzQiIHgyPSIyNCIgeTI9IjQyIi8+PGxpbmUgeDE9IjE4IiB5MT0iNDIiIHgyPSIzMCIgeTI9IjQyIi8+PC9zdmc+" mode="aspectFit"/>
+      </view>
+    </view>
+    <text class="app-name">SONIC CANVAS</text>
+    <text class="app-subtitle">声域友 — 线上社交 KTV</text>
+
+    <view class="input-group">
+      <view class="input-item">
+        <view class="input-icon-wrap">
+          <image src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMjQgMjQiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzg2ODY4YiIgc3Ryb2tlLXdpZHRoPSIxLjgiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48Y2lyY2xlIGN4PSIxMiIgY3k9IjgiIHI9IjQiLz48cGF0aCBkPSJNNCAyMWMwLTQuNCAzLjYtOCA4LThzOCAzLjYgOCA4Ii8+PC9zdmc+" mode="aspectFit"/>
+        </view>
+        <input
+          class="input-field"
+          placeholder="用户名 / 手机号 / 邮箱"
+          placeholder-class="placeholder"
+          bindinput="onUsernameInput"
+          value="{{username}}"
+        />
+      </view>
+      <view class="input-item">
+        <view class="input-icon-wrap">
+          <image src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMjQgMjQiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzg2ODY4YiIgc3Ryb2tlLXdpZHRoPSIxLjgiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB4PSIzIiB5PSIxMSIgd2lkdGg9IjE4IiBoZWlnaHQ9IjEwIiByeD0iMyIvPjxwYXRoIGQ9Ik03IDExVjdhNSA1IDAgMDExMCAwdjQiLz48L3N2Zz4=" mode="aspectFit"/>
+        </view>
+        <input
+          class="input-field"
+          type="password"
+          placeholder="密码"
+          placeholder-class="placeholder"
+          bindinput="onPasswordInput"
+          value="{{password}}"
+        />
+      </view>
+    </view>
+
+    <button class="login-btn" bindtap="login">登 录</button>
+    <view class="register-link" bindtap="goToRegister">
+      <text class="register-text">还没有账号？</text>
+      <text class="register-action">立即注册</text>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<title>收藏爱心动画预览</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 60px;
+    background: #f8fafc;
+    font-family: system-ui, sans-serif;
+  }
+
+  h2 { font-size: 14px; color: #94a3b8; letter-spacing: 0.05em; }
+
+  .row {
+    display: flex;
+    align-items: center;
+    gap: 80px;
+  }
+
+  .demo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+  }
+
+  /* ====== Heart button ====== */
+  .heart-btn {
+    width: 52px; height: 52px;
+    display: flex; align-items: center; justify-content: center;
+    border: none; background: transparent; cursor: pointer;
+    border-radius: 50%;
+    transition: background 0.2s;
+    position: relative;
+  }
+  .heart-btn:hover { background: rgba(239,68,68,0.08); }
+
+  .heart-icon {
+    width: 28px; height: 28px;
+    position: relative;
+  }
+
+  /* SVG heart: outline + fill layer */
+  .heart-icon svg {
+    width: 100%; height: 100%;
+    position: absolute; inset: 0;
+  }
+
+  .heart-outline {
+    fill: none;
+    stroke: #cbd5e1;
+    stroke-width: 1.5;
+    transition: stroke 0.25s;
+  }
+
+  .heart-fill-svg {
+    clip-path: inset(0 100% 0 0);
+    transition: none;
+  }
+
+  .heart-fill-path {
+    fill: #ef4444;
+  }
+
+  /* ====== Fill-in animation ====== */
+  .heart-btn.filling .heart-outline {
+    stroke: #ef4444;
+  }
+
+  .heart-btn.filling .heart-fill-svg {
+    animation: fillIn 0.45s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  }
+
+  @keyframes fillIn {
+    0%   { clip-path: inset(0 100% 0 0); }
+    100% { clip-path: inset(0 0% 0 0); }
+  }
+
+  /* ====== Jelly bounce ====== */
+  .heart-btn.filling .heart-icon {
+    animation: jelly 0.55s 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  }
+
+  @keyframes jelly {
+    0%   { transform: scale(1); }
+    25%  { transform: scale(1.25, 0.8); }
+    50%  { transform: scale(0.88, 1.12); }
+    70%  { transform: scale(1.1, 0.92); }
+    85%  { transform: scale(0.97, 1.03); }
+    100% { transform: scale(1, 1); }
+  }
+
+  /* ====== Particle pop on fill complete ====== */
+  .heart-btn.filling .heart-icon::after {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(239,68,68,0.3) 0%, transparent 70%);
+    animation: popGlow 0.4s 0.4s ease-out forwards;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  @keyframes popGlow {
+    0%   { transform: scale(0.5); opacity: 0.8; }
+    100% { transform: scale(2); opacity: 0; }
+  }
+
+  /* ====== Unfill (remove favorite) ====== */
+  .heart-btn.unfilling .heart-fill-svg {
+    animation: unfill 0.3s ease-out forwards;
+  }
+  .heart-btn.unfilling .heart-outline {
+    transition: stroke 0.3s 0.15s;
+  }
+  .heart-btn.unfilling .heart-icon {
+    animation: shrinkPop 0.35s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  }
+
+  @keyframes unfill {
+    0%   { clip-path: inset(0 0% 0 0); }
+    100% { clip-path: inset(0 100% 0 0); }
+  }
+
+  @keyframes shrinkPop {
+    0%   { transform: scale(1); }
+    40%  { transform: scale(0.75); }
+    100% { transform: scale(1); }
+  }
+
+  /* ====== Filled state ====== */
+  .heart-btn.filled .heart-fill-svg {
+    clip-path: inset(0 0% 0 0);
+  }
+  .heart-btn.filled .heart-outline {
+    stroke: #ef4444;
+  }
+
+  /* ====== Variant B: Radial fill ====== */
+  .heart-btn.radial .heart-fill-svg {
+    clip-path: circle(0% at 50% 55%);
+  }
+  .heart-btn.radial.filling .heart-fill-svg {
+    animation: radialFill 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  }
+  @keyframes radialFill {
+    0%   { clip-path: circle(0% at 50% 55%); }
+    100% { clip-path: circle(75% at 50% 55%); }
+  }
+  .heart-btn.radial.filled .heart-fill-svg {
+    clip-path: circle(75% at 50% 55%);
+  }
+
+  /* ====== Variant C: Bottom-up fill ====== */
+  .heart-btn.bottomup .heart-fill-svg {
+    clip-path: inset(100% 0 0 0);
+  }
+  .heart-btn.bottomup.filling .heart-fill-svg {
+    animation: bottomFill 0.45s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  }
+  @keyframes bottomFill {
+    0%   { clip-path: inset(100% 0 0 0); }
+    100% { clip-path: inset(0% 0 0 0); }
+  }
+  .heart-btn.bottomup.filled .heart-fill-svg {
+    clip-path: inset(0% 0 0 0);
+  }
+
+  /* ====== Label ====== */
+  .label {
+    font-size: 13px;
+    color: #64748b;
+    font-weight: 500;
+  }
+  .label-hint {
+    font-size: 11px;
+    color: #94a3b8;
+    margin-top: -12px;
+  }
+
+  /* ====== Particles (created by JS) ====== */
+  .particle {
+    position: fixed;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+  }
+</style>
+</head>
+<body>
+
+<h2>收藏爱心动画预览 — 点击切换</h2>
+
+<div class="row">
+  <!-- A: Left-to-right fill -->
+  <div class="demo">
+    <button class="heart-btn" data-variant="ltr" onclick="toggle(this)">
+      <div class="heart-icon">
+        <svg viewBox="0 0 24 24"><path class="heart-outline" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+        <svg viewBox="0 0 24 24" class="heart-fill-svg"><path class="heart-fill-path" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+      </div>
+    </button>
+    <span class="label">A: 左→右填满</span>
+    <span class="label-hint">clip-path inset 横扫</span>
+  </div>
+
+  <!-- B: Radial fill -->
+  <div class="demo">
+    <button class="heart-btn radial" data-variant="radial" onclick="toggle(this)">
+      <div class="heart-icon">
+        <svg viewBox="0 0 24 24"><path class="heart-outline" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+        <svg viewBox="0 0 24 24" class="heart-fill-svg"><path class="heart-fill-path" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+      </div>
+    </button>
+    <span class="label">B: 中心扩散</span>
+    <span class="label-hint">clip-path circle 展开</span>
+  </div>
+
+  <!-- C: Bottom-up fill -->
+  <div class="demo">
+    <button class="heart-btn bottomup" data-variant="bottomup" onclick="toggle(this)">
+      <div class="heart-icon">
+        <svg viewBox="0 0 24 24"><path class="heart-outline" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+        <svg viewBox="0 0 24 24" class="heart-fill-svg"><path class="heart-fill-path" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+      </div>
+    </button>
+    <span class="label">C: 底→顶填满</span>
+    <span class="label-hint">clip-path inset 上移</span>
+  </div>
+</div>
+
+<script>
+function toggle(btn) {
+  if (btn.classList.contains('filling') || btn.classList.contains('unfilling')) return
+
+  if (btn.classList.contains('filled')) {
+    // Unfill
+    btn.classList.remove('filled')
+    btn.classList.add('unfilling')
+    setTimeout(() => btn.classList.remove('unfilling'), 350)
+  } else {
+    // Fill + jelly
+    btn.classList.add('filling')
+    // Spawn small particles at fill complete (450ms)
+    setTimeout(() => spawnParticles(btn), 440)
+    setTimeout(() => {
+      btn.classList.remove('filling')
+      btn.classList.add('filled')
+    }, 1000)
+  }
+}
+
+function spawnParticles(btn) {
+  const rect = btn.getBoundingClientRect()
+  const cx = rect.left + rect.width / 2
+  const cy = rect.top + rect.height / 2
+  const colors = ['#ef4444', '#f87171', '#fca5a5', '#fb7185']
+
+  for (let i = 0; i < 8; i++) {
+    const dot = document.createElement('div')
+    dot.className = 'particle'
+    const size = 3 + Math.random() * 4
+    dot.style.width = size + 'px'
+    dot.style.height = size + 'px'
+    dot.style.left = cx + 'px'
+    dot.style.top = cy + 'px'
+    dot.style.background = colors[Math.floor(Math.random() * colors.length)]
+    document.body.appendChild(dot)
+
+    const angle = (Math.PI * 2 * i) / 8
+    const dist = 20 + Math.random() * 15
+    dot.animate([
+      { transform: 'translate(0,0) scale(1)', opacity: 1 },
+      { transform: `translate(${Math.cos(angle)*dist}px,${Math.sin(angle)*dist}px) scale(0)`, opacity: 0 },
+    ], { duration: 350, easing: 'cubic-bezier(.22,.61,.36,1)', fill: 'forwards' })
+
+    setTimeout(() => dot.remove(), 400)
+  }
+}
+</script>
+</body>
+</html>

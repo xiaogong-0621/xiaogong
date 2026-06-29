@@ -1,0 +1,435 @@
+/* ─── 个人主页 ─── */
+
+.user-container {
+  min-height: 100vh;
+  background: #F5F7FA;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+  padding-bottom: 120rpx;
+}
+
+/* ─── 导航 ─── */
+.nav-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16rpx 40rpx;
+  position: relative;
+  z-index: 1;
+}
+
+.nav-title {
+  font-size: 34rpx;
+  font-weight: 700;
+  color: #0369A1;
+}
+
+/* ─── Banner ─── */
+.up-banner {
+  position: relative;
+  height: 280rpx;
+  margin: 0 40rpx;
+  border-radius: 32rpx;
+  background: linear-gradient(135deg, #004a75, #006399, #0088cc, #4fb3ff, #71fcfe);
+  background-size: 300% 300%;
+  animation: bannerShift 8s ease-in-out infinite;
+  overflow: hidden;
+  margin-bottom: -60rpx;
+  z-index: 1;
+}
+
+.up-banner::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 40%, #F5F7FA 100%);
+}
+
+@keyframes bannerShift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+.up-cloud {
+  position: absolute;
+  border-radius: 50rpx;
+  animation: cloudDrift 20s linear infinite;
+}
+
+.up-cloud:nth-child(1) {
+  width: 160rpx;
+  height: 46rpx;
+  top: 60rpx;
+  left: -60rpx;
+  animation-duration: 16s;
+  background: rgba(255,255,255,0.2);
+  box-shadow: 30rpx -28rpx 0 14rpx rgba(255,255,255,0.18), 80rpx -36rpx 0 28rpx rgba(255,255,255,0.15);
+}
+
+.up-cloud:nth-child(2) {
+  width: 120rpx;
+  height: 36rpx;
+  top: 130rpx;
+  left: -40rpx;
+  animation-duration: 12s;
+  animation-delay: -6s;
+  background: rgba(255,255,255,0.15);
+  box-shadow: 24rpx -22rpx 0 10rpx rgba(255,255,255,0.12), 60rpx -30rpx 0 20rpx rgba(255,255,255,0.10);
+}
+
+@keyframes cloudDrift {
+  from { transform: translateX(-100rpx); }
+  to { transform: translateX(800rpx); }
+}
+
+/* ─── 头像 + 名称 ─── */
+.up-profile-header {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 0 40rpx 24rpx;
+}
+
+.up-avatar-wrap {
+  margin-bottom: 20rpx;
+}
+
+.up-avatar {
+  width: 160rpx;
+  height: 160rpx;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #006399, #4fb3ff);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 0 6rpx #F5F7FA, 0 0 0 8rpx rgba(0,99,153,0.3);
+  overflow: hidden;
+}
+
+.up-avatar-img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+}
+
+.up-avatar-initial {
+  font-size: 60rpx;
+  font-weight: 800;
+  color: #fff;
+}
+
+.up-name {
+  font-size: 40rpx;
+  font-weight: 800;
+  color: #1d1d1f;
+  margin-bottom: 8rpx;
+}
+
+.up-handle {
+  font-size: 26rpx;
+  color: #86868b;
+}
+
+/* ─── 统计卡片 ─── */
+.up-stats-row {
+  display: flex;
+  gap: 20rpx;
+  padding: 0 40rpx;
+  margin-bottom: 24rpx;
+  position: relative;
+  z-index: 1;
+}
+
+.up-stat-card {
+  flex: 1;
+  text-align: center;
+  padding: 24rpx 16rpx;
+}
+
+.up-stat-value {
+  display: block;
+  font-size: 40rpx;
+  font-weight: 800;
+  color: #1d1d1f;
+  line-height: 1.2;
+}
+
+.up-stat-label {
+  display: block;
+  font-size: 22rpx;
+  color: #86868b;
+  margin-top: 4rpx;
+}
+
+/* ─── 操作按钮 ─── */
+.up-actions-row {
+  display: flex;
+  gap: 20rpx;
+  padding: 0 40rpx;
+  margin-bottom: 32rpx;
+  position: relative;
+  z-index: 1;
+}
+
+.up-action-btn {
+  flex: 1;
+  height: 80rpx;
+  border-radius: 28rpx;
+  font-size: 28rpx;
+  font-weight: 600;
+  line-height: 80rpx;
+  padding: 0;
+  margin: 0;
+  border: none;
+}
+
+.up-action-btn::after {
+  border: none;
+}
+
+.up-btn-primary {
+  background: #0EA5E9;
+  color: #fff;
+  box-shadow: 0 12rpx 40rpx rgba(14,165,233,0.25);
+}
+
+.up-btn-secondary {
+  background: rgba(255,255,255,0.5);
+  backdrop-filter: blur(20rpx);
+  -webkit-backdrop-filter: blur(20rpx);
+  color: #1d1d1f;
+  border: 1rpx solid rgba(255,255,255,0.5);
+}
+
+/* ─── 分区卡片 ─── */
+.up-section {
+  margin: 0 40rpx 24rpx;
+  padding: 28rpx;
+  position: relative;
+  z-index: 1;
+}
+
+.up-section-title {
+  display: block;
+  font-size: 30rpx;
+  font-weight: 700;
+  color: #1d1d1f;
+  margin-bottom: 20rpx;
+}
+
+.up-empty {
+  text-align: center;
+  padding: 48rpx 0;
+  color: #86868b;
+  font-size: 26rpx;
+}
+
+/* ─── 最近点歌 ─── */
+.up-song-item {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  padding: 16rpx 12rpx;
+  border-radius: 20rpx;
+}
+
+.up-song-cover-wrap {
+  flex-shrink: 0;
+}
+
+.up-song-cover {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 20rpx;
+}
+
+.up-song-cover-placeholder {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 20rpx;
+  background: linear-gradient(135deg, rgba(14,165,233,0.1), rgba(56,189,248,0.06));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.up-song-initial {
+  font-size: 30rpx;
+  font-weight: 700;
+  color: #0EA5E9;
+}
+
+.up-song-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.up-song-title {
+  display: block;
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #1d1d1f;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.up-song-artist {
+  display: block;
+  font-size: 22rpx;
+  color: #86868b;
+  margin-top: 4rpx;
+}
+
+.up-song-date {
+  font-size: 22rpx;
+  color: #a1a1aa;
+  flex-shrink: 0;
+}
+
+/* ─── 设置 ─── */
+.up-setting-item {
+  display: flex;
+  align-items: center;
+  padding: 16rpx 8rpx;
+  border-radius: 16rpx;
+}
+
+.up-setting-label {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #1d1d1f;
+  display: block;
+}
+
+.up-setting-desc {
+  font-size: 22rpx;
+  color: #86868b;
+  display: block;
+  margin-top: 4rpx;
+  flex: 1;
+}
+
+.up-setting-arrow {
+  font-size: 36rpx;
+  color: #86868b;
+  flex-shrink: 0;
+  margin-left: 16rpx;
+}
+
+.up-divider {
+  height: 1rpx;
+  background: rgba(0,0,0,0.06);
+  margin: 12rpx 0;
+}
+
+/* ─── 弹窗 ─── */
+.up-mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+}
+
+.up-modal {
+  width: 680rpx;
+  overflow: hidden;
+}
+
+.up-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 32rpx;
+  border-bottom: 1rpx solid rgba(255,255,255,0.3);
+}
+
+.up-modal-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #1d1d1f;
+}
+
+.up-modal-close {
+  font-size: 36rpx;
+  color: #86868b;
+  padding: 8rpx;
+}
+
+.up-modal-body {
+  padding: 32rpx;
+}
+
+.up-form-group {
+  margin-bottom: 28rpx;
+}
+
+.up-form-group:last-child {
+  margin-bottom: 0;
+}
+
+.up-form-label {
+  display: block;
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #1d1d1f;
+  margin-bottom: 12rpx;
+}
+
+.up-form-input {
+  width: 100%;
+  height: 80rpx;
+  background: rgba(255,255,255,0.45);
+  border: 1rpx solid rgba(255,255,255,0.5);
+  border-radius: 20rpx;
+  padding: 0 24rpx;
+  font-size: 28rpx;
+  box-sizing: border-box;
+}
+
+.up-modal-footer {
+  display: flex;
+  border-top: 1rpx solid rgba(255,255,255,0.3);
+}
+
+.up-modal-cancel,
+.up-modal-confirm {
+  flex: 1;
+  height: 88rpx;
+  border: none;
+  border-radius: 0;
+  font-size: 28rpx;
+  font-weight: 600;
+  line-height: 88rpx;
+  padding: 0;
+  margin: 0;
+}
+
+.up-modal-cancel::after,
+.up-modal-confirm::after {
+  border: none;
+}
+
+.up-modal-cancel {
+  background: transparent;
+  color: #86868b;
+}
+
+.up-modal-confirm {
+  background: #0EA5E9;
+  color: #fff;
+}
+
+.up-modal-confirm[disabled] {
+  opacity: 0.5;
+}

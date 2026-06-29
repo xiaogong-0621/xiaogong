@@ -1,0 +1,203 @@
+<wxs src="../../utils/format.wxs" module="fmt" />
+
+<view class="room-container">
+  <!-- 漂浮光晕 -->
+  <view class="blob blob-1"></view>
+  <view class="blob blob-2"></view>
+  <view class="blob blob-3"></view>
+  <view class="blob blob-4"></view>
+  <view class="blob blob-5"></view>
+
+  <!-- 未加入房间 -->
+  <block wx:if="{{currentRoomId <= 0}}">
+    <view class="no-room-hero">
+      <view class="no-room-icon">
+        <text class="no-room-emoji">🎤</text>
+      </view>
+      <text class="no-room-title">声域友</text>
+      <text class="no-room-sub">线上社交 KTV · 加入房间开始唱歌</text>
+      <view class="no-room-join">
+        <input class="no-room-input" placeholder="输入6位房间码" placeholder-class="no-room-placeholder" maxlength="6" value="{{roomCodeInput}}" bindinput="onRoomCodeInput" bindconfirm="joinRoom"/>
+        <button class="no-room-btn" bindtap="joinRoom" disabled="{{joiningRoom}}">
+          {{joiningRoom ? '加入中...' : '加入房间'}}
+        </button>
+      </view>
+      <text class="no-room-hint" wx:if="{{joinError}}">{{joinError}}</text>
+    </view>
+  </block>
+
+  <!-- 已加入房间 -->
+  <block wx:else>
+    <view class="nav-header" style="padding-top: {{statusBarHeight}}rpx">
+      <view class="nav-icon-btn" bindtap="openMenu">
+        <image src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMjQgMjQiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzFkMWQxZiIgc3Ryb2tlLXdpZHRoPSIxLjgiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48bGluZSB4MT0iMyIgeTE9IjYiIHgyPSIyMSIgeTI9IjYiLz48bGluZSB4MT0iMyIgeTE9IjEyIiB4Mj0iMjEiIHkyPSIxMiIvPjxsaW5lIHgxPSIzIiB5MT0iMTgiIHgyPSIyMSIgeTI9IjE4Ii8+PC9zdmc+" mode="aspectFit"/>
+      </view>
+      <text class="nav-title">当前房间</text>
+      <view class="nav-icon-btn" bindtap="openSearch">
+        <image src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMjQgMjQiIGZpbGw9IiMxZDFkMWYiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMTIiIGN5PSI1IiByPSIxLjUiLz48Y2lyY2xlIGN4PSIxMiIgY3k9IjEyIiByPSIxLjUiLz48Y2lyY2xlIGN4PSIxMiIgY3k9IjE5IiByPSIxLjUiLz48L3N2Zz4=" mode="aspectFit"/>
+      </view>
+    </view>
+
+    <!-- 房间信息栏 -->
+    <view class="room-bar glass-sm">
+      <view class="room-bar-left">
+        <view class="room-stat">
+          <text class="room-stat-label">房间码</text>
+          <text class="room-stat-value room-code-mono">{{roomNumber}}</text>
+        </view>
+        <view class="room-stat">
+          <text class="room-stat-label">在线</text>
+          <text class="room-stat-value room-stat-green">{{onlineUsers}} 人</text>
+        </view>
+        <view class="room-stat">
+          <text class="room-stat-label">已点</text>
+          <text class="room-stat-value">{{songsQueued}} 首</text>
+        </view>
+      </view>
+      <view class="room-bar-right">
+        <button class="leave-btn" bindtap="leaveRoom">退出房间</button>
+      </view>
+    </view>
+
+    <!-- 正在播放卡片 -->
+    <view class="now-playing glass">
+      <view class="np-cover-wrap">
+        <image wx:if="{{playingSong.coverOk}}" class="np-cover-img" src="{{playingSong.cover}}" mode="aspectFill" binderror="onPlayingCoverError"/>
+        <view wx:else class="np-cover-placeholder">
+          <text class="np-cover-initial">{{playingSong.name.charAt(0)}}</text>
+        </view>
+      </view>
+      <text class="np-song">{{playingSong.name}}</text>
+      <text class="np-artist">{{playingSong.artist}}</text>
+      <text class="np-requester" wx:if="{{playingSong.orderedBy}}">点歌人：{{playingSong.orderedBy}}</text>
+
+      <view class="progress-section">
+        <text class="progress-time">{{fmt.formatTime(currentTime)}}</text>
+        <view class="progress-track" bindtap="onProgressTap">
+          <view class="progress-fill" style="width: {{totalTime > 0 ? (currentTime / totalTime) * 100 : 0}}%"></view>
+        </view>
+        <text class="progress-time">{{fmt.formatTime(totalTime)}}</text>
+      </view>
+
+      <view class="np-controls">
+        <view class="np-ctrl-btn" bindtap="prevSong">
+          <image src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMjQgMjQiIGZpbGw9IiM4Njg2OGIiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTYgNmgydjEySDZ6bTMuNSA2bDguNSA2VjZ6Ii8+PC9zdmc+" mode="aspectFit"/>
+        </view>
+        <view class="np-play-btn" bindtap="togglePlay">
+          <image wx:if="{{isPlaying}}" src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMjQgMjQiIGZpbGw9IiNmZmYiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3QgeD0iNiIgeT0iNSIgd2lkdGg9IjQiIGhlaWdodD0iMTQiIHJ4PSIxIi8+PHJlY3QgeD0iMTQiIHk9IjUiIHdpZHRoPSI0IiBoZWlnaHQ9IjE0IiByeD0iMSIvPjwvc3ZnPg==" mode="aspectFit"/>
+          <image wx:else src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMjQgMjQiIGZpbGw9IiNmZmYiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBvbHlnb24gcG9pbnRzPSI4LDUgMTksMTIgOCwxOSIvPjwvc3ZnPg==" mode="aspectFit"/>
+        </view>
+        <view class="np-ctrl-btn" bindtap="nextSong">
+          <image src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMjQgMjQiIGZpbGw9IiM4Njg2OGIiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTE2IDE4aDJWNmgtMnpNNiAxOGw4LjUtNkw2IDZ6Ii8+PC9zdmc+" mode="aspectFit"/>
+        </view>
+      </view>
+    </view>
+
+    <!-- 播放队列 -->
+    <view class="queue-section">
+      <view class="section-header">
+        <text class="section-title">播放队列</text>
+        <view class="queue-count-badge">
+          <text>{{orderList.length}}</text>
+        </view>
+      </view>
+
+      <view class="empty" wx:if="{{loading}}">
+        <text>加载中...</text>
+      </view>
+
+      <view class="empty" wx:elif="{{orderList.length === 0}}">
+        <text>暂无歌曲，去探索页点歌吧</text>
+      </view>
+
+      <scroll-view class="queue-scroll" wx:else scroll-y scroll-into-view="{{queueScrollIntoId}}" scroll-with-animation>
+        <view
+          class="queue-item {{draggingIndex === index ? 'dragging' : ''}} {{item._state || ''}}"
+          wx:for="{{orderList}}"
+          wx:key="id"
+          id="queue-item-{{item.id}}"
+          data-id="{{item.id}}"
+          data-index="{{index}}"
+          catchlongpress="onTouchStart"
+          bindtap="playQueueSong"
+          data-queueid="{{item.id}}"
+        >
+          <text class="queue-rank">{{item.rank}}</text>
+          <view class="queue-cover-wrap" bindtap="goToDetail" data-type="order" data-songid="{{item.songId}}">
+            <image wx:if="{{item.coverOk}}" class="queue-cover-img" src="{{item.cover}}" mode="aspectFill"/>
+            <view wx:else class="queue-cover-placeholder">
+              <text class="queue-initial">{{item.name.charAt(0)}}</text>
+            </view>
+          </view>
+          <view class="queue-info">
+            <text class="queue-song">{{item.name}}</text>
+            <text class="queue-artist">{{item.artist}}</text>
+            <text class="queue-by" wx:if="{{item.user}}">{{item.user}} 点播</text>
+          </view>
+          <view class="queue-fav {{item.liked ? 'fav-on' : ''}}" bindtap="toggleQueueFav" data-id="{{item.id}}" data-songid="{{item.songId}}">
+            <text>{{item.liked ? '♥' : '♡'}}</text>
+          </view>
+          <view class="queue-del" bindtap="deleteItem" data-id="{{item.id}}">
+            <image src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMjQgMjQiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzg2ODY4YiIgc3Ryb2tlLXdpZHRoPSIxLjgiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48bGluZSB4MT0iMTgiIHkxPSI2IiB4Mj0iNiIgeTI9IjE4Ii8+PGxpbmUgeDE9IjYiIHkxPSI2IiB4Mj0iMTgiIHkyPSIxOCIvPjwvc3ZnPg==" mode="aspectFit"/>
+          </view>
+        </view>
+      </scroll-view>
+    </view>
+
+    <!-- 实时聊天 -->
+    <view class="chat-section glass-sm">
+      <view class="chat-header">
+        <text class="chat-title">实时聊天</text>
+        <text class="chat-arrow {{showChat ? 'open' : ''}}" bindtap="toggleChat">▼</text>
+      </view>
+
+      <view class="chat-body" wx:if="{{showChat}}">
+        <scroll-view class="chat-messages" scroll-y scroll-top="{{chatScrollTop}}" scroll-with-animation>
+          <view wx:if="{{chatMessages.length === 0 && voiceMessages.length === 0}}" class="chat-empty">
+            <text>暂无消息，来说点什么吧</text>
+          </view>
+          <!-- 文字消息 -->
+          <view class="chat-msg {{item.isSystem ? 'system' : ''}}" wx:for="{{chatMessages}}" wx:key="id">
+            <text wx:if="{{!item.isSystem}}" class="msg-nick">{{item.nickname}}</text>
+            <text class="msg-content">{{item.message}}</text>
+            <text class="msg-time">{{item.time}}</text>
+          </view>
+          <!-- 语音消息 -->
+          <view class="chat-msg voice-msg" wx:for="{{voiceMessages}}" wx:key="id" data-id="{{item.id}}" bindtap="playVoice">
+            <text class="msg-nick">{{item.nickname}}</text>
+            <view class="voice-bubble {{playingVoiceId === item.id ? 'playing' : ''}}">
+              <text class="voice-icon">{{playingVoiceId === item.id ? '⏸' : '▶'}}</text>
+              <view class="voice-waves">
+                <view class="voice-wave" wx:for="{{12}}" wx:for-item="n" wx:key="n" style="height: {{4 + n * 2}}rpx"></view>
+              </view>
+              <text class="voice-duration">{{item.duration}}s</text>
+            </view>
+            <text class="msg-time">{{item.createdAt}}</text>
+          </view>
+        </scroll-view>
+
+        <!-- 录音中 UI -->
+        <view class="recording-bar" wx:if="{{isRecording}}">
+          <view class="recording-indicator">
+            <view class="recording-dot"></view>
+            <text class="recording-text">录音中 {{recordingTime}}s</text>
+          </view>
+          <button class="recording-cancel" bindtap="cancelRecording">取消</button>
+          <button class="recording-send" bindtap="stopRecording">发送</button>
+        </view>
+
+        <!-- 普通输入栏 -->
+        <view class="chat-input-bar" wx:else>
+          <input class="chat-input" placeholder="说点什么…" placeholder-class="chat-placeholder" maxlength="200" value="{{chatInput}}" bindinput="onChatInput" bindconfirm="sendChat"/>
+          <view class="chat-mic-btn" bindtap="startRecording">
+            <text class="mic-icon">🎤</text>
+          </view>
+          <button class="chat-send-btn" bindtap="sendChat">发送</button>
+        </view>
+      </view>
+    </view>
+
+    <!-- Toast 通知 -->
+    <view class="room-toast {{toastVisible ? 'show' : ''}}">{{toastMsg}}</view>
+  </block>
+</view>

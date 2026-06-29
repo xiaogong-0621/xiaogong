@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+
+<html class="light" lang="zh-CN"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Admin Console - System Settings</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&amp;family=Manrope:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "primary": "#006399",
+                    "background": "#f7f9fb",
+                    "on-primary": "#ffffff",
+                    "outline-variant": "#bfc7d2",
+                    "error-container": "#ffdad6",
+                    "outline": "#6f7882",
+                    "on-secondary-fixed": "#001b3d",
+                    "error": "#ba1a1a",
+                    "surface-container": "#eceef0",
+                    "on-tertiary-container": "#583a00",
+                    "primary-fixed": "#cde5ff",
+                    "surface-container-high": "#e6e8ea",
+                    "tertiary": "#7f5600",
+                    "on-primary-fixed-variant": "#004a75",
+                    "on-error-container": "#93000a",
+                    "surface-container-low": "#f2f4f6",
+                    "on-surface-variant": "#3f4851",
+                    "surface-bright": "#f7f9fb",
+                    "secondary-fixed": "#d6e3ff",
+                    "surface-container-highest": "#e0e3e5",
+                    "on-surface": "#191c1e",
+                    "surface": "#f7f9fb",
+                    "tertiary-fixed-dim": "#ffba3f",
+                    "on-tertiary-fixed-variant": "#604100",
+                    "on-error": "#ffffff",
+                    "inverse-on-surface": "#eff1f3",
+                    "secondary-fixed-dim": "#a9c7ff",
+                    "on-secondary-fixed-variant": "#00468c",
+                    "on-primary-fixed": "#001d32",
+                    "tertiary-fixed": "#ffdeae",
+                    "inverse-primary": "#95ccff",
+                    "on-primary-container": "#00436a",
+                    "tertiary-container": "#e39f14",
+                    "secondary": "#005db7",
+                    "surface-dim": "#d8dadc",
+                    "secondary-container": "#64a1ff",
+                    "primary-container": "#4fb3ff",
+                    "on-secondary-container": "#003670",
+                    "surface-variant": "#e0e3e5",
+                    "on-background": "#191c1e",
+                    "surface-container-lowest": "#ffffff",
+                    "on-secondary": "#ffffff",
+                    "on-tertiary-fixed": "#281900",
+                    "inverse-surface": "#2d3133",
+                    "primary-fixed-dim": "#95ccff",
+                    "on-tertiary": "#ffffff",
+                    "surface-tint": "#006399"
+            },
+            "borderRadius": {
+                    "DEFAULT": "1rem",
+                    "lg": "2rem",
+                    "xl": "3rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Plus Jakarta Sans"],
+                    "display": ["Plus Jakarta Sans"],
+                    "body": ["Manrope"],
+                    "label": ["Manrope"]
+            }
+          }
+        }
+      }
+    </script>
+<style>
+        body { font-family: 'Manrope', sans-serif; background-color: #f7f9fb; }
+        h1, h2, h3, h4, h5, h6, .display, .headline { font-family: 'Plus Jakarta Sans', sans-serif; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface antialiased min-h-screen flex">
+<!-- SideNavBar -->
+<nav class="bg-slate-950 dark:bg-black font-plus-jakarta-sans text-sm tracking-wide h-screen w-64 flex flex-col fixed left-0 top-0 shadow-xl shadow-black/20 z-50">
+<div class="flex flex-col h-full py-6">
+<!-- Brand Logo -->
+<div class="px-8 mb-8 flex items-center gap-3">
+<div class="w-10 h-10 bg-slate-800 rounded-lg flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-white" data-icon="graphic_eq" style="">graphic_eq</span>
+</div>
+<div>
+<div class="text-2xl font-bold tracking-tight text-white" style="">声域友</div>
+<div class="text-xs text-slate-400 mt-1" style="">Admin Console</div>
+</div>
+</div>
+<!-- Navigation Links -->
+<div class="flex-1 flex flex-col gap-2 overflow-y-auto mt-4">
+<a class="flex items-center gap-4 text-slate-400 hover:text-white transition-colors duration-200 mx-3 px-4 py-3 hover:bg-slate-900 rounded-xl scale-98 active:scale-95 transition-transform group" href="#" style="">
+<span class="material-symbols-outlined group-hover:text-sky-400" data-icon="dashboard" style="">dashboard</span>
+<span class="" style="">仪表盘</span>
+</a>
+<a class="flex items-center gap-4 text-slate-400 hover:text-white transition-colors duration-200 mx-3 px-4 py-3 hover:bg-slate-900 rounded-xl scale-98 active:scale-95 transition-transform group" href="#" style="">
+<span class="material-symbols-outlined group-hover:text-sky-400" data-icon="meeting_room" style="">meeting_room</span>
+<span class="" style="">房间管理</span>
+</a>
+<a class="flex items-center gap-4 text-slate-400 hover:text-white transition-colors duration-200 mx-3 px-4 py-3 hover:bg-slate-900 rounded-xl scale-98 active:scale-95 transition-transform group" href="#" style="">
+<span class="material-symbols-outlined group-hover:text-sky-400" data-icon="library_music" style="">library_music</span>
+<span class="" style="">歌曲管理</span>
+</a>
+<a class="flex items-center gap-4 text-slate-400 hover:text-white transition-colors duration-200 mx-3 px-4 py-3 hover:bg-slate-900 rounded-xl scale-98 active:scale-95 transition-transform group" href="#" style="">
+<span class="material-symbols-outlined group-hover:text-sky-400" data-icon="receipt_long" style="">receipt_long</span>
+<span class="" style="">订单管理</span>
+</a>
+<!-- Active Item -->
+<a class="flex items-center gap-4 text-slate-400 hover:text-white transition-colors duration-200 mx-3 px-4 py-3 hover:bg-slate-900 rounded-xl scale-98 active:scale-95 transition-transform group" href="#">
+<span class="material-symbols-outlined group-hover:text-sky-400" data-icon="manage_accounts">manage_accounts</span>
+<span>账户管理</span>
+</a><a class="flex items-center gap-4 bg-sky-900/40 text-sky-400 font-semibold rounded-xl mx-3 px-4 py-3 scale-98 active:scale-95 transition-transform" href="#" style="">
+<span class="material-symbols-outlined" data-icon="settings" style="">settings</span>
+<span class="" style="">系统设置</span>
+</a>
+</div>
+<!-- User Profile Area Wireframe -->
+<div class="mt-auto pt-6 px-4">
+<div class="flex items-center gap-3 text-slate-400 hover:text-white transition-colors cursor-pointer">
+<div class="w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center text-[10px] text-slate-500 overflow-hidden leading-tight text-center px-1">管理员头像</div>
+<div class="flex flex-col">
+<span class="text-sm font-semibold text-white">管理员</span>
+<span class="text-xs">退出登录</span>
+</div>
+</div>
+</div>
+</div>
+</nav>
+<!-- Main Content Canvas -->
+<div class="flex-1 ml-64 flex flex-col min-h-screen">
+<!-- TopAppBar -->
+<header class="bg-[#f7f9fb] dark:bg-slate-900 text-[#006399] font-manrope text-sm fixed top-0 right-0 w-[calc(100%-16rem)] h-16 z-40">
+<div class="flex items-center justify-between px-8 w-full h-full">
+<!-- Breadcrumbs/Title -->
+<div class="flex items-center gap-2">
+<span class="text-slate-500" style="">设置</span>
+<span class="text-slate-400" style="">/</span>
+<span class="text-[#006399] font-bold text-lg font-headline" style="">系统设置</span>
+</div>
+<!-- Actions -->
+<div class="flex items-center gap-4">
+<button class="w-10 h-10 flex items-center justify-center text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full scale-98 transition-all" style="">
+<span class="material-symbols-outlined" data-icon="notifications" style="">notifications</span>
+</button>
+<button class="w-10 h-10 flex items-center justify-center text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full scale-98 transition-all" style="">
+<span class="material-symbols-outlined" data-icon="help_outline" style="">help_outline</span>
+</button>
+<div class="h-6 w-px bg-slate-300 mx-2"></div>
+<div class="flex items-center gap-3 cursor-pointer hover:bg-slate-100 p-2 rounded-lg transition-colors">
+<div class="w-8 h-8 bg-slate-300 rounded-full flex items-center justify-center">
+<span class="text-[10px] text-slate-500" style="">头像</span>
+</div>
+<span class="font-medium" style="">Admin User</span>
+<span class="material-symbols-outlined text-sm" data-icon="expand_more" style="">expand_more</span>
+</div>
+</div>
+</div>
+</header>
+<!-- Page Content -->
+<main class="flex-1 mt-16 p-8 max-w-5xl mx-auto w-full">
+<div class="flex items-center justify-between mb-8">
+<div>
+<h1 class="text-3xl font-extrabold font-headline text-on-surface tracking-tight" style="">系统设置</h1>
+<p class="text-outline mt-2 text-sm" style="">配置基础门店信息、价格规则与安全偏好。</p>
+</div>
+<button class="bg-primary text-on-primary px-6 py-3 rounded-full flex items-center gap-2 hover:bg-secondary transition-colors scale-98 active:scale-95 shadow-lg shadow-primary/20" style="">
+<span class="material-symbols-outlined" data-icon="save" style="">save</span>
+<span class="font-semibold" style="">保存设置</span>
+</button>
+</div>
+<div class="space-y-8 pb-20">
+<!-- Section 1: Basic Info -->
+<section class="bg-surface-container-lowest rounded-xl p-8 shadow-sm">
+<div class="flex items-center gap-3 mb-6 pb-4 border-b border-surface-variant">
+<span class="material-symbols-outlined text-primary" data-icon="storefront" style="">storefront</span>
+<h2 class="text-xl font-bold font-headline text-on-surface" style="">基本信息</h2>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+<div class="space-y-2">
+<label class="block text-sm font-semibold text-on-surface-variant" style="">门店名称</label>
+<input class="w-full bg-surface-container-high text-on-surface placeholder-outline border-none rounded-lg focus:ring-2 focus:ring-primary h-12 px-4 transition-all" placeholder="声域友 KTV (旗舰店)" type="text" value="声域友 KTV (旗舰店)"/>
+</div>
+<div class="space-y-2">
+<label class="block text-sm font-semibold text-on-surface-variant" style="">联系电话</label>
+<input class="w-full bg-surface-container-high text-on-surface placeholder-outline border-none rounded-lg focus:ring-2 focus:ring-primary h-12 px-4 transition-all" placeholder="联系电话..." type="text"/>
+</div>
+<div class="space-y-2 md:col-span-2">
+<label class="block text-sm font-semibold text-on-surface-variant" style="">门店地址</label>
+<textarea class="w-full bg-surface-container-high text-on-surface placeholder-outline border-none rounded-lg focus:ring-2 focus:ring-primary p-4 min-h-[100px] resize-none transition-all" placeholder="输入门店详细地址..."></textarea>
+</div>
+<div class="space-y-2">
+<label class="block text-sm font-semibold text-on-surface-variant" style="">营业时间</label>
+<div class="relative">
+<input class="w-full bg-surface-container-high text-on-surface placeholder-outline border-none rounded-lg focus:ring-2 focus:ring-primary h-12 pl-10 px-4 transition-all" placeholder="14:00 - 02:00" type="text" value="14:00 - 02:00"/>
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-lg" data-icon="schedule" style="">schedule</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Section 2: Pricing -->
+<section class="bg-surface-container-lowest rounded-xl p-8 shadow-sm">
+<div class="flex items-center gap-3 mb-6 pb-4 border-b border-surface-variant">
+<span class="material-symbols-outlined text-primary" data-icon="payments" style="">payments</span>
+<h2 class="text-xl font-bold font-headline text-on-surface" style="">价格设置</h2>
+</div>
+<div class="space-y-8">
+<div class="flex items-center justify-between p-4 bg-surface rounded-lg">
+<div>
+<h3 class="font-semibold text-on-surface" style="">开启节假日动态定价</h3>
+<p class="text-sm text-outline mt-1" style="">在周末和法定节假日自动应用溢价规则</p>
+</div>
+<label class="relative inline-flex items-center cursor-pointer" style="">
+<input checked="" class="sr-only peer" type="checkbox" value=""/>
+<div class="w-14 h-7 bg-surface-container-highest peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+<div class="space-y-2">
+<label class="block text-sm font-semibold text-on-surface-variant" style="">默认包厢单价基数 (¥/小时)</label>
+<div class="relative max-w-md">
+<input class="w-full bg-surface-container-high text-on-surface placeholder-outline border-none rounded-lg focus:ring-2 focus:ring-primary h-12 pl-12 pr-4 transition-all" placeholder="120" type="number" value="120"/>
+<span class="absolute left-4 top-1/2 -translate-y-1/2 text-outline font-semibold" style="">¥</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Section 3: Security -->
+<section class="bg-surface-container-lowest rounded-xl p-8 shadow-sm">
+<div class="flex items-center gap-3 mb-6 pb-4 border-b border-surface-variant">
+<span class="material-symbols-outlined text-primary" data-icon="security" style="">security</span>
+<h2 class="text-xl font-bold font-headline text-on-surface" style="">安全设置</h2>
+</div>
+<div class="space-y-8">
+<div class="space-y-2 max-w-md">
+<label class="block text-sm font-semibold text-on-surface-variant" style="">操作日志保留期限</label>
+<div class="relative">
+<select class="w-full bg-surface-container-high text-on-surface border-none rounded-lg focus:ring-2 focus:ring-primary h-12 px-4 appearance-none cursor-pointer">
+<option>选项A (30天)</option>
+<option selected="">选项B (90天)</option>
+<option>选项C (180天)</option>
+<option>永久保留</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-outline pointer-events-none" data-icon="expand_more" style="">expand_more</span>
+</div>
+</div>
+<div class="flex items-center justify-between p-4 bg-surface rounded-lg">
+<div>
+<h3 class="font-semibold text-on-surface" style="">敏感操作二次验证</h3>
+<p class="text-sm text-outline mt-1" style="">删除数据或修改财务设置时需验证管理员密码</p>
+</div>
+<label class="relative inline-flex items-center cursor-pointer" style="">
+<input class="sr-only peer" type="checkbox" value=""/>
+<div class="w-14 h-7 bg-surface-container-highest peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+</div>
+</section>
+</div>
+</main>
+</div>
+</body></html>

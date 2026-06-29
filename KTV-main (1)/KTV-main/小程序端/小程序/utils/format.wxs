@@ -1,0 +1,12 @@
+function formatTime(seconds) {
+  if (!seconds || seconds !== seconds) return '00:00'
+  seconds = Math.floor(seconds)
+  if (seconds < 0) seconds = 0
+  var mins = Math.floor(seconds / 60)
+  var secs = seconds % 60
+  return (mins < 10 ? '0' + mins : '' + mins) + ':' + (secs < 10 ? '0' + secs : '' + secs)
+}
+
+module.exports = {
+  formatTime: formatTime
+}

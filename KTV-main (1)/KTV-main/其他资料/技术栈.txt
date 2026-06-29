@@ -1,0 +1,74 @@
+========================================
+        声域友线上社交KTV平台 技术栈
+========================================
+
+【前端技术栈 - Web端（用户端/管理端）】
+
+框架        ：Vue 3.5.32 + TypeScript 6.0
+构建工具    ：Vite 8.0
+UI框架      ：Element Plus 2.13.7 + @element-plus/icons-vue 2.3.2
+样式方案    ：Tailwind CSS 3.4 + @tailwindcss/forms 0.5
+状态管理    ：Pinia 3.0
+路由        ：Vue Router 4.6
+HTTP客户端  ：Axios 1.15
+实时通信    ：@microsoft/signalr 8.0（SignalR客户端）
+代码规范    ：vue-tsc 3.2（Vue TypeScript编译器）
+图片处理    ：vue-advanced-cropper 2.8（图片裁剪组件）
+音频处理    ：jsmediatags 3.9（MP3 ID3标签读取）
+
+【后端技术栈】
+
+框架        ：ASP.NET Core 8.0
+数据访问    ：Dapper 2.1（轻量级ORM）
+数据库      ：SQL Server（Microsoft.Data.SqlClient 7.0）
+认证授权    ：JWT Bearer Token
+实时通信    ：SignalR（WebSocket Hub）
+API文档     ：Swashbuckle 6.6（Swagger/OpenAPI）
+API设计     ：RESTful API
+
+【小程序技术栈】
+
+开发框架    ：微信小程序原生开发
+运行时      ：@babel/runtime 7.29
+开发工具    ：微信开发者工具
+
+【数据库】
+
+数据库类型  ：SQL Server 2019 Express
+连接字符串  ：Server=localhost\SQLEXPRESS;Database=KTVSystem
+表数量      ：12张数据表
+
+【开发环境】
+
+操作系统    ：Windows 11
+.NET SDK    ：8.0
+Node.js     ：18.0+
+包管理器    ：npm
+
+【技术架构】
+
+架构模式    ：前后端分离 B/S架构
+后端分层    ：Repository - Service - Controller
+实时通信    ：SignalR（房间事件）+ REST轮询（聊天消息，2秒间隔）
+认证方式    ：JWT Bearer Token（无状态认证）
+
+【主要依赖版本清单】
+
+前端核心依赖：
+  - vue                    3.5.32
+  - vue-router             4.6.4
+  - pinia                  3.0.4
+  - element-plus           2.13.7
+  - @element-plus/icons-vue 2.3.2
+  - axios                  1.15.2
+  - @microsoft/signalr     8.0.7
+  - tailwindcss            3.4.19
+
+后端核心依赖：
+  - Dapper                 2.1.72
+  - Microsoft.Data.SqlClient 7.0.1
+  - Microsoft.AspNetCore.Authentication.JwtBearer 8.0.*
+  - Swashbuckle.AspNetCore 6.6.2
+
+小程序依赖：
+  - @babel/runtime         7.29.2

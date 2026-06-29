@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>切歌视觉反馈预览</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+<style>
+:root {
+  --primary: #6750A4;
+  --primary-light: rgba(103,80,164,0.12);
+  --primary-medium: rgba(103,80,164,0.25);
+  --on-primary: #FFFFFF;
+  --surface: #FFFBFE;
+  --surface-container: #F3EDF7;
+  --on-surface: #1C1B1F;
+  --on-surface-variant: #49454F;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'Noto Sans SC', sans-serif;
+  background: var(--surface);
+  color: var(--on-surface);
+  min-height: 100vh;
+  padding: 40px;
+}
+.page-title { text-align: center; font-size: 32px; font-weight: 900; margin-bottom: 8px; }
+.page-subtitle { text-align: center; font-size: 14px; color: var(--on-surface-variant); margin-bottom: 48px; }
+.section-title { font-size: 22px; font-weight: 800; margin-bottom: 6px; }
+.section-desc { font-size: 13px; color: var(--on-surface-variant); margin-bottom: 20px; }
+
+.playlist {
+  background: var(--surface-container);
+  border-radius: 20px;
+  padding: 12px;
+  margin-bottom: 48px;
+  width: 360px;
+}
+.song-row {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 14px; border-radius: 12px;
+  cursor: pointer; position: relative;
+  overflow: hidden;
+  transition: background 0.2s;
+  user-select: none;
+}
+.song-row:hover { background: rgba(0,0,0,0.04); }
+.song-row .num {
+  width: 20px; font-size: 13px; color: var(--on-surface-variant);
+  text-align: center; flex-shrink: 0;
+  transition: opacity 0.2s;
+}
+.song-row .cover {
+  width: 40px; height: 40px; border-radius: 8px;
+  background: linear-gradient(135deg, #6750A4, #EADDFF);
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.song-row .cover .material-symbols-outlined { font-size: 20px; color: rgba(255,255,255,0.7); }
+.song-row .info { flex: 1; min-width: 0; }
+.song-row .title { font-size: 14px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.song-row .artist { font-size: 11px; color: var(--on-surface-variant); }
+
+/* Active state (current playing) */
+.song-row.active { background: var(--primary-light); }
+.song-row.active .num { color: var(--primary); font-weight: 700; }
+.song-row.active .title { color: var(--primary); }
+
+/* ===== A: 脉冲高亮 ===== */
+.song-row.flash-a {
+  animation: flashPulse 0.4s ease;
+}
+@keyframes flashPulse {
+  0%   { background: var(--primary-medium); }
+  100% { background: var(--primary-light); }
+}
+
+/* ===== B: 滑入指示器 ===== */
+.indicator-b {
+  position: absolute; left: 0; top: 8px; bottom: 8px;
+  width: 3px; border-radius: 2px;
+  background: var(--primary);
+  transition: top 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              bottom 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  opacity: 0;
+}
+.indicator-b.show { opacity: 1; }
+
+/* ===== C: 波纹扩散 ===== */
+.song-row .ripple-layer {
+  position: absolute; inset: 0; overflow: hidden; border-radius: 12px; pointer-events: none;
+}
+.song-row .ripple-dot {
+  position: absolute; border-radius: 50%;
+  background: var(--primary-light);
+  transform: scale(0); opacity: 1;
+}
+.song-row .ripple-dot.go {
+  animation: rippleExpand 0.5s ease-out forwards;
+}
+@keyframes rippleExpand {
+  0%   { transform: scale(0); opacity: 0.5; }
+  100% { transform: scale(4); opacity: 0; }
+}
+
+/* ===== D: 滚动+淡入 ===== */
+.playlist-d { max-height: 240px; overflow-y: auto; scroll-behavior: smooth; }
+.playlist-d::-webkit-scrollbar { width: 4px; }
+.playlist-d::-webkit-scrollbar-thumb { background: #ccc; border-radius: 2px; }
+.song-row.fade-in {
+  animation: fadeScale 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+@keyframes fadeScale {
+  0%   { opacity: 0.4; transform: scale(1.03); }
+  60%  { opacity: 1; transform: scale(1.01); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+/* playing icon */
+.song-row.active .num .material-symbols-outlined {
+  font-size: 18px;
+}
+</style>
+</head>
+<body>
+
+<h1 class="page-title">切歌视觉反馈预览</h1>
+<p class="page-subtitle">点击列表中的歌曲切歌，查看各方案效果</p>
+
+<!-- A -->
+<h2 class="section-title">方案 A — 高亮脉冲</h2>
+<p class="section-desc">点击后目标行背景闪一下主色，渐隐到当前高亮态，0.4 秒</p>
+<div class="playlist" id="pl-a"></div>
+
+<!-- B -->
+<h2 class="section-title">方案 B — 滑入指示器</h2>
+<p class="section-desc">左侧竖条从上一首滑动到当前歌曲，0.3 秒</p>
+<div class="playlist" id="pl-b" style="position:relative">
+  <div class="indicator-b" id="ind-b"></div>
+</div>
+
+<!-- C -->
+<h2 class="section-title">方案 C — 波纹扩散</h2>
+<p class="section-desc">从点击位置扩散半透明主色波纹，覆盖整行后消散</p>
+<div class="playlist" id="pl-c"></div>
+
+<!-- D -->
+<h2 class="section-title">方案 D — 滚动 + 淡入</h2>
+<p class="section-desc">切歌时列表自动滚动到目标位置，歌曲从半透明淡入 + 微弹</p>
+<div class="playlist playlist-d" id="pl-d"></div>
+
+<script>
+const songs = [
+  { title: '夜曲', artist: '周杰伦' },
+  { title: '晴天', artist: '周杰伦' },
+  { title: '稻香', artist: '周杰伦' },
+  { title: '七里香', artist: '周杰伦' },
+  { title: '青花瓷', artist: '周杰伦' },
+  { title: '简单爱', artist: '周杰伦' },
+  { title: '告白气球', artist: '周杰伦' },
+  { title: '东风破', artist: '周杰伦' },
+  { title: '以父之名', artist: '周杰伦' },
+  { title: '安静', artist: '周杰伦' },
+];
+
+function renderPlaylist(container, activeIdx, opts = {}) {
+  const { indicator, ripple } = opts;
+  container.innerHTML = '';
+  if (indicator) {
+    const ind = document.createElement('div');
+    ind.className = 'indicator-b show';
+    ind.id = 'ind-b';
+    container.appendChild(ind);
+  }
+  songs.forEach((s, i) => {
+    const row = document.createElement('div');
+    row.className = 'song-row' + (i === activeIdx ? ' active' : '');
+    row.dataset.idx = i;
+
+    const numSpan = document.createElement('span');
+    numSpan.className = 'num';
+    if (i === activeIdx) {
+      const icon = document.createElement('span');
+      icon.className = 'material-symbols-outlined';
+      icon.textContent = 'play_circle';
+      numSpan.appendChild(icon);
+    } else {
+      numSpan.textContent = i + 1;
+    }
+
+    const cover = document.createElement('div');
+    cover.className = 'cover';
+    cover.innerHTML = '<span class="material-symbols-outlined">music_note</span>';
+
+    const info = document.createElement('div');
+    info.className = 'info';
+    info.innerHTML = '<div class="title">' + s.title + '</div><div class="artist">' + s.artist + '</div>';
+
+    row.appendChild(numSpan);
+    row.appendChild(cover);
+    row.appendChild(info);
+
+    if (ripple) {
+      const rl = document.createElement('div');
+      rl.className = 'ripple-layer';
+      row.appendChild(rl);
+    }
+    container.appendChild(row);
+  });
+  if (indicator) updateIndicator(container, activeIdx);
+}
+
+function updateIndicator(container, idx) {
+  const ind = container.querySelector('.indicator-b');
+  const rows = container.querySelectorAll('.song-row');
+  if (!ind || !rows[idx]) return;
+  const row = rows[idx];
+  const containerRect = container.getBoundingClientRect();
+  const rowRect = row.getBoundingClientRect();
+  ind.style.top = (rowRect.top - containerRect.top + 8) + 'px';
+  ind.style.bottom = (containerRect.bottom - rowRect.bottom + 8) + 'px';
+}
+
+// ===== A: 脉冲高亮 =====
+let activeA = 0;
+const plA = document.getElementById('pl-a');
+renderPlaylist(plA, activeA);
+plA.addEventListener('click', e => {
+  const row = e.target.closest('.song-row');
+  if (!row) return;
+  const idx = +row.dataset.idx;
+  if (idx === activeA) return;
+  activeA = idx;
+  renderPlaylist(plA, activeA);
+  const newRow = plA.querySelectorAll('.song-row')[idx];
+  newRow.classList.add('flash-a');
+  newRow.addEventListener('animationend', () => newRow.classList.remove('flash-a'), { once: true });
+});
+
+// ===== B: 滑入指示器 =====
+let activeB = 0;
+const plB = document.getElementById('pl-b');
+renderPlaylist(plB, activeB, { indicator: true });
+plB.addEventListener('click', e => {
+  const row = e.target.closest('.song-row');
+  if (!row) return;
+  const idx = +row.dataset.idx;
+  if (idx === activeB) return;
+  activeB = idx;
+  renderPlaylist(plB, activeB, { indicator: true });
+});
+
+// ===== C: 波纹扩散 =====
+let activeC = 0;
+const plC = document.getElementById('pl-c');
+renderPlaylist(plC, activeC, { ripple: true });
+plC.addEventListener('click', e => {
+  const row = e.target.closest('.song-row');
+  if (!row) return;
+  const idx = +row.dataset.idx;
+  if (idx === activeC) return;
+  activeC = idx;
+  renderPlaylist(plC, activeC, { ripple: true });
+
+  // Ripple from click position
+  const rect = row.getBoundingClientRect();
+  const x = e.clientX - rect.left;
+  const y = e.clientY - rect.top;
+  const layer = row.querySelector('.ripple-layer');
+  const dot = document.createElement('div');
+  dot.className = 'ripple-dot';
+  const size = Math.max(rect.width, rect.height);
+  dot.style.cssText = `left:${x - size/2}px;top:${y - size/2}px;width:${size}px;height:${size}px;`;
+  layer.appendChild(dot);
+  requestAnimationFrame(() => dot.classList.add('go'));
+  setTimeout(() => dot.remove(), 550);
+});
+
+// ===== D: 滚动+淡入 =====
+let activeD = 0;
+const plD = document.getElementById('pl-d');
+renderPlaylist(plD, activeD);
+plD.addEventListener('click', e => {
+  const row = e.target.closest('.song-row');
+  if (!row) return;
+  const idx = +row.dataset.idx;
+  if (idx === activeD) return;
+  activeD = idx;
+  renderPlaylist(plD, activeD);
+  const newRow = plD.querySelectorAll('.song-row')[idx];
+  newRow.classList.add('fade-in');
+  newRow.addEventListener('animationend', () => newRow.classList.remove('fade-in'), { once: true });
+  newRow.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+});
+</script>
+</body>
+</html>

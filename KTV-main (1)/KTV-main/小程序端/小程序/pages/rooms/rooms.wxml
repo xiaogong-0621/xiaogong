@@ -1,0 +1,82 @@
+<view class="rooms-container">
+  <!-- 漂浮光晕 -->
+  <view class="blob blob-1"></view>
+  <view class="blob blob-2"></view>
+  <view class="blob blob-3"></view>
+
+  <!-- 顶部安全区域占位 -->
+  <view style="height: {{statusBarHeight + navHeight}}rpx;"></view>
+
+  <!-- 固定导航栏 -->
+  <view class="nav-header-fixed" style="top: {{statusBarHeight}}rpx; height: {{navHeight}}rpx;">
+    <view class="nav-icon-btn" bindtap="goBack">
+      <image class="back-icon" src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMjQgMjQiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzFkMWQxZiIgc3Ryb2tlLXdpZHRoPSIxLjgiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNMTUgM0w2IDEybDkgOSIvPjwvc3ZnPg==" mode="aspectFit"/>
+    </view>
+    <text class="nav-title">房间列表</text>
+    <view class="nav-placeholder"></view>
+  </view>
+
+  <!-- 统计栏：在线房间数量 + 创建房间按钮 -->
+  <view class="stats-bar">
+    <view class="stats-left">
+      <text class="stats-label">在线房间</text>
+      <text class="stats-count">({{total}})</text>
+    </view>
+    <view class="create-btn" bindtap="requestRoom">
+      <text class="create-icon">+</text>
+      <text class="create-text">创建房间</text>
+    </view>
+  </view>
+
+  <!-- 搜索区域 -->
+  <view class="search-section">
+    <view class="search-bar glass-sm">
+      <image class="search-icon" src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMjQgMjQiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzg2ODY4YiIgc3Ryb2tlLXdpZHRoPSIxLjgiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48Y2lyY2xlIGN4PSIxMSIgY3k9IjExIiByPSI4Ii8+PGxpbmUgeDE9IjIxIiB5MT0iMjEiIHgyPSIxNi42NSIgeTI9IjE2LjY1Ii8+PC9zdmc+" mode="aspectFit"/>
+      <input class="search-input" placeholder="搜索房间..." placeholder-class="placeholder" value="{{search}}" bindinput="onSearchInput" bindconfirm="onSearch"/>
+      <view class="search-clear" wx:if="{{search}}" bindtap="clearSearch">
+        <text>✕</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 输入房间码区域 -->
+  <view class="join-code-section">
+    <input class="join-code-input" placeholder="输入房间码" placeholder-class="placeholder" maxlength="6" value="{{joinCode}}" bindinput="onJoinCodeInput" bindconfirm="confirmJoin"/>
+    <view class="join-code-btn" bindtap="confirmJoin">
+      <text>加入</text>
+    </view>
+  </view>
+
+  <!-- 房间列表 -->
+  <view class="rooms-section">
+    <view class="loading" wx:if="{{loading}}">
+      <text>加载中...</text>
+    </view>
+
+    <view class="rooms-empty" wx:elif="{{rooms.length === 0}}">
+      <view class="empty-icon">
+        <text class="empty-emoji"> </text>
+      </view>
+      <text class="empty-title">暂无在线房间</text>
+      <text class="empty-sub">输入房间码加入，或创建新房间</text>
+    </view>
+
+    <view class="rooms-list" wx:else>
+      <view class="room-card glass-sm" wx:for="{{rooms}}" wx:key="id">
+        <view class="room-card-left">
+          <view class="room-card-icon">
+            <text class="room-card-emoji">{{item.emoji}}</text>
+          </view>
+          <view class="room-card-info">
+            <text class="room-card-name">{{item.roomName}}</text>
+            <text class="room-card-code">房间号：{{item.roomCode}}</text>
+            <text class="room-card-users">{{item.currentUsers}}/8人在线</text>
+          </view>
+        </view>
+        <view class="room-card-join" bindtap="joinRoom" data-code="{{item.roomCode}}">
+          <text>加入</text>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

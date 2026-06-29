@@ -1,0 +1,176 @@
+<view class="home-container">
+  <!-- 漂浮光晕 -->
+  <view class="blob blob-1"></view>
+  <view class="blob blob-2"></view>
+  <view class="blob blob-3"></view>
+  <view class="blob blob-4"></view>
+  <view class="blob blob-5"></view>
+
+  <view class="nav-header" style="padding-top: {{statusBarHeight}}rpx">
+    <view class="nav-top-row">
+      <view class="nav-icon-btn" bindtap="openMenu">
+        <image src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMjQgMjQiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzFkMWQxZiIgc3Ryb2tlLXdpZHRoPSIxLjgiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48bGluZSB4MT0iMyIgeTE9IjYiIHgyPSIyMSIgeTI9IjYiLz48bGluZSB4MT0iMyIgeTE9IjEyIiB4Mj0iMjEiIHkyPSIxMiIvPjxsaW5lIHgxPSIzIiB5MT0iMTgiIHgyPSIyMSIgeTI9IjE4Ii8+PC9zdmc+" mode="aspectFit"/>
+      </view>
+      <text class="nav-title">探索歌曲</text>
+      <view class="nav-placeholder"></view>
+    </view>
+
+    <view class="search-row">
+      <view class="search-bar {{searchFocused ? 'focused' : ''}}">
+        <image class="search-icon" src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMjQgMjQiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzg2ODY4YiIgc3Ryb2tlLXdpZHRoPSIxLjgiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48Y2lyY2xlIGN4PSIxMSIgY3k9IjExIiByPSI4Ii8+PGxpbmUgeDE9IjIxIiB5MT0iMjEiIHgyPSIxNi42NSIgeTI9IjE2LjY1Ii8+PC9zdmc+" mode="aspectFit"/>
+        <input
+          class="search-input"
+          placeholder="搜索歌曲名、歌手..."
+          placeholder-class="placeholder"
+          bindinput="onSearchInput"
+          bindconfirm="onSearch"
+          bindfocus="onSearchFocus"
+          bindblur="onSearchBlur"
+          value="{{searchText}}"
+        />
+        <view class="search-clear" wx:if="{{searchText}}" bindtap="clearSearch">
+          <text>✕</text>
+        </view>
+        <view class="search-btn" bindtap="onSearch">
+          <text class="search-btn-text">搜索</text>
+        </view>
+      </view>
+      <view class="notify-btn" bindtap="openNotify">
+        <image class="notify-icon" src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMjQgMjQiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzg2ODY4YiIgc3Ryb2tlLXdpZHRoPSIxLjgiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNNCA0aDE2YzEuMSAwIDIgLjkgMiAydjEyYzAgMS4xLS45IDItMiAySDRjLTEuMSAwLTItLjktMi0yVjZjMC0xLjEuOS0yIDItMnoiLz48cG9seWxpbmUgcG9pbnRzPSIyMiw2IDEyLDEzIDIsNiIvPjwvc3ZnPg==" mode="aspectFit"/>
+        <view class="notify-badge" wx:if="{{unreadCount > 0}}">
+          <text>{{unreadCount > 99 ? '99+' : unreadCount}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="genre-scroll">
+    <view
+      class="genre-tag {{activeTagIndex === index ? 'active' : ''}}"
+      wx:for="{{tags}}"
+      wx:key="index"
+      bindtap="toggleTag"
+      data-index="{{index}}"
+    >
+      <text class="genre-tag-text">{{item}}</text>
+    </view>
+  </view>
+
+  <view class="song-section">
+    <view class="loading" wx:if="{{loading}}">
+      <text>加载中...</text>
+    </view>
+
+    <view class="empty" wx:elif="{{songList.length === 0 && !loading}}">
+      <text>暂无歌曲，请检查网络连接</text>
+    </view>
+
+    <view class="song-list {{listSpring ? 'spring' : ''}}" wx:else>
+      <view class="song-card glass-sm" wx:for="{{songList}}" wx:key="id">
+        <view class="song-cover" style="background: linear-gradient(135deg, {{item.coverColor}}22, {{item.coverColor}}11);">
+          <image wx:if="{{item.coverOk}}" class="song-cover-img" src="{{item.cover}}" mode="aspectFill" binderror="onCoverError" data-id="{{item.id}}"/>
+          <text wx:else class="song-initial">{{item.name.charAt(0)}}</text>
+        </view>
+        <view class="song-info" bindtap="goToDetail" data-id="{{item.id}}">
+          <text class="song-name">{{item.name}}</text>
+          <text class="song-artist">{{item.artist}}</text>
+          <view class="song-meta">
+            <text class="song-playcount">{{item.playCountText}}</text>
+            <text class="song-duration" wx:if="{{item.durationText}}">{{item.durationText}}</text>
+          </view>
+        </view>
+        <view class="song-actions">
+          <view class="fav-btn {{item._filling ? 'jelly' : ''}} {{item._unfilling ? 'shrink' : ''}}" bindtap="toggleLike" data-id="{{item.id}}">
+            <image class="heart-outline-img" src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMjQgMjQiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzg2ODY4YiIgc3Ryb2tlLXdpZHRoPSIxLjgiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNMjAuODQgNC42MWE1LjUgNS41IDAgMCAwLTcuNzggMEwxMiA1LjY3bC0xLjA2LTEuMDZhNS41IDUuNSAwIDAgMC03Ljc4IDcuNzhsMS4wNiAxLjA2TDEyIDIxLjIzbDcuNzgtNy43OCAxLjA2LTEuMDZhNS41IDUuNSAwIDAgMCAwLTcuNzh6Ii8+PC9zdmc+" mode="aspectFit"/>
+            <view class="heart-fill-clip {{item.liked ? 'filled' : ''}} {{item._filling ? 'filling-anim' : ''}} {{item._unfilling ? 'unfilling-anim' : ''}}">
+              <image class="heart-fill-img" src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMjQgMjQiIGZpbGw9IiNlYzQ4OTkiIHN0cm9rZT0iI2VjNDg5OSIgc3Ryb2tlLXdpZHRoPSIxLjgiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNMjAuODQgNC42MWE1LjUgNS41IDAgMCAwLTcuNzggMEwxMiA1LjY3bC0xLjA2LTEuMDZhNS41IDUuNSAwIDAgMC03Ljc4IDcuNzhsMS4wNiAxLjA2TDEyIDIxLjIzbDcuNzgtNy43OCAxLjA2LTEuMDZhNS41IDUuNSAwIDAgMCAwLTcuNzh6Ii8+PC9zdmc+" mode="aspectFit"/>
+            </view>
+            <view class="glow-ring {{item._filling ? 'popping' : ''}}"></view>
+          </view>
+          <view class="order-btn {{item.ordered ? 'ordered' : ''}}" bindtap="orderSong" data-id="{{item.id}}">
+            <text>{{item.ordered ? '已点' : '点歌'}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 反馈浮动按钮 -->
+  <view class="feedback-fab" bindtap="openFeedback">
+    <text>反馈</text>
+  </view>
+
+  <!-- 反馈弹窗 -->
+  <view class="feedback-mask" wx:if="{{showFeedback}}" bindtap="closeFeedback">
+    <view class="feedback-modal glass" catchtap="stopPropagation">
+      <block wx:if="{{!feedbackSuccess}}">
+        <view class="feedback-header">
+          <text class="feedback-title">用户反馈</text>
+          <text class="feedback-close" bindtap="closeFeedback">✕</text>
+        </view>
+        <view class="feedback-body">
+          <view class="feedback-field">
+            <text class="feedback-label">反馈类型</text>
+            <picker mode="selector" range="{{['请求添加歌曲','歌曲信息纠错','其他建议']}}" value="{{feedbackType === 'request_song' ? 0 : feedbackType === 'report_error' ? 1 : 2}}" bindchange="onFeedbackTypeChange">
+              <view class="feedback-picker">
+                {{feedbackType === 'request_song' ? '请求添加歌曲' : feedbackType === 'report_error' ? '歌曲信息纠错' : '其他建议'}}
+                <text class="picker-arrow">›</text>
+              </view>
+            </picker>
+          </view>
+          <view class="feedback-field">
+            <text class="feedback-label">歌曲名称{{feedbackType === 'request_song' ? '（必填）' : ''}}</text>
+            <input class="feedback-input" placeholder="请输入歌曲名称" value="{{feedbackSongName}}" data-field="feedbackSongName" bindinput="onFeedbackInput"/>
+          </view>
+          <view class="feedback-field">
+            <text class="feedback-label">歌手（可选）</text>
+            <input class="feedback-input" placeholder="请输入歌手名称" value="{{feedbackArtist}}" data-field="feedbackArtist" bindinput="onFeedbackInput"/>
+          </view>
+          <view class="feedback-field">
+            <text class="feedback-label">补充说明（可选）</text>
+            <textarea class="feedback-textarea" placeholder="请输入补充说明" maxlength="500" value="{{feedbackDesc}}" data-field="feedbackDesc" bindinput="onFeedbackInput"/>
+          </view>
+        </view>
+        <view class="feedback-footer">
+          <button class="feedback-cancel" bindtap="closeFeedback">取消</button>
+          <button class="feedback-submit" bindtap="submitFeedback">提交</button>
+        </view>
+      </block>
+      <block wx:else>
+        <view class="feedback-success">
+          <text class="feedback-success-icon">✓</text>
+          <text class="feedback-success-text">反馈已提交，感谢您的建议</text>
+        </view>
+      </block>
+    </view>
+  </view>
+
+  <!-- 加入/申请房间弹窗 -->
+  <view class="room-mask" wx:if="{{showRoomDialog}}" bindtap="closeRoomDialog">
+    <view class="room-modal glass" catchtap="stopPropagation">
+      <view class="room-modal-header">
+        <text class="room-modal-title">请先加入房间</text>
+        <text class="room-modal-close" bindtap="closeRoomDialog">✕</text>
+      </view>
+      <view class="room-modal-body">
+        <view class="room-modal-section">
+          <text class="room-modal-label">输入房间码加入</text>
+          <view class="room-modal-row">
+            <input class="room-modal-input" placeholder="请输入6位房间码" placeholder-class="room-modal-placeholder" maxlength="6" value="{{roomCodeInput}}" bindinput="onRoomDialogInput" bindconfirm="joinRoomFromDialog"/>
+            <button class="room-modal-join-btn" bindtap="joinRoomFromDialog" disabled="{{joiningRoom}}">
+              {{joiningRoom ? '加入中' : '加入'}}
+            </button>
+          </view>
+        </view>
+        <view class="room-modal-divider"><text class="divider-text">或</text></view>
+        <button class="room-modal-request-btn" bindtap="requestRoomFromDialog">申请开房间</button>
+      </view>
+      <view class="room-modal-footer">
+        <button class="room-modal-cancel-btn" bindtap="closeRoomDialog">取消</button>
+      </view>
+    </view>
+  </view>
+
+  <!-- Duang 重复点歌提示 -->
+  <view class="duang-toast {{duangVisible ? 'show' : ''}}">duang~ 已经在列表</view>
+</view>

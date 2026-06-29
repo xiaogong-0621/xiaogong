@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>切歌视觉反馈预览 v2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+<style>
+:root {
+  --p: #6750A4; --p20: rgba(103,80,164,0.2); --p12: rgba(103,80,164,0.12);
+  --on-p: #fff; --s: #FFFBFE; --sc: #F3EDF7; --on-s: #1C1B1F; --ov: #49454F;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Noto Sans SC',sans-serif;background:var(--s);color:var(--on-s);padding:40px 40px 120px}
+h1{text-align:center;font-size:30px;font-weight:900;margin-bottom:6px}
+.sub{text-align:center;font-size:13px;color:var(--ov);margin-bottom:44px}
+h2{font-size:20px;font-weight:800;margin-bottom:4px}
+.desc{font-size:12px;color:var(--ov);margin-bottom:16px}
+
+/* Playlist */
+.pl{background:var(--sc);border-radius:18px;padding:10px;width:340px;margin-bottom:44px}
+.row{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:10px;cursor:pointer;position:relative;overflow:hidden;transition:background .2s;user-select:none}
+.row:hover{background:rgba(0,0,0,.04)}
+.row .n{width:18px;font-size:12px;color:var(--ov);text-align:center;flex-shrink:0}
+.row .cv{width:38px;height:38px;border-radius:8px;background:linear-gradient(135deg,#6750A4,#EADDFF);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:transform .3s,filter .3s}
+.row .cv .mi{font-size:18px;color:rgba(255,255,255,.7)}
+.row .inf{flex:1;min-width:0}
+.row .tt{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:color .2s}
+.row .ar{font-size:11px;color:var(--ov)}
+
+/* Playing state */
+.row.on{background:var(--p12)}
+.row.on .n{color:var(--p);font-weight:700}
+.row.on .tt{color:var(--p)}
+
+/* Mini player bar */
+.mplayer{position:fixed;bottom:0;left:0;right:0;height:64px;background:rgba(255,255,255,.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid rgba(0,0,0,.06);display:flex;align-items:center;gap:12px;padding:0 20px;z-index:100}
+.mplayer .mcv{width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,#6750A4,#EADDFF);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:transform .3s,box-shadow .3s}
+.mplayer .mcv .mi{font-size:22px;color:rgba(255,255,255,.8)}
+.mplayer .minf{flex:1}
+.mplayer .mtt{font-size:14px;font-weight:700}
+.mplayer .mar{font-size:11px;color:var(--ov)}
+.mplayer .mctrl{display:flex;gap:16px;align-items:center}
+.mplayer .mctrl button{background:none;border:none;cursor:pointer;color:var(--p);display:flex;align-items:center}
+
+/* ===== 1: Takeover ===== */
+.row.takeover-out{animation:tOut .15s ease forwards}
+.row.takeover-in{animation:tIn .35s cubic-bezier(.4,0,.2,1)}
+@keyframes tOut{to{transform:scale(.96);opacity:.6}}
+@keyframes tIn{
+  0%{transform:scale(.95);opacity:.7}
+  50%{transform:scale(1.01)}
+  100%{transform:scale(1);opacity:1}
+}
+.row.takeover-glow{box-shadow:0 0 0 0 var(--p20)}
+.row.takeover-glow.go{animation:glowPulse .5s ease}
+@keyframes glowPulse{
+  0%{box-shadow:0 0 0 0 var(--p20)}
+  50%{box-shadow:0 0 12px 4px var(--p20)}
+  100%{box-shadow:0 0 0 0 transparent}
+}
+
+/* ===== 2: Audio Sweep ===== */
+.sweep-line{position:absolute;left:0;top:0;bottom:0;width:3px;background:linear-gradient(180deg,transparent,var(--p),transparent);opacity:0;pointer-events:none;border-radius:2px}
+.sweep-line.go{animation:sweepR .4s ease forwards}
+@keyframes sweepR{0%{left:0;opacity:.8}100%{left:100%;opacity:0}}
+.eq-bars{display:flex;gap:2px;align-items:flex-end;height:14px;flex-shrink:0}
+.eq-bar{width:3px;border-radius:1px;background:var(--p);animation:eqB .6s ease-in-out infinite alternate}
+.eq-bar:nth-child(2){animation-delay:.15s}
+.eq-bar:nth-child(3){animation-delay:.3s}
+@keyframes eqB{0%{height:3px}100%{height:14px}}
+
+/* ===== 3: Cover Fly ===== */
+.fly-cover{position:fixed;border-radius:8px;background:linear-gradient(135deg,#6750A4,#EADDFF);z-index:200;pointer-events:none;transition:none}
+.fly-cover.go{animation:flyToPlayer .45s cubic-bezier(.4,0,.2,1) forwards}
+@keyframes flyToPlayer{
+  0%{transform:scale(1);opacity:1}
+  40%{transform:scale(.7);opacity:.9}
+  100%{transform:scale(.4);opacity:.5}
+}
+.mplayer .mcv.catch{animation:catchIn .25s cubic-bezier(.34,1.56,.64,1)}
+@keyframes catchIn{0%{transform:scale(.8)}60%{transform:scale(1.1)}100%{transform:scale(1)}}
+
+/* ===== 4: Spotlight ===== */
+.row.spotlight-dim{opacity:.35;transition:opacity .3s}
+.row.spotlight-on{opacity:1;transition:opacity .3s}
+.row.spotlight-on{animation:spotGlow .5s ease}
+@keyframes spotGlow{
+  0%{box-shadow:none}
+  50%{box-shadow:0 0 20px 6px var(--p20)}
+  100%{box-shadow:none}
+}
+.mplayer.spotlight-bar{animation:barGlow .5s ease}
+@keyframes barGlow{
+  0%{border-top-color:rgba(0,0,0,.06)}
+  50%{border-top-color:var(--p);box-shadow:0 -4px 20px var(--p20)}
+  100%{border-top-color:rgba(0,0,0,.06)}
+}
+
+/* ===== 5: Vinyl ===== */
+.row .cv.vinyl-spin{animation:vinylIn .5s ease}
+@keyframes vinylIn{
+  0%{transform:rotate(0) scale(.9);filter:blur(2px)}
+  50%{transform:rotate(12deg) scale(1.02);filter:blur(0)}
+  100%{transform:rotate(0) scale(1);filter:blur(0)}
+}
+.mplayer .mcv.vinyl-spin{animation:vinylPlayer .6s ease}
+@keyframes vinylPlayer{
+  0%{transform:rotate(0)}
+  30%{transform:rotate(15deg) scale(1.05)}
+  60%{transform:rotate(-5deg)}
+  100%{transform:rotate(0) scale(1)}
+}
+.row.on .play-vinyl{animation:discSpin 2s linear infinite}
+@keyframes discSpin{to{transform:rotate(360deg)}}
+
+.reset-btn{padding:6px 14px;border-radius:8px;border:1px solid #ccc;background:#fff;font-size:11px;cursor:pointer;margin-bottom:12px}
+.reset-btn:hover{border-color:var(--p);color:var(--p)}
+</style>
+</head>
+<body>
+
+<h1>切歌视觉反馈预览 v2</h1>
+<p class="sub">点击列表中的歌曲切歌，底部播放器同步更新</p>
+
+<h2>方案 1 — 播放接管</h2>
+<p class="desc">旧歌缩小暗淡，新歌 glow + scale 弹入，封面 crossfade</p>
+<button class="reset-btn" onclick="resetAll(1)">重置</button>
+<div class="pl" id="pl1"></div>
+
+<h2>方案 2 — 声波扫过</h2>
+<p class="desc">声波扫描线从左扫到右，播放中歌曲显示均衡器 bars</p>
+<button class="reset-btn" onclick="resetAll(2)">重置</button>
+<div class="pl" id="pl2"></div>
+
+<h2>方案 3 — 封面飞入播放器</h2>
+<p class="desc">封面缩略图曲线飞向底部播放器，播放器接住后弹一下</p>
+<button class="reset-btn" onclick="resetAll(3)">重置</button>
+<div class="pl" id="pl3"></div>
+
+<h2>方案 4 — 聚焦 Spotlight</h2>
+<p class="desc">非播放歌曲变暗，新歌曲 spotlight glow，播放器边框发光</p>
+<button class="reset-btn" onclick="resetAll(4)">重置</button>
+<div class="pl" id="pl4"></div>
+
+<h2>方案 5 — 黑胶唱片切换</h2>
+<p class="desc">封面旋转旋入，播放器封面同步旋转，播放中持续慢转</p>
+<button class="reset-btn" onclick="resetAll(5)">重置</button>
+<div class="pl" id="pl5"></div>
+
+<!-- Mini player bar -->
+<div class="mplayer" id="mplayer">
+  <div class="mcv" id="mcv"><span class="mi material-symbols-outlined">music_note</span></div>
+  <div class="minf">
+    <div class="mtt" id="mtt">夜曲</div>
+    <div class="mar">周杰伦</div>
+  </div>
+  <div class="mctrl">
+    <button><span class="material-symbols-outlined">skip_previous</span></button>
+    <button><span class="material-symbols-outlined" style="font-size:32px">play_circle</span></button>
+    <button><span class="material-symbols-outlined">skip_next</span></button>
+  </div>
+</div>
+
+<script>
+const S = [
+  {t:'夜曲',a:'周杰伦'},{t:'晴天',a:'周杰伦'},{t:'稻香',a:'周杰伦'},
+  {t:'七里香',a:'周杰伦'},{t:'青花瓷',a:'周杰伦'},{t:'简单爱',a:'周杰伦'},
+  {t:'告白气球',a:'周杰伦'},{t:'东风破',a:'周杰伦'},
+];
+
+const active = {1:0,2:0,3:0,4:0,5:0};
+
+function build(pl, idx, opts={}) {
+  pl.innerHTML = '';
+  S.forEach((s,i) => {
+    const r = document.createElement('div');
+    r.className = 'row' + (i===idx?' on':'');
+    r.dataset.i = i;
+    const n = document.createElement('span');
+    n.className = 'n';
+    if (i===idx) {
+      const ic = document.createElement('span');
+      ic.className = 'material-symbols-outlined';
+      ic.style.fontSize='16px'; ic.textContent='play_circle';
+      n.appendChild(ic);
+    } else { n.textContent = i+1; }
+    const cv = document.createElement('div');
+    cv.className = 'cv';
+    cv.innerHTML = '<span class="mi material-symbols-outlined">music_note</span>';
+    const inf = document.createElement('div');
+    inf.className = 'inf';
+    inf.innerHTML = '<div class="tt">'+s.t+'</div><div class="ar">'+s.a+'</div>';
+    r.appendChild(n); r.appendChild(cv); r.appendChild(inf);
+
+    if (opts.sweep) {
+      const sl = document.createElement('div');
+      sl.className = 'sweep-line'; r.appendChild(sl);
+    }
+    if (opts.eq && i===idx) {
+      const eq = document.createElement('div');
+      eq.className = 'eq-bars';
+      eq.innerHTML = '<div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div>';
+      r.appendChild(eq);
+    }
+    pl.appendChild(r);
+  });
+}
+
+function updatePlayer(s) {
+  document.getElementById('mtt').textContent = s.t;
+}
+
+// ===== 1: Takeover =====
+function resetAll(n){ build(document.getElementById('pl'+n), active[n], n===2?{sweep:true,eq:true}:{}); }
+build(document.getElementById('pl1'), 0);
+document.getElementById('pl1').addEventListener('click', e => {
+  const r = e.target.closest('.row'); if(!r) return;
+  const i = +r.dataset.i; if(i===active[1]) return;
+  const old = active[1]; active[1] = i;
+  build(document.getElementById('pl1'), i);
+  const rows = document.getElementById('pl1').querySelectorAll('.row');
+  // Old row shrink
+  if(rows[old]) { rows[old].classList.add('takeover-out'); }
+  // New row glow + scale in
+  rows[i].classList.add('takeover-in','takeover-glow');
+  requestAnimationFrame(()=> rows[i].classList.add('go'));
+  updatePlayer(S[i]);
+});
+
+// ===== 2: Audio Sweep =====
+build(document.getElementById('pl2'), 0, {sweep:true, eq:true});
+document.getElementById('pl2').addEventListener('click', e => {
+  const r = e.target.closest('.row'); if(!r) return;
+  const i = +r.dataset.i; if(i===active[2]) return;
+  active[2] = i;
+  build(document.getElementById('pl2'), i, {sweep:true, eq:true});
+  const rows = document.getElementById('pl2').querySelectorAll('.row');
+  const sl = rows[i].querySelector('.sweep-line');
+  if(sl) { sl.classList.add('go'); setTimeout(()=>sl.classList.remove('go'),450); }
+  updatePlayer(S[i]);
+});
+
+// ===== 3: Cover Fly =====
+build(document.getElementById('pl3'), 0);
+document.getElementById('pl3').addEventListener('click', e => {
+  const r = e.target.closest('.row'); if(!r) return;
+  const i = +r.dataset.i; if(i===active[3]) return;
+  active[3] = i;
+  build(document.getElementById('pl3'), i);
+  updatePlayer(S[i]);
+
+  // Fly cover
+  const row = document.getElementById('pl3').querySelectorAll('.row')[i];
+  const cv = row.querySelector('.cv');
+  const from = cv.getBoundingClientRect();
+  const to = document.getElementById('mcv').getBoundingClientRect();
+  const fly = document.createElement('div');
+  fly.className = 'fly-cover';
+  fly.style.cssText = 'left:'+from.left+'px;top:'+from.top+'px;width:'+from.width+'px;height:'+from.height+'px;';
+  document.body.appendChild(fly);
+  // Animate to player
+  fly.animate([
+    { left:from.left+'px', top:from.top+'px', width:from.width+'px', height:from.height+'px', transform:'scale(1)', opacity:1 },
+    { left:(from.left+to.left)/2+'px', top:(from.top+to.top)/2-30+'px', width:'28px', height:'28px', transform:'scale(.65)', opacity:.8, offset:.5 },
+    { left:to.left+'px', top:to.top+'px', width:to.width+'px', height:to.height+'px', transform:'scale(.4)', opacity:.4 },
+  ], {duration:450, easing:'cubic-bezier(.4,0,.2,1)', fill:'forwards'}).onfinish = () => {
+    fly.remove();
+    document.getElementById('mcv').classList.add('catch');
+    setTimeout(()=> document.getElementById('mcv').classList.remove('catch'),300);
+  };
+});
+
+// ===== 4: Spotlight =====
+build(document.getElementById('pl4'), 0);
+document.getElementById('pl4').addEventListener('click', e => {
+  const r = e.target.closest('.row'); if(!r) return;
+  const i = +r.dataset.i; if(i===active[4]) return;
+  active[4] = i;
+  build(document.getElementById('pl4'), i);
+  const rows = document.getElementById('pl4').querySelectorAll('.row');
+  rows.forEach((row, idx) => {
+    if(idx !== i) row.classList.add('spotlight-dim');
+    else row.classList.add('spotlight-on');
+  });
+  document.getElementById('mplayer').classList.add('spotlight-bar');
+  setTimeout(()=>{
+    rows.forEach(row => { row.classList.remove('spotlight-dim','spotlight-on'); });
+    document.getElementById('mplayer').classList.remove('spotlight-bar');
+  },600);
+  updatePlayer(S[i]);
+});
+
+// ===== 5: Vinyl =====
+build(document.getElementById('pl5'), 0);
+document.getElementById('pl5').addEventListener('click', e => {
+  const r = e.target.closest('.row'); if(!r) return;
+  const i = +r.dataset.i; if(i===active[5]) return;
+  active[5] = i;
+  build(document.getElementById('pl5'), i);
+  const rows = document.getElementById('pl5').querySelectorAll('.row');
+  const cv = rows[i].querySelector('.cv');
+  cv.classList.add('vinyl-spin');
+  document.getElementById('mcv').classList.add('vinyl-spin');
+  setTimeout(()=>{ cv.classList.remove('vinyl-spin'); },550);
+  setTimeout(()=>{ document.getElementById('mcv').classList.remove('vinyl-spin'); },650);
+  updatePlayer(S[i]);
+});
+</script>
+</body>
+</html>

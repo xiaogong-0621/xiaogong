@@ -1,0 +1,157 @@
+<view class="user-container">
+  <view class="blob blob-1"></view>
+  <view class="blob blob-2"></view>
+  <view class="blob blob-3"></view>
+  <view class="blob blob-4"></view>
+  <view class="blob blob-5"></view>
+
+  <view class="nav-header" style="padding-top: {{statusBarHeight}}rpx">
+    <view style="width: 40rpx"></view>
+    <text class="nav-title">个人主页</text>
+    <view style="width: 40rpx"></view>
+  </view>
+
+  <!-- Banner -->
+  <view class="up-banner">
+    <view class="up-cloud"></view>
+    <view class="up-cloud"></view>
+  </view>
+
+  <!-- 头像 + 名称 -->
+  <view class="up-profile-header">
+    <view class="up-avatar-wrap">
+      <view wx:if="{{profile.avatarUrl}}" class="up-avatar">
+        <image class="up-avatar-img" src="{{profile.avatarUrl}}" mode="aspectFill" binderror="onAvatarError"/>
+      </view>
+      <view wx:else class="up-avatar up-avatar-fallback">
+        <text class="up-avatar-initial">{{profile.displayName ? profile.displayName.charAt(0).toUpperCase() : '?'}}</text>
+      </view>
+    </view>
+    <text class="up-name">{{profile.displayName || '...'}}</text>
+    <text class="up-handle">@{{profile.username}}</text>
+  </view>
+
+  <!-- 统计卡片 -->
+  <view class="up-stats-row">
+    <view class="up-stat-card glass-sm">
+      <text class="up-stat-value">{{profile.songCount || 0}}</text>
+      <text class="up-stat-label">点歌数</text>
+    </view>
+    <view class="up-stat-card glass-sm">
+      <text class="up-stat-value">{{profile.favoriteCount || 0}}</text>
+      <text class="up-stat-label">收藏</text>
+    </view>
+  </view>
+
+  <!-- 操作按钮 -->
+  <view class="up-actions-row">
+    <button class="up-action-btn up-btn-primary" bindtap="openEditDialog">编辑资料</button>
+    <button class="up-action-btn up-btn-secondary" bindtap="openPasswordDialog">修改密码</button>
+  </view>
+
+  <!-- 最近点歌 -->
+  <view class="up-section glass-sm">
+    <text class="up-section-title">最近点歌</text>
+    <view wx:if="{{recentSongs.length > 0}}">
+      <view class="up-song-item" wx:for="{{recentSongs}}" wx:key="songId">
+        <view class="up-song-cover-wrap">
+          <image wx:if="{{item.coverOk}}" class="up-song-cover" src="{{item.cover}}" mode="aspectFill" binderror="onSongCoverError" data-index="{{index}}"/>
+          <view wx:else class="up-song-cover-placeholder">
+            <text class="up-song-initial">{{item.title.charAt(0)}}</text>
+          </view>
+        </view>
+        <view class="up-song-info">
+          <text class="up-song-title">{{item.title}}</text>
+          <text class="up-song-artist">{{item.artist}}</text>
+        </view>
+        <text class="up-song-date">{{item.dateText}}</text>
+      </view>
+    </view>
+    <view wx:else class="up-empty">
+      <text>还没有点过歌</text>
+    </view>
+  </view>
+
+  <!-- 设置 -->
+  <view class="up-section glass-sm">
+    <text class="up-section-title">设置</text>
+    <view class="up-setting-item" bindtap="goToNotifications">
+      <text class="up-setting-label">消息通知</text>
+      <text class="up-setting-desc">管理房间邀请和系统通知</text>
+      <text class="up-setting-arrow">›</text>
+    </view>
+    <view class="up-divider"></view>
+    <view class="up-setting-item" bindtap="goToPrivacy">
+      <text class="up-setting-label">隐私设置</text>
+      <text class="up-setting-desc">控制谁可以看到你的主页</text>
+      <text class="up-setting-arrow">›</text>
+    </view>
+    <view class="up-divider"></view>
+    <view class="up-setting-item" bindtap="goToAbout">
+      <text class="up-setting-label">关于声域友</text>
+      <text class="up-setting-desc">版本 1.0.0</text>
+      <text class="up-setting-arrow">›</text>
+    </view>
+  </view>
+
+  <!-- 编辑资料弹窗 -->
+  <view class="up-mask" wx:if="{{showEditDialog}}" bindtap="closeEditDialog">
+    <view class="up-modal glass" catchtap="stopPropagation">
+      <view class="up-modal-header">
+        <text class="up-modal-title">编辑资料</text>
+        <text class="up-modal-close" bindtap="closeEditDialog">✕</text>
+      </view>
+      <view class="up-modal-body">
+        <view class="up-form-group">
+          <text class="up-form-label">昵称</text>
+          <input class="up-form-input" placeholder="输入昵称" maxlength="20" value="{{editDisplayName}}" bindinput="onEditDisplayName"/>
+        </view>
+        <view class="up-form-group">
+          <text class="up-form-label">手机号</text>
+          <input class="up-form-input" placeholder="输入手机号" type="number" maxlength="11" value="{{editPhone}}" bindinput="onEditPhone"/>
+        </view>
+        <view class="up-form-group">
+          <text class="up-form-label">邮箱</text>
+          <input class="up-form-input" placeholder="输入邮箱" type="text" value="{{editEmail}}" bindinput="onEditEmail"/>
+        </view>
+      </view>
+      <view class="up-modal-footer">
+        <button class="up-modal-cancel" bindtap="closeEditDialog">取消</button>
+        <button class="up-modal-confirm" bindtap="handleUpdateProfile" disabled="{{editLoading}}">
+          {{editLoading ? '保存中...' : '保存'}}
+        </button>
+      </view>
+    </view>
+  </view>
+
+  <!-- 修改密码弹窗 -->
+  <view class="up-mask" wx:if="{{showPasswordDialog}}" bindtap="closePasswordDialog">
+    <view class="up-modal glass" catchtap="stopPropagation">
+      <view class="up-modal-header">
+        <text class="up-modal-title">修改密码</text>
+        <text class="up-modal-close" bindtap="closePasswordDialog">✕</text>
+      </view>
+      <view class="up-modal-body">
+        <view class="up-form-group">
+          <text class="up-form-label">原密码</text>
+          <input class="up-form-input" placeholder="输入原密码" password="true" value="{{oldPassword}}" bindinput="onOldPassword"/>
+        </view>
+        <view class="up-form-group">
+          <text class="up-form-label">新密码</text>
+          <input class="up-form-input" placeholder="输入新密码" password="true" value="{{newPassword}}" bindinput="onNewPassword"/>
+        </view>
+        <view class="up-form-group">
+          <text class="up-form-label">确认新密码</text>
+          <input class="up-form-input" placeholder="再次输入新密码" password="true" value="{{confirmPassword}}" bindinput="onConfirmPassword"/>
+        </view>
+      </view>
+      <view class="up-modal-footer">
+        <button class="up-modal-cancel" bindtap="closePasswordDialog">取消</button>
+        <button class="up-modal-confirm" bindtap="handleChangePassword" disabled="{{passwordLoading}}">
+          {{passwordLoading ? '修改中...' : '确认修改'}}
+        </button>
+      </view>
+    </view>
+  </view>
+
+</view>

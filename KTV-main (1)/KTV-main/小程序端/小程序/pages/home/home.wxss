@@ -1,0 +1,734 @@
+/* ─── 探索歌曲页 ─── */
+
+.home-container {
+  min-height: 100vh;
+  background: #F5F7FA;
+  position: relative;
+  overflow: hidden;
+  padding-bottom: 120rpx;
+}
+
+/* ─── 导航栏 ─── */
+.nav-header {
+  position: relative;
+  z-index: 1;
+  padding: 16rpx 40rpx 20rpx;
+}
+
+.nav-top-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20rpx;
+}
+
+.nav-icon-btn {
+  width: 72rpx;
+  height: 72rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 24rpx;
+}
+.nav-icon-btn image {
+  width: 40rpx;
+  height: 40rpx;
+}
+
+.search-icon {
+  width: 32rpx;
+  height: 32rpx;
+  flex-shrink: 0;
+  margin-right: 12rpx;
+}
+
+.nav-title {
+  font-size: 34rpx;
+  font-weight: 700;
+  color: #0369A1;
+}
+
+.nav-placeholder {
+  width: 72rpx;
+  height: 72rpx;
+}
+
+/* ─── 搜索行（搜索框 + 通知按钮） ─── */
+.search-row {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+
+.notify-btn {
+  width: 80rpx;
+  height: 80rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.45);
+  backdrop-filter: blur(20rpx);
+  -webkit-backdrop-filter: blur(20rpx);
+  border: 1rpx solid rgba(255,255,255,0.5);
+  flex-shrink: 0;
+  position: relative;
+}
+
+.notify-icon {
+  width: 40rpx;
+  height: 40rpx;
+}
+
+.notify-badge {
+  position: absolute;
+  top: 2rpx;
+  right: 2rpx;
+  min-width: 28rpx;
+  height: 28rpx;
+  padding: 0 8rpx;
+  background: #ef4444;
+  border-radius: 999rpx;
+  border: 2rpx solid #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.notify-badge text {
+  font-size: 18rpx;
+  color: #fff;
+  font-weight: 600;
+  line-height: 1;
+}
+
+/* ─── 搜索栏 ─── */
+.search-bar {
+  display: flex;
+  align-items: center;
+  background: rgba(255,255,255,0.45);
+  backdrop-filter: blur(20rpx);
+  -webkit-backdrop-filter: blur(20rpx);
+  border: 1rpx solid rgba(255,255,255,0.5);
+  border-radius: 56rpx;
+  padding: 0 24rpx 0 32rpx;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.search-bar.focused {
+  border-color: #0EA5E9;
+  box-shadow: 0 0 0 6rpx rgba(14,165,233,0.15);
+}
+
+.search-svg-icon {
+  flex-shrink: 0;
+  margin-right: 12rpx;
+}
+
+.search-input {
+  flex: 1;
+  height: 72rpx;
+  font-size: 28rpx;
+  color: #1d1d1f;
+}
+
+.placeholder {
+  color: #86868b;
+}
+
+.search-clear {
+  width: 40rpx;
+  height: 40rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(0,0,0,0.08);
+  flex-shrink: 0;
+  margin-right: 12rpx;
+}
+
+.search-clear text {
+  font-size: 22rpx;
+  color: #86868b;
+  line-height: 1;
+}
+
+.search-btn {
+  padding: 10rpx 24rpx;
+  border-radius: 999rpx;
+  background: #0EA5E9;
+  flex-shrink: 0;
+}
+
+.search-btn-text {
+  font-size: 24rpx;
+  color: #fff;
+  font-weight: 600;
+}
+
+/* ─── 流派标签 ─── */
+.genre-scroll {
+  padding: 24rpx 40rpx;
+  display: flex;
+  gap: 16rpx;
+  overflow-x: auto;
+  position: relative;
+  z-index: 1;
+  -webkit-overflow-scrolling: touch;
+}
+
+.genre-scroll::-webkit-scrollbar { display: none; }
+
+.genre-tag {
+  padding: 14rpx 32rpx;
+  border-radius: 999rpx;
+  white-space: nowrap;
+  flex-shrink: 0;
+  background: rgba(255,255,255,0.35);
+  backdrop-filter: blur(16rpx);
+  -webkit-backdrop-filter: blur(16rpx);
+  border: 1rpx solid rgba(255,255,255,0.5);
+  transition: all 0.2s;
+}
+
+.genre-tag.active {
+  background: #0EA5E9;
+  border-color: #0EA5E9;
+}
+
+.genre-tag-text {
+  font-size: 26rpx;
+  color: #86868b;
+  font-weight: 500;
+}
+
+.genre-tag.active .genre-tag-text {
+  color: #fff;
+}
+
+/* ─── 歌曲列表 ─── */
+.song-section {
+  padding: 0 40rpx;
+  position: relative;
+  z-index: 1;
+}
+
+.loading, .empty {
+  padding: 120rpx 0;
+  text-align: center;
+  color: #86868b;
+  font-size: 28rpx;
+}
+
+.song-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+}
+
+.song-card {
+  display: flex;
+  align-items: center;
+  padding: 24rpx;
+  gap: 24rpx;
+  transition: transform 0.15s;
+}
+
+.song-card:active {
+  transform: scale(0.98);
+}
+
+.song-cover {
+  width: 112rpx;
+  height: 112rpx;
+  border-radius: 28rpx;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.song-cover-img {
+  width: 100%;
+  height: 100%;
+  border-radius: 28rpx;
+}
+
+.song-initial {
+  font-size: 36rpx;
+  font-weight: 700;
+  color: #0EA5E9;
+}
+
+.song-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.song-name {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #1d1d1f;
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.song-artist {
+  font-size: 24rpx;
+  color: #86868b;
+  margin-top: 4rpx;
+  display: block;
+}
+
+.song-meta {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  margin-top: 6rpx;
+}
+
+.song-playcount {
+  font-size: 22rpx;
+  color: #86868b;
+}
+
+.song-duration {
+  font-size: 22rpx;
+  color: #a1a1aa;
+  padding: 2rpx 10rpx;
+  background: rgba(0,0,0,0.04);
+  border-radius: 8rpx;
+}
+
+.song-actions {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  flex-shrink: 0;
+}
+
+.order-btn {
+  padding: 12rpx 28rpx;
+  border-radius: 999rpx;
+  background: #0EA5E9;
+  font-size: 24rpx;
+  font-weight: 600;
+  color: #fff;
+  box-shadow: 0 8rpx 24rpx rgba(14,165,233,0.3);
+  transition: transform 0.15s;
+}
+
+.order-btn:active {
+  transform: scale(0.95);
+}
+
+.order-btn.ordered {
+  background: #10b981;
+  box-shadow: none;
+}
+
+.fav-btn {
+  width: 48rpx;
+  height: 48rpx;
+  position: relative;
+  border-radius: 50%;
+  transition: transform 0.15s;
+}
+
+.heart-outline-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.heart-fill-clip {
+  position: absolute;
+  inset: 0;
+  clip-path: circle(0% at 50% 55%);
+}
+.heart-fill-clip.filled {
+  clip-path: circle(75% at 50% 55%);
+}
+.heart-fill-clip.filling-anim {
+  animation: heartFillIn 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+.heart-fill-clip.unfilling-anim {
+  animation: heartUnfill 0.3s ease-out forwards;
+}
+
+.heart-fill-img {
+  width: 100%;
+  height: 100%;
+}
+
+.glow-ring {
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(239,68,68,0.3) 0%, transparent 70%);
+  opacity: 0;
+  pointer-events: none;
+}
+.glow-ring.popping {
+  animation: popGlow 0.45s ease-out forwards;
+}
+
+.fav-btn.jelly {
+  animation: heartJelly 0.55s 0.2s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+.fav-btn.shrink {
+  animation: shrinkPop 0.35s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.fav-btn:active {
+  transform: scale(0.85);
+}
+
+@keyframes heartFillIn {
+  0%   { clip-path: circle(0% at 50% 55%); }
+  100% { clip-path: circle(75% at 50% 55%); }
+}
+@keyframes heartUnfill {
+  0%   { clip-path: circle(75% at 50% 55%); }
+  100% { clip-path: circle(0% at 50% 55%); }
+}
+@keyframes heartJelly {
+  0%   { transform: scale(1); }
+  25%  { transform: scale(1.25, 0.8); }
+  50%  { transform: scale(0.88, 1.12); }
+  70%  { transform: scale(1.1, 0.92); }
+  85%  { transform: scale(0.97, 1.03); }
+  100% { transform: scale(1, 1); }
+}
+@keyframes popGlow {
+  0%   { transform: scale(0.5); opacity: 0.8; }
+  100% { transform: scale(2.2); opacity: 0; }
+}
+@keyframes shrinkPop {
+  0%   { transform: scale(1); }
+  40%  { transform: scale(0.75); }
+  100% { transform: scale(1); }
+}
+
+/* ─── 反馈 FAB ─── */
+.feedback-fab {
+  position: fixed;
+  right: 40rpx;
+  bottom: 180rpx;
+  z-index: 50;
+  padding: 16rpx 36rpx;
+  border-radius: 999rpx;
+  background: #0EA5E9;
+  color: #fff;
+  font-size: 26rpx;
+  font-weight: 600;
+  box-shadow: 0 12rpx 40rpx rgba(14,165,233,0.3);
+  transition: transform 0.15s;
+}
+
+.feedback-fab:active {
+  transform: scale(0.95);
+}
+
+/* ─── 弹窗通用 ─── */
+.feedback-mask, .room-mask {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+}
+
+.feedback-modal, .room-modal {
+  width: 680rpx;
+  overflow: hidden;
+}
+
+.feedback-header, .room-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 32rpx;
+  border-bottom: 1rpx solid rgba(255,255,255,0.3);
+}
+
+.feedback-title, .room-modal-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #1d1d1f;
+}
+
+.feedback-close, .room-modal-close {
+  font-size: 32rpx;
+  color: #86868b;
+  padding: 8rpx;
+}
+
+.feedback-body, .room-modal-body {
+  padding: 32rpx;
+}
+
+.feedback-field, .room-modal-section {
+  margin-bottom: 28rpx;
+}
+
+.feedback-label, .room-modal-label {
+  display: block;
+  font-size: 26rpx;
+  color: #86868b;
+  margin-bottom: 12rpx;
+}
+
+.feedback-input {
+  width: 100%;
+  height: 72rpx;
+  background: rgba(255,255,255,0.5);
+  border: 1rpx solid rgba(255,255,255,0.6);
+  border-radius: 28rpx;
+  padding: 0 24rpx;
+  font-size: 28rpx;
+  box-sizing: border-box;
+}
+
+.feedback-textarea {
+  width: 100%;
+  height: 160rpx;
+  background: rgba(255,255,255,0.5);
+  border: 1rpx solid rgba(255,255,255,0.6);
+  border-radius: 28rpx;
+  padding: 16rpx 24rpx;
+  font-size: 28rpx;
+  box-sizing: border-box;
+}
+
+.feedback-picker {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 72rpx;
+  background: rgba(255,255,255,0.5);
+  border: 1rpx solid rgba(255,255,255,0.6);
+  border-radius: 28rpx;
+  padding: 0 24rpx;
+  font-size: 28rpx;
+  color: #1d1d1f;
+}
+
+.picker-arrow {
+  color: #86868b;
+  font-size: 32rpx;
+}
+
+.feedback-footer {
+  display: flex;
+  border-top: 1rpx solid rgba(255,255,255,0.3);
+}
+
+.feedback-cancel, .feedback-submit {
+  flex: 1;
+  height: 88rpx;
+  font-size: 28rpx;
+  border: none;
+  border-radius: 0;
+  line-height: 88rpx;
+  margin: 0;
+  padding: 0;
+}
+
+.feedback-cancel {
+  background: rgba(255,255,255,0.5);
+  color: #86868b;
+}
+
+.feedback-cancel::after, .feedback-submit::after {
+  border: none;
+}
+
+.feedback-submit {
+  background: #0EA5E9;
+  color: #fff;
+}
+
+.room-modal-row {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+
+.room-modal-input {
+  flex: 1;
+  height: 80rpx;
+  background: rgba(255,255,255,0.5);
+  border: 1rpx solid rgba(255,255,255,0.6);
+  border-radius: 56rpx;
+  padding: 0 24rpx;
+  font-size: 30rpx;
+  text-align: center;
+  letter-spacing: 8rpx;
+  box-sizing: border-box;
+}
+
+.room-modal-placeholder {
+  color: #86868b;
+  letter-spacing: 0;
+  font-size: 28rpx;
+}
+
+.room-modal-join-btn {
+  width: 200rpx;
+  height: 80rpx;
+  background: #0EA5E9;
+  color: #fff;
+  border: none;
+  border-radius: 999rpx;
+  font-size: 28rpx;
+  font-weight: 600;
+  line-height: 80rpx;
+  padding: 0;
+  margin: 0;
+}
+
+.room-modal-join-btn[disabled] {
+  opacity: 0.5;
+}
+
+.room-modal-divider {
+  text-align: center;
+  padding: 16rpx 0;
+  position: relative;
+}
+
+.room-modal-divider::before, .room-modal-divider::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  width: 180rpx;
+  height: 1rpx;
+  background: rgba(255,255,255,0.3);
+}
+
+.room-modal-divider::before { left: 60rpx; }
+.room-modal-divider::after { right: 60rpx; }
+
+.divider-text {
+  font-size: 24rpx;
+  color: #86868b;
+}
+
+.room-modal-request-btn {
+  width: 100%;
+  height: 80rpx;
+  background: transparent;
+  color: #0EA5E9;
+  border: 2rpx solid #0EA5E9;
+  border-radius: 999rpx;
+  font-size: 28rpx;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  margin: 0;
+}
+
+.room-modal-request-btn::after {
+  border: none;
+}
+
+.room-modal-footer {
+  border-top: 1rpx solid rgba(255,255,255,0.3);
+}
+
+.room-modal-cancel-btn {
+  width: 100%;
+  height: 88rpx;
+  background: transparent;
+  color: #86868b;
+  border: none;
+  border-radius: 0;
+  font-size: 28rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  margin: 0;
+}
+
+.room-modal-cancel-btn::after {
+  border: none;
+}
+
+/* ─── 反馈成功 ─── */
+.feedback-success {
+  padding: 80rpx 32rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24rpx;
+}
+
+.feedback-success-icon {
+  width: 96rpx;
+  height: 96rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #10b981;
+  color: #fff;
+  font-size: 48rpx;
+  font-weight: 700;
+  border-radius: 50%;
+}
+
+.feedback-success-text {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #1d1d1f;
+  text-align: center;
+}
+
+/* ─── Duang 重复点歌反馈 ─── */
+.song-list.spring {
+  animation: listSpring 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transform-origin: center top;
+}
+@keyframes listSpring {
+  0% { transform: scaleY(1); }
+  20% { transform: scaleY(0.96); }
+  50% { transform: scaleY(1.02); }
+  75% { transform: scaleY(0.99); }
+  100% { transform: scaleY(1); }
+}
+
+.duang-toast {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  background: rgba(0,0,0,0.78);
+  color: #fff;
+  padding: 20rpx 48rpx;
+  border-radius: 28rpx;
+  font-size: 30rpx;
+  font-weight: 700;
+  z-index: 999;
+  pointer-events: none;
+  opacity: 0;
+  white-space: nowrap;
+}
+.duang-toast.show {
+  animation: duangPop 1s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+@keyframes duangPop {
+  0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
+  30% { transform: translate(-50%, -50%) scale(1.1); opacity: 1; }
+  50% { transform: translate(-50%, -50%) scale(0.95); opacity: 1; }
+  70% { transform: translate(-50%, -50%) scale(1.02); opacity: 1; }
+  100% { transform: translate(-50%, -50%) scale(1); opacity: 0; }
+}

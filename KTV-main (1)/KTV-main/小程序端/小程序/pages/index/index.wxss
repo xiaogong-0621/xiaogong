@@ -1,0 +1,154 @@
+/* ─── 登录页 — 匹配 HTML 设计 ─── */
+
+.login-container {
+  min-height: 100vh;
+  background: #F5F7FA;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40rpx;
+}
+
+/* ─── 渐变背景 ─── */
+.bg-gradient {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background: transparent;
+}
+
+/* ─── 玻璃卡片 ─── */
+.login-card {
+  padding: 56rpx 40rpx 52rpx;
+  width: 100%;
+  max-width: 560rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+  text-align: center;
+}
+
+/* ─── Logo ─── */
+.logo-wrap {
+  margin-bottom: 24rpx;
+}
+
+.logo-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.logo-icon image {
+  width: 86rpx;
+  height: 86rpx;
+}
+
+.app-name {
+  font-size: 44rpx;
+  font-weight: 700;
+  color: #0369A1;
+  letter-spacing: 2rpx;
+  margin-bottom: 8rpx;
+  display: block;
+}
+
+.app-subtitle {
+  font-size: 24rpx;
+  color: #86868b;
+  margin-bottom: 44rpx;
+  display: block;
+}
+
+/* ─── 输入框 ─── */
+.input-group {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+  margin-bottom: 28rpx;
+}
+
+.input-item {
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.55);
+  border: 1rpx solid rgba(255, 255, 255, 0.6);
+  border-radius: 56rpx;
+  padding: 0 28rpx 0 32rpx;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  text-align: left;
+}
+
+.input-icon-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 16rpx;
+  flex-shrink: 0;
+}
+.input-icon-wrap image {
+  width: 36rpx;
+  height: 36rpx;
+}
+
+.input-field {
+  flex: 1;
+  height: 76rpx;
+  font-size: 28rpx;
+  color: #1d1d1f;
+  background: transparent;
+  padding: 0;
+  text-align: left;
+}
+
+.placeholder {
+  color: #86868b;
+}
+
+/* ─── 登录按钮（渐变） ─── */
+.login-btn {
+  width: 100%;
+  padding: 26rpx 0;
+  background: linear-gradient(135deg, #0EA5E9, #38BDF8);
+  color: #fff;
+  border: none;
+  border-radius: 88rpx;
+  font-size: 30rpx;
+  font-weight: 600;
+  letter-spacing: 4rpx;
+  box-shadow: 0 12rpx 36rpx rgba(14,165,233,0.3);
+  transition: transform 0.15s, box-shadow 0.15s;
+  line-height: 1.5;
+}
+
+.login-btn:active {
+  transform: scale(0.98);
+  box-shadow: 0 8rpx 24rpx rgba(14,165,233,0.25);
+}
+.login-btn::after {
+  border: none;
+}
+
+/* ─── 注册链接 ─── */
+.register-link {
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  gap: 4rpx;
+}
+
+.register-text {
+  font-size: 24rpx;
+  color: #86868b;
+}
+
+.register-action {
+  font-size: 24rpx;
+  color: #0EA5E9;
+  font-weight: 600;
+}
