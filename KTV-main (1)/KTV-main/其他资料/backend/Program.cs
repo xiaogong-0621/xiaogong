@@ -327,6 +327,9 @@ contentTypeProvider.Mappings[".flac"] = "audio/flac";
 contentTypeProvider.Mappings[".lrc"] = "text/plain";
 app.UseStaticFiles(new StaticFileOptions { ContentTypeProvider = contentTypeProvider });
 
+// Default files: serve index.html for directory requests
+app.UseDefaultFiles();
+
 app.UseAuthentication();
 app.UseWebSockets(new WebSocketOptions { KeepAliveInterval = TimeSpan.FromSeconds(30) });
 
