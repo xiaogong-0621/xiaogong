@@ -31,10 +31,10 @@ export function useHeartAnimation() {
 
     function fill() {
       btn.classList.add('is-fav')
-      fillSvg.style.clipPath = 'circle(0% at 50% 55%)'
-      fillSvg.style.opacity = '1'
+      fillSvg!.style.clipPath = 'circle(0% at 50% 55%)'
+      fillSvg!.style.opacity = '1'
 
-      fillSvg.animate([
+      fillSvg!.animate([
         { clipPath: 'circle(0% at 50% 55%)' },
         { clipPath: 'circle(75% at 50% 55%)' },
       ], { duration: 675, easing: 'cubic-bezier(0.4, 0, 0.2, 1)', fill: 'forwards' })
@@ -71,14 +71,14 @@ export function useHeartAnimation() {
     }
 
     function unfill() {
-      fillSvg.style.clipPath = 'circle(75% at 50% 55%)'
-      fillSvg.style.opacity = '1'
+      fillSvg!.style.clipPath = 'circle(75% at 50% 55%)'
+      fillSvg!.style.opacity = '1'
 
-      fillSvg.animate([
+      fillSvg!.animate([
         { clipPath: 'circle(75% at 50% 55%)' },
         { clipPath: 'circle(0% at 50% 55%)' },
       ], { duration: 480, easing: 'cubic-bezier(0.4, 0, 0.2, 1)', fill: 'forwards' }).onfinish = () => {
-        fillSvg.style.opacity = '0'
+        fillSvg!.style.opacity = '0'
         btn.classList.remove('is-fav')
         busy = false
         onDone?.()

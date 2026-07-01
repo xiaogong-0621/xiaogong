@@ -281,8 +281,8 @@ function startEditing() {
 
 async function toggleStatus() {
   if (!detail.value) return
-  const newStatus = detail.value.status === 'active' ? 'disabled' : 'active'
-  const label = newStatus === 'disabled' ? '下架' : '上架'
+  const newStatus = detail.value.status === 'active' ? 'inactive' : 'active'
+  const label = newStatus === 'inactive' ? '下架' : '上架'
   if (!confirm(`确定${label}歌曲「${detail.value.title}」？`)) return
   await songsApi.update(songId, { status: newStatus })
   await fetchDetail()

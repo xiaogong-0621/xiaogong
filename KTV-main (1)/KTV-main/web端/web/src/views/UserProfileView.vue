@@ -112,11 +112,6 @@ function formatDate(dateStr: string) {
   return `${bj.getMonth() + 1}/${bj.getDate()} ${time}`
 }
 
-function formatJoinDate(dateStr: string) {
-  const d = new Date(dateStr)
-  return `${d.getFullYear()} 年 ${d.getMonth() + 1} 月加入`
-}
-
 function generateStars() {
   const container = document.getElementById('stars-layer')
   if (!container) return

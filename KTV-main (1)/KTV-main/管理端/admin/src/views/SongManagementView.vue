@@ -469,7 +469,7 @@ async function handleSave() {
         const res = await uploadApi.music(musicFile.value)
         form.value.mediaUrl = res.data.url
         form.value.fileSize = musicFile.value.size
-        form.value.originalFileName = res.data.originalName
+        form.value.originalFileName = res.data.fileName
       } catch (err: any) {
         musicUploadError.value = err.response?.data?.message || '音乐文件上传失败'
         return

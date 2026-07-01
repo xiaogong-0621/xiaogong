@@ -322,8 +322,8 @@ const coverSrc = computed(() =>
     <!-- Info + progress -->
     <div class="flex-1 min-w-0">
       <p v-if="player.hasTrack" class="text-sm font-bold truncate dark:text-[var(--d-on-surface)]">
-        {{ player.currentTrack.title }} <span class="font-normal text-slate-500 dark:text-[var(--d-on-surface-variant)]">- {{ player.currentTrack.artist }}</span>
-        <span v-if="player.currentTrack.orderedByName" class="ml-1 text-[10px] font-normal text-primary/60 dark:text-[var(--d-primary-container)]">{{ player.currentTrack.orderedByName }} 的歌</span>
+        {{ player.currentTrack?.title }} <span class="font-normal text-slate-500 dark:text-[var(--d-on-surface-variant)]">- {{ player.currentTrack?.artist }}</span>
+        <span v-if="player.currentTrack?.orderedByName" class="ml-1 text-[10px] font-normal text-primary/60 dark:text-[var(--d-primary-container)]">{{ player.currentTrack?.orderedByName }} 的歌</span>
       </p>
       <p v-else class="text-sm text-slate-400 dark:text-[var(--d-on-surface-variant)] truncate">未在播放</p>
       <div
@@ -390,8 +390,8 @@ const coverSrc = computed(() =>
       <button
         v-if="player.hasTrack"
         class="heart-btn w-12 h-12 flex items-center justify-center transition-colors rounded-full press-scale text-slate-400 dark:text-[var(--d-on-surface-variant)] hover:text-on-surface dark:hover:text-[var(--d-on-surface)] hover:bg-slate-100 dark:hover:bg-[var(--d-hover-bg)]"
-        :class="{ 'is-fav': favoriteIds.has(player.currentTrack.songId) }"
-        @click="toggleFavorite(player.currentTrack.songId, $event)"
+        :class="{ 'is-fav': favoriteIds.has(player.currentTrack!.songId) }"
+        @click="toggleFavorite(player.currentTrack!.songId, $event)"
       >
         <div class="heart-icon relative w-6 h-6">
           <svg viewBox="0 0 24 24" class="absolute inset-0 w-full h-full"><path class="heart-outline" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
@@ -441,8 +441,8 @@ const coverSrc = computed(() =>
           <button
             v-if="player.hasTrack"
             class="heart-btn mt-3 w-[60px] h-[60px] flex items-center justify-center rounded-full hover:bg-white/10 transition-colors mx-auto"
-            :class="{ 'is-fav': favoriteIds.has(player.currentTrack.songId) }"
-            @click="toggleFavorite(player.currentTrack.songId, $event)"
+            :class="{ 'is-fav': favoriteIds.has(player.currentTrack!.songId) }"
+            @click="toggleFavorite(player.currentTrack!.songId, $event)"
           >
             <div class="heart-icon relative w-[30px] h-[30px]">
               <svg viewBox="0 0 24 24" class="absolute inset-0 w-full h-full"><path class="heart-outline" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>

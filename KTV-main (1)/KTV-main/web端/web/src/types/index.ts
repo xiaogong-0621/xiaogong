@@ -94,3 +94,21 @@ export interface Room {
   currentUsers: number
   createdAt: string
 }
+
+export interface UserProfile {
+  username: string
+  displayName: string
+  phone?: string
+  email?: string
+  avatarUrl?: string
+  songCount: number
+  favoriteCount: number
+}
+
+export interface RecentSong {
+  songId: number
+  title: string
+  artist: string
+  coverUrl?: string
+  orderedAt: string
+}

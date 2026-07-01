@@ -33,6 +33,13 @@ export const useAuthStore = defineStore('auth', () => {
     localStorage.removeItem('currentRoomId')
   }
 
+  function updateUser(data: { displayName?: string; phone?: string; email?: string }) {
+    if (user.value) {
+      user.value = { ...user.value, ...data }
+      localStorage.setItem('user', JSON.stringify(user.value))
+    }
+  }
+
   // Sync with localStorage changes (for 401 interceptor, other tabs, VSCode)
   window.addEventListener('storage', (e) => {
     if (e.key === 'token' && !e.newValue) {
@@ -53,5 +60,5 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }, 1000)
 
-  return { token, user, isLoggedIn, currentRoomId, setAuth, setCurrentRoomId, logout }
+  return { token, user, isLoggedIn, currentRoomId, setAuth, setCurrentRoomId, logout, updateUser }
 })
