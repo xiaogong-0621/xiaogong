@@ -321,14 +321,14 @@ if (app.Environment.IsDevelopment())
 
 app.UseCors("AllowFrontends");
 
+// Default files: serve index.html for directory requests (MUST be before UseStaticFiles)
+app.UseDefaultFiles();
+
 // Serve static files from wwwroot (for uploaded avatars, covers, music)
 var contentTypeProvider = new Microsoft.AspNetCore.StaticFiles.FileExtensionContentTypeProvider();
 contentTypeProvider.Mappings[".flac"] = "audio/flac";
 contentTypeProvider.Mappings[".lrc"] = "text/plain";
 app.UseStaticFiles(new StaticFileOptions { ContentTypeProvider = contentTypeProvider });
-
-// Default files: serve index.html for directory requests
-app.UseDefaultFiles();
 
 app.UseAuthentication();
 app.UseWebSockets(new WebSocketOptions { KeepAliveInterval = TimeSpan.FromSeconds(30) });
