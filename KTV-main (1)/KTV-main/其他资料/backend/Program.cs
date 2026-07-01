@@ -327,19 +327,6 @@ contentTypeProvider.Mappings[".flac"] = "audio/flac";
 contentTypeProvider.Mappings[".lrc"] = "text/plain";
 app.UseStaticFiles(new StaticFileOptions { ContentTypeProvider = contentTypeProvider });
 
-// Serve admin & web frontends from wwwroot
-app.UseDefaultFiles(new DefaultFilesOptions { DefaultFileNames.Clear() });
-app.MapWhen(ctx => ctx.Request.Path.StartsWithSegments("/admin"), adminApp =>
-{
-    adminApp.UseDefaultFiles(new DefaultFilesOptions { DefaultFileNames = { "index.html" } });
-    adminApp.UseStaticFiles(new StaticFileOptions { FileProvider = new Microsoft.Extensions.FileProviders.PhysicalFileProvider(Path.Combine(AppContext.BaseDirectory, "wwwroot", "admin")) });
-});
-app.MapWhen(ctx => ctx.Request.Path.StartsWithSegments("/web"), webApp =>
-{
-    webApp.UseDefaultFiles(new DefaultFilesOptions { DefaultFileNames = { "index.html" } });
-    webApp.UseStaticFiles(new StaticFileOptions { FileProvider = new Microsoft.Extensions.FileProviders.PhysicalFileProvider(Path.Combine(AppContext.BaseDirectory, "wwwroot", "web")) });
-});
-
 app.UseAuthentication();
 app.UseWebSockets(new WebSocketOptions { KeepAliveInterval = TimeSpan.FromSeconds(30) });
 
@@ -411,8 +398,28 @@ app.UseMiddleware<OperationLoggingMiddleware>();
 app.MapControllers();
 app.MapHub<KtvHub>("/hubs/ktv");
 
-// SPA fallback: return index.html for /admin/* and /web/* routes
-app.MapFallbackToFile("/admin/{*path:nonfile}", "admin/index.html");
-app.MapFallbackToFile("/web/{*path:nonfile}", "web/index.html");
+// SPA fallback: serve index.html for admin/web routes
+app.Use(async (context, next) =>
+{
+    if (context.Response.StatusCode == 404 && !context.Request.Path.StartsWithSegments("/api"))
+    {
+        var path = context.Request.Path.Value ?? "";
+        if (path.StartsWith("/admin"))
+        {
+            context.Response.StatusCode = 200;
+            context.Response.ContentType = "text/html";
+            await context.Response.SendFileAsync(Path.Combine(AppContext.BaseDirectory, "wwwroot", "admin", "index.html"));
+            return;
+        }
+        if (path.StartsWith("/web"))
+        {
+            context.Response.StatusCode = 200;
+            context.Response.ContentType = "text/html";
+            await context.Response.SendFileAsync(Path.Combine(AppContext.BaseDirectory, "wwwroot", "web", "index.html"));
+            return;
+        }
+    }
+    await next();
+});
 
 app.Run();
