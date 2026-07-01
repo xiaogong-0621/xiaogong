@@ -15,4 +15,9 @@ export default defineConfig({
       ignored: ['**/node_modules/**', '**/.git/**', '**/dist/**', '**/backend/**', '**/web/**', '**/*.sql', '**/*.md'],
     },
   },
+  build: {
+    rollupOptions: {
+      external: ['react-native-fs'],
+    },
+  },
 })
