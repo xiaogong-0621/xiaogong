@@ -26,7 +26,9 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontends", policy =>
     {
-        policy.WithOrigins("http://localhost:5173", "http://localhost:5174")
+        policy.WithOrigins(
+                "http://localhost:5173", "http://localhost:5174",
+                "http://218.244.152.60", "http://218.244.152.60:8080")
               .AllowAnyHeader()
               .AllowAnyMethod()
               .AllowCredentials();
@@ -325,6 +327,19 @@ contentTypeProvider.Mappings[".flac"] = "audio/flac";
 contentTypeProvider.Mappings[".lrc"] = "text/plain";
 app.UseStaticFiles(new StaticFileOptions { ContentTypeProvider = contentTypeProvider });
 
+// Serve admin & web frontends from wwwroot
+app.UseDefaultFiles(new DefaultFilesOptions { DefaultFileNames.Clear() });
+app.MapWhen(ctx => ctx.Request.Path.StartsWithSegments("/admin"), adminApp =>
+{
+    adminApp.UseDefaultFiles(new DefaultFilesOptions { DefaultFileNames = { "index.html" } });
+    adminApp.UseStaticFiles(new StaticFileOptions { FileProvider = new Microsoft.Extensions.FileProviders.PhysicalFileProvider(Path.Combine(AppContext.BaseDirectory, "wwwroot", "admin")) });
+});
+app.MapWhen(ctx => ctx.Request.Path.StartsWithSegments("/web"), webApp =>
+{
+    webApp.UseDefaultFiles(new DefaultFilesOptions { DefaultFileNames = { "index.html" } });
+    webApp.UseStaticFiles(new StaticFileOptions { FileProvider = new Microsoft.Extensions.FileProviders.PhysicalFileProvider(Path.Combine(AppContext.BaseDirectory, "wwwroot", "web")) });
+});
+
 app.UseAuthentication();
 app.UseWebSockets(new WebSocketOptions { KeepAliveInterval = TimeSpan.FromSeconds(30) });
 
@@ -395,4 +410,9 @@ app.UseMiddleware<ErrorHandlingMiddleware>();
 app.UseMiddleware<OperationLoggingMiddleware>();
 app.MapControllers();
 app.MapHub<KtvHub>("/hubs/ktv");
+
+// SPA fallback: return index.html for /admin/* and /web/* routes
+app.MapFallbackToFile("/admin/{*path:nonfile}", "admin/index.html");
+app.MapFallbackToFile("/web/{*path:nonfile}", "web/index.html");
+
 app.Run();
